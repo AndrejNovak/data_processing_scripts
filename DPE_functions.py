@@ -54,15 +54,15 @@ class cluster_filter:
     indeces = COL in elist of the given CA PAR, e.g. 4 for Energy
     """
 
-    def __init__(self, edges=[], indeces=[]):
+    def __init__(self, edges = [], indices = []):
         self.edges = edges
-        self.indeces = indeces
+        self.indices = indices
 
     def pass_filter(self, cluster_var):
-        for i in range(len(self.indeces)):
+        for i in range(len(self.indices)):
             down_edge = self.edges[i]
-            up_edge = self.edges[i+1]
-            i_var = self.indeces[i]
+            up_edge = self.edges[i + 1]
+            i_var = self.indices[i]
 
             if (cluster_var[i_var] >= down_edge and cluster_var[i_var] <= up_edge):
                 return True
@@ -88,15 +88,15 @@ class cluster_filter_ONE_PAR:
     indeces = COL in elist of the given CA PAR, e.g. 4 for Energy
     """
 
-    def __init__(self, edges=[], indeces=[]):
+    def __init__(self, edges = [], indices = []):
         self.edges = edges
-        self.indeces = indeces
+        self.indices = indices
 
     def pass_filter(self, cluster_var):
-        for i in range(len(self.indeces)):
+        for i in range(len(self.indices)):
             down_edge = self.edges[i]
-            up_edge = self.edges[i+1]
-            i_var = self.indeces[i]
+            up_edge = self.edges[i + 1]
+            i_var = self.indices[i]
 
             if (cluster_var[i_var] >= down_edge and cluster_var[i_var] <= up_edge):
                 return True
@@ -119,31 +119,31 @@ class cluster_filter_MULTI_PAR:
     to the defined lower and upper edge. If the element is within the range, the ok counter is incremented by 1, 
     if not the function returns false.
 
-    At the end of the loop, if the ok counter is equal to the length of indeces, it means that all the criteria passed, 
-    so the function returns True. This class is similar to the first two classes "cluster_filter" and 
+    At the end of the loop, if the ok counter is equal to the length of indeces, it means that all the criteria 
+    passed, so the function returns True. This class is similar to the first two classes "cluster_filter" and 
     "cluster_filter_ONE_PAR" but it allows multiple criteria to be passed.
 
     edges = border values for the given CA PAR
     indeces = COL in elist of the given CA PAR, e.g. 4 for Energy
     """
 
-    def __init__(self, edges=[], indeces=[]):
+    def __init__(self, edges = [], indices = []):
         self.edges = edges
-        self.indeces = indeces
+        self.indices = indices
 
-    def pass_filter(self, cluster_var):
+    def pass_filter(self, cluster_variable):
         ok = 0
 
-        for i in range(len(self.indeces)):
-            down_edge = self.edges[i*2]
-            up_edge = self.edges[(i*2)+1]
-            i_var = self.indeces[i]
+        for i in range(len(self.indices)):
+            down_edge = self.edges[i * 2]
+            up_edge = self.edges[(i * 2) + 1]
+            i_variables = self.indices[i]
 
-            if (cluster_var[i_var] >= down_edge and cluster_var[i_var] <= up_edge):
+            if (cluster_variable[i_variables] >= down_edge and cluster_variable[i_variables] <= up_edge):
                 ok = ok + 1
             else:
                 return False
-        if ok == len(self.indeces):
+        if ok == len(self.indices):
             return True
 
 
@@ -169,58 +169,65 @@ class cluster_filter_MULTI_PAR_RATIOS:
     At the end of the loop, if the ok counter is equal to the length of indeces, it means that all the single CA PAR 
     criteria passed. The function then iterates over the range of the ind_pair_ratio, for each index, it defines 
     a lower edge and an upper edge for the ratio of the i_var-th element of the cluster_var to the defined lower 
-    and upper edge. If the ratio is within the range, the ok_rat counter is incremented by 1, if not
+    and upper edge. If the ratio is within the range, the ok_rat counter is incremented by 1, if not the function 
+    returns false.
 
     edges = border values for the given CA PAR
     indeces = COL number in elist of the given CA PAR, e.g. 4 for Energy
     ind_pair_ratio = COL number in elist of pair of CA PAR for ratio(s)    
     """
 
-    def __init__(self, edges=[], indeces=[], edges_ratio=[], ind_pair_ratio=[]):
+    def __init__(self, edges = [], indices = [], edges_ratio = [], indices_pair_ratio = []):
         self.edges = edges
-        self.indeces = indeces
+        self.indices = indices
 
         self.edges_ratio = edges_ratio
-        self.ind_pair_ratio = ind_pair_ratio
+        self.indices_pair_ratio = indices_pair_ratio
 
-    def pass_filter(self, cluster_var):
+    def pass_filter(self, cluster_variable):
         ok = 0
-        ok_rat = 0
+        ok_ratio = 0
 
-        for i in range(len(self.indeces)):
-            down_edge = self.edges[i*2]
-            up_edge = self.edges[(i*2)+1]
-            i_var = self.indeces[i]
+        for i in range(len(self.indices)):
+            down_edge = self.edges[i * 2]
+            up_edge = self.edges[(i * 2) + 1]
+            i_variable = self.indices[i]
 
-            if (cluster_var[i_var] >= down_edge and cluster_var[i_var] <= up_edge):
+            if (cluster_variable[i_variable] >= down_edge and cluster_variable[i_variable] <= up_edge):
                 ok = ok + 1
             else:
                 return False
 
-        if ok == len(self.indeces):
-            num_rat_filters = int(len(self.ind_pair_ratio)/2)
+        if ok == len(self.indices):
+            number_ratio_filters = int(len(self.indices_pair_ratio) / 2)
 
-            for k in range(num_rat_filters):
-                down_edge_ratio = self.edges_ratio[k*2]
-                up_edge_ratio = self.edges_ratio[(k*2)+1]
-                k_var_ratio_top = self.ind_pair_ratio[k*2]
-                k_var_ratio_bot = self.ind_pair_ratio[(k*2)+1]
+            for k in range(number_ratio_filters):
+                down_edge_ratio = self.edges_ratio[k * 2]
+                up_edge_ratio = self.edges_ratio[(k * 2) + 1]
+                k_variable_ratio_top = self.indices_pair_ratio[k * 2]
+                k_variable_ratio_bottom = self.indices_pair_ratio[(k * 2) + 1]
 
-                ratio_clu = (cluster_var[k_var_ratio_top] /
-                             cluster_var[k_var_ratio_bot])
-                if (ratio_clu >= down_edge_ratio and ratio_clu <= up_edge_ratio):
-                    ok_rat = ok_rat + 1
+                ratio_cluster = (cluster_variable[k_variable_ratio_top] /
+                             cluster_variable[k_variable_ratio_bottom])
+                if (ratio_cluster >= down_edge_ratio and ratio_cluster <= up_edge_ratio):
+                    ok_ratio = ok_ratio + 1
                 else:
                     return False
-            if ok_rat == num_rat_filters:
+            if ok_ratio == number_ratio_filters:
                 return True
 
 
 def print_out(FileOutPath, filename, input_data):
     """
-    *** OLD FUNCTION, CURRENTLY NOT IN USE***
-    Function for printing output data into classic Elist format
+    *** OLD FUNCTION, CURRENTLY NOT IN USE ***
+    This is function that takes three inputs: FileOutPath, filename, and input_data. The function is used 
+    to print output data in a classic Elist format.
+
+    The function first checks if the FileOutPath directory exists, if it does not exist it creates the directory. 
+    Then it opens a file with the specified filename in the FileOutPath directory and sets it as the standard output. 
+    It then prints the input_data to the file and resets the standard output.
     """
+
     if not os.path.exists(FileOutPath):
         os.makedirs(FileOutPath)
     with open(FileOutPath + filename, 'w') as f:
@@ -229,56 +236,72 @@ def print_out(FileOutPath, filename, input_data):
         sys.stdout
 
 
-def read_clog(full_filename):
+def read_clog(filename):
     """ 
-    This function reads through the .clog file and can access Unix_time and Acquisition_time of every frame,
-    number of frames, number of events in frame and their values [x, y, ToT, ToA].
-    For printing Unix times of all frames use: read_clog(filename)[0]
-    For printing Acquisition time of each frame use: read_clog(filename)[1]
-    For printing full cluster data use: read_clog(filename)[2]
+    This function takes in the full filename of a .clog file as an input and is used to read through the file.
+    The function opens the .clog file and reads all the lines of the file. It then uses a for loop to iterate 
+    through each line in the file. The function looks for lines that begin with "Frame" and extracts the Unix 
+    time and Acquisition time of each frame. These values are stored in lists called frames_unix_time and 
+    frame_times, respectively. The function also looks for lines that contain a specific pattern (using regular 
+    expressions) and extracts the x, y, ToT, and ToA values of each event in the frame. These values are stored 
+    in a nested list called all_values. The function returns three values: a list of Unix times of all frames, 
+    a list of Acquisition times of all frames, and a nested list of all the cluster data in the .clog file.
+    You can access the Unix times of all frames by calling read_clog(filename)[0], the Acquisition times of all 
+    frames by calling read_clog(filename)[1], and the full cluster data by calling read_clog(filename)[2].
 
     When using 'data = read_clog(FileInPath, filename)[2]', you can traverse the data on level of Frames, 
     registered values (group of 4 values - [x, y, ToT, ToA]) and selected value from one of the 
     four possible - x or y or ToT or ToA.
-
     To access first layer (selected frame) use: data[0]
     To access second layer (selected 4-group of selected frame) use: data[0][0]
     To access third layer (selected value from selected 4-group of selected frame) use: data[0][0][0] 
     """
 
-    inputFile = open(full_filename)
+    inputFile = open(filename)
     lines = inputFile.readlines()
+    inputFile.close()
+
+    frame_unix_time = np.empty([0])
+    frame_times = np.empty([0])
+
     current_cluster = list()
     all_values = list()
-    frames_unix_time = list()
-    frame_times = list()
+
     a = []
     pattern_b = r"\[[^][]*]"
+
     for line in lines:
         if line != "\n":
             if (line.split()[0] == "Frame"):
                 unixtime = float(line.split()[2].lstrip("(").rstrip(","))
-                frames_unix_time.append(unixtime)
-                # print(unixtime)
-                meas_time = float(line.split()[3].rstrip(","))
-                frame_times.append(meas_time)
-                # print(frametime)
+                frame_unix_time = np.append(frame_unix_time, unixtime)
+                measurement_time = float(line.split()[3].rstrip(","))
+                frame_times = np.append(frame_times, measurement_time)
 
                 all_values.append(current_cluster)
                 current_cluster = []
                 continue
+
             a = (re.findall(pattern_b, line))
+
             for element in a:
                 b = ("".join(element)).rstrip("]").lstrip("[").split(",")
                 b = [float(x) for x in b]
                 current_cluster.append(b)
 
-    # to fix problem with first list being empty, needs solution without copying
-    return frames_unix_time[:], frame_times[:], all_values[1:].copy()
+    # to fix problem with first list being empty, needs solution without copying for better performance
+    return frame_unix_time, frame_times, all_values[1:].copy()
 
 
 def get_column(FileInPath, filename, col_name):
     """
+    This function is used to extract a specific column from a file in Elist format, based on the exact name 
+    of the column. It takes in three inputs, the file path of the Elist, the name of the file, and the name 
+    of the column that needs to be extracted. It returns the data in the column in a python list format. 
+    The function first reads the first two lines of the file to get the names and units of all columns. 
+    It then iterates through the names of the columns and finds the column with the name that was passed 
+    as input. It then extracts the data in that column and returns it as a list.
+
     From Elist extract a specific column based on the exact name of the column
     Function returns a list of data in python list format
     col_name = name of the variable from Elist
@@ -286,6 +309,7 @@ def get_column(FileInPath, filename, col_name):
     Example, select column with Energy values:
     selected_column = get_column('path/to/Elist.txt', 'E') 
     """
+
     inputFile = open(FileInPath + filename, 'r')
     lines = inputFile.readlines()
     names = []
@@ -300,7 +324,7 @@ def get_column(FileInPath, filename, col_name):
         else:
             pass
 
-    # print('\n *** From get_column() you are printing parameter {} in units {} \n'.format(str(names[0][col_num]), str(units[0][col_num])))
+    # print(f'From get_column() you are printing parameter {str(names[0][col_num])} in units {str(units[0][col_num])}\n'.)
 
     column_data = []
     for line in lines:
@@ -311,6 +335,12 @@ def get_column(FileInPath, filename, col_name):
 
 def read_elist(filename):
     """
+    The read_elist function reads an Elist file and returns its data in the form of a list of lists, 
+    where the first list is the header, the second list is the units and the rest of the lists are 
+    the data. The user can then access the header and units by calling 
+    header, units, _ = read_elist('path/to/Elist.txt') or the data by calling 
+    data = read_elist('path/to/Elist.txt')[2].
+
     Access full Elist data including header
 
     Example, return header and units:
@@ -319,6 +349,7 @@ def read_elist(filename):
     Example, return data only
     data = read_elist('path/to/Elist.txt')[2]
     """
+
     inputFile = open(filename, "r")
     lines = inputFile.readlines()
     inputFile.close()
@@ -330,29 +361,28 @@ def read_elist(filename):
 
 def read_elist_make_ext_elist(filename, col_num_pairs_for_ratios, header_txt_new_cols, units_txt_new_cols):
     """
-    # new funkce read_elist to include option to filter events (Lukas 8 Aug 22)
-    Function to read elist (calibrated, output of DPE_CP)
-    it newly calculates RATIOS of pairs of CA PAR
-    and puts them into new COLs
-    output is the same elist with the added new COLs at right (COL = 16+17+...)
-    ---- syntax of input variables ----
-    - filename = elist (output of DPE CP, stored in Files DIR output)
-    - col_num_pairs_for_ratios = e.g. = [4,7,9,7] # E,A,  BordPx,A
-    - header_txt_new_cols = e.g. = ['E/A','BordPx/A']
-    - units_txt_new_cols = e.g. = ['keV/px','a.u.']
+    New version of read_elist to calculate new parameters and ratios, Lukas 8 August 2022
+
+    This function reads an elist file, and calculates new columns which are the ratios of pairs of 
+    CA PAR (columns) specified in the col_num_pairs_for_ratios input. The new columns are added to the right
+    of the original elist, and the new header and units for these new columns are specified in 
+    header_txt_new_cols and units_txt_new_cols inputs. The function returns the elist with the added columns, 
+    where the output is split into three objects: the header, the units, and the data. The function also prints 
+    the number of all clusters processed and the line number of the first and second row.
+
+    How to use:
+    filename = elist_txt_name
+    col_num_pairs_for_ratios = [4,7,9,7]    # Energy, Size, BorderPixel, Size
+    header_txt_new_cols = ['E/Size', 'BorderPixel/Size']
+    - units_txt_new_cols = ['keV/px', 'a.u.']
     """
+
     inputFile = open(filename, "r")
     lines = inputFile.readlines()
-    # -- add new cols
-
-    # --
     inputFile.close()
     splitlines = []
 
-    # when there is filter entered:
-    clu_cou_all = 0  # counter of all clusters
-    # clu_cou_ok = 0 # counter of OK clu's
-    # clu_cou_bad = 0 # counter of rejected clu's
+    cluster_count_all = 0  # counter of all clusters
     num_pairs_new_cols = int(len(col_num_pairs_for_ratios)/2)
     line_num = 0
     # if new_filter is not None:
@@ -377,7 +407,7 @@ def read_elist_make_ext_elist(filename, col_num_pairs_for_ratios, header_txt_new
         else:
             cluster_var = [float(i) for i in list(line.rstrip().split(";"))]
             # print(new_filter.pass_filter(cluster_var))
-            clu_cou_all = clu_cou_all + 1
+            cluster_count_all = cluster_count_all + 1
             for i in range(num_pairs_new_cols):
                 # new_col_value = 10
                 new_col_value = cluster_var[col_num_pairs_for_ratios[i*2]
@@ -385,7 +415,7 @@ def read_elist_make_ext_elist(filename, col_num_pairs_for_ratios, header_txt_new
                 cluster_var.append(new_col_value)
                 # --
             splitlines.append(cluster_var)
-    print('all clusters thru = ', clu_cou_all)
+    print('all clusters thru = ', cluster_count_all)
     # print('OK clusters = ', clu_cou_ok)
     # print('bad clusters = ', clu_cou_bad)
 
