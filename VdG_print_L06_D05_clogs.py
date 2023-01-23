@@ -5,19 +5,23 @@ import fnmatch
 names = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
  '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']
 
-subfolders = [ f.name for f in os.scandir('Q:/DPE_carlos_data_output/2022_12_VdG/D05_Si_500um_80V/') if f.is_dir() ]
+subfolders = [ f.name for f in os.scandir('Q:/DPE_carlos_data_output/2022_12_VdG/2022_12_VdG_D05/') if f.is_dir() ]
 print(subfolders[12:])
 
 for idx2, var2 in enumerate(subfolders[12:]):
     directory = var2
-    dir_path = 'Q:/DPE_carlos_data_output/2022_12_VdG/D05_Si_500um_80V/'+var2+'/Files/'
+    dir_path = 'Q:/DPE_carlos_data_output/2022_12_VdG/2022_12_VdG_D05/'+var2+'/Files/'
     count = len(fnmatch.filter(os.listdir(dir_path), '*.clog'))
     print('File Count:', count)
 
     for idx, var in enumerate(names[:count]):
         clog_poradie = var
-        path = 'Q:/DPE_carlos_data_output/2022_12_VdG/D05_Si_500um_80V/' + directory + '/Files/ClusterLog_clog_r00000000' + clog_poradie + '.clog'
+        path = 'Q:/DPE_carlos_data_output/2022_12_VdG/2022_12_VdG_D05/' + directory + '/Files/ClusterLog_clog_r00000000' + clog_poradie + '.clog'
         clog = read_clog(path)[2]
+
+        #print(len(read_clog(path)[3]), np.shape(read_clog(path)[3]), read_clog(path)[3][0:8])
+
+        print(f'The number of frames in clog is {len(read_clog(path)[0])} with specific values {read_clog(path)[0]}')
         matrix = np.zeros([256,256])
 
         num_of_particles = np.array([len(clog[:]), 100])         #len(clog[:])

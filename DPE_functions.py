@@ -35,7 +35,7 @@ map_object = LinearSegmentedColormap.from_list(
 plt.register_cmap(cmap=map_object)
 
 
-class cluster_filter:
+class Cluster_filter:
     """
     Lukas+Carlos, ADV, Prague, 8 Aug 2022
     Cluster_filter class is used to filter events in elist based on given criteria. The class takes 
@@ -54,15 +54,15 @@ class cluster_filter:
     indeces = COL in elist of the given CA PAR, e.g. 4 for Energy
     """
 
-    def __init__(self, edges=[], indeces=[]):
+    def __init__(self, edges = [], indices = []):
         self.edges = edges
-        self.indeces = indeces
+        self.indices = indices
 
     def pass_filter(self, cluster_var):
-        for i in range(len(self.indeces)):
+        for i in range(len(self.indices)):
             down_edge = self.edges[i]
-            up_edge = self.edges[i+1]
-            i_var = self.indeces[i]
+            up_edge = self.edges[i + 1]
+            i_var = self.indices[i]
 
             if (cluster_var[i_var] >= down_edge and cluster_var[i_var] <= up_edge):
                 return True
@@ -70,7 +70,7 @@ class cluster_filter:
                 return False
 
 
-class cluster_filter_ONE_PAR:
+class Cluster_filter_one_parameter:
     """
     Lukas + Carlos, ADV, Prague, 8 Aug 2022
     Cluster_filter_ONE_PAR is a class used to filter events in elist based on given criteria. The class takes
@@ -88,15 +88,15 @@ class cluster_filter_ONE_PAR:
     indeces = COL in elist of the given CA PAR, e.g. 4 for Energy
     """
 
-    def __init__(self, edges=[], indeces=[]):
+    def __init__(self, edges = [], indices = []):
         self.edges = edges
-        self.indeces = indeces
+        self.indices = indices
 
     def pass_filter(self, cluster_var):
-        for i in range(len(self.indeces)):
+        for i in range(len(self.indices)):
             down_edge = self.edges[i]
-            up_edge = self.edges[i+1]
-            i_var = self.indeces[i]
+            up_edge = self.edges[i + 1]
+            i_var = self.indices[i]
 
             if (cluster_var[i_var] >= down_edge and cluster_var[i_var] <= up_edge):
                 return True
@@ -104,7 +104,7 @@ class cluster_filter_ONE_PAR:
                 return False
 
 
-class cluster_filter_MULTI_PAR:
+class Cluster_filter_multiple_parameter:
     """
     Carlos modified, July 2022
     Cluster_filter_MULTI_PAR is a class used to filter events in elist based on multiple criteria. 
@@ -119,35 +119,35 @@ class cluster_filter_MULTI_PAR:
     to the defined lower and upper edge. If the element is within the range, the ok counter is incremented by 1, 
     if not the function returns false.
 
-    At the end of the loop, if the ok counter is equal to the length of indeces, it means that all the criteria passed, 
-    so the function returns True. This class is similar to the first two classes "cluster_filter" and 
+    At the end of the loop, if the ok counter is equal to the length of indeces, it means that all the criteria 
+    passed, so the function returns True. This class is similar to the first two classes "cluster_filter" and 
     "cluster_filter_ONE_PAR" but it allows multiple criteria to be passed.
 
     edges = border values for the given CA PAR
     indeces = COL in elist of the given CA PAR, e.g. 4 for Energy
     """
 
-    def __init__(self, edges=[], indeces=[]):
+    def __init__(self, edges = [], indices = []):
         self.edges = edges
-        self.indeces = indeces
+        self.indices = indices
 
-    def pass_filter(self, cluster_var):
+    def pass_filter(self, cluster_variable):
         ok = 0
 
-        for i in range(len(self.indeces)):
-            down_edge = self.edges[i*2]
-            up_edge = self.edges[(i*2)+1]
-            i_var = self.indeces[i]
+        for i in range(len(self.indices)):
+            down_edge = self.edges[i * 2]
+            up_edge = self.edges[(i * 2) + 1]
+            i_variables = self.indices[i]
 
-            if (cluster_var[i_var] >= down_edge and cluster_var[i_var] <= up_edge):
+            if (cluster_variable[i_variables] >= down_edge and cluster_variable[i_variables] <= up_edge):
                 ok = ok + 1
             else:
                 return False
-        if ok == len(self.indeces):
+        if ok == len(self.indices):
             return True
 
 
-class cluster_filter_MULTI_PAR_RATIOS:
+class Cluster_filter_multiple_parameter_ratios:
     """
     From Lukas' cluster_filter class; Carlos modified/extended, Aug 2022
     same as cluster_filter_MULTI_PAR with newly added RATIOS of CA PARs
@@ -169,58 +169,65 @@ class cluster_filter_MULTI_PAR_RATIOS:
     At the end of the loop, if the ok counter is equal to the length of indeces, it means that all the single CA PAR 
     criteria passed. The function then iterates over the range of the ind_pair_ratio, for each index, it defines 
     a lower edge and an upper edge for the ratio of the i_var-th element of the cluster_var to the defined lower 
-    and upper edge. If the ratio is within the range, the ok_rat counter is incremented by 1, if not
+    and upper edge. If the ratio is within the range, the ok_rat counter is incremented by 1, if not the function 
+    returns false.
 
     edges = border values for the given CA PAR
     indeces = COL number in elist of the given CA PAR, e.g. 4 for Energy
     ind_pair_ratio = COL number in elist of pair of CA PAR for ratio(s)    
     """
 
-    def __init__(self, edges=[], indeces=[], edges_ratio=[], ind_pair_ratio=[]):
+    def __init__(self, edges = [], indices = [], edges_ratio = [], indices_pair_ratio = []):
         self.edges = edges
-        self.indeces = indeces
+        self.indices = indices
 
         self.edges_ratio = edges_ratio
-        self.ind_pair_ratio = ind_pair_ratio
+        self.indices_pair_ratio = indices_pair_ratio
 
-    def pass_filter(self, cluster_var):
+    def pass_filter(self, cluster_variable):
         ok = 0
-        ok_rat = 0
+        ok_ratio = 0
 
-        for i in range(len(self.indeces)):
-            down_edge = self.edges[i*2]
-            up_edge = self.edges[(i*2)+1]
-            i_var = self.indeces[i]
+        for i in range(len(self.indices)):
+            down_edge = self.edges[i * 2]
+            up_edge = self.edges[(i * 2) + 1]
+            i_variable = self.indices[i]
 
-            if (cluster_var[i_var] >= down_edge and cluster_var[i_var] <= up_edge):
+            if (cluster_variable[i_variable] >= down_edge and cluster_variable[i_variable] <= up_edge):
                 ok = ok + 1
             else:
                 return False
 
-        if ok == len(self.indeces):
-            num_rat_filters = int(len(self.ind_pair_ratio)/2)
+        if ok == len(self.indices):
+            number_ratio_filters = int(len(self.indices_pair_ratio) / 2)
 
-            for k in range(num_rat_filters):
-                down_edge_ratio = self.edges_ratio[k*2]
-                up_edge_ratio = self.edges_ratio[(k*2)+1]
-                k_var_ratio_top = self.ind_pair_ratio[k*2]
-                k_var_ratio_bot = self.ind_pair_ratio[(k*2)+1]
+            for k in range(number_ratio_filters):
+                down_edge_ratio = self.edges_ratio[k * 2]
+                up_edge_ratio = self.edges_ratio[(k * 2) + 1]
+                k_variable_ratio_top = self.indices_pair_ratio[k * 2]
+                k_variable_ratio_bottom = self.indices_pair_ratio[(k * 2) + 1]
 
-                ratio_clu = (cluster_var[k_var_ratio_top] /
-                             cluster_var[k_var_ratio_bot])
-                if (ratio_clu >= down_edge_ratio and ratio_clu <= up_edge_ratio):
-                    ok_rat = ok_rat + 1
+                ratio_cluster = (cluster_variable[k_variable_ratio_top] /
+                             cluster_variable[k_variable_ratio_bottom])
+                if (ratio_cluster >= down_edge_ratio and ratio_cluster <= up_edge_ratio):
+                    ok_ratio = ok_ratio + 1
                 else:
                     return False
-            if ok_rat == num_rat_filters:
+            if ok_ratio == number_ratio_filters:
                 return True
 
 
-def print_out(FileOutPath, filename, input_data):
+def print_out_elist(FileOutPath, filename, input_data):
     """
-    *** OLD FUNCTION, CURRENTLY NOT IN USE***
-    Function for printing output data into classic Elist format
+    *** OLD FUNCTION, CURRENTLY NOT IN USE ***
+    This is function that takes three inputs: FileOutPath, filename, and input_data. The function is used 
+    to print output data in a classic Elist format.
+
+    The function first checks if the FileOutPath directory exists, if it does not exist it creates the directory. 
+    Then it opens a file with the specified filename in the FileOutPath directory and sets it as the standard output. 
+    It then prints the input_data to the file and resets the standard output.
     """
+
     if not os.path.exists(FileOutPath):
         os.makedirs(FileOutPath)
     with open(FileOutPath + filename, 'w') as f:
@@ -229,67 +236,87 @@ def print_out(FileOutPath, filename, input_data):
         sys.stdout
 
 
-def read_clog(full_filename):
+def read_clog(filename):
     """ 
-    This function reads through the .clog file and can access Unix_time and Acquisition_time of every frame,
-    number of frames, number of events in frame and their values [x, y, ToT, ToA].
-    For printing Unix times of all frames use: read_clog(filename)[0]
-    For printing Acquisition time of each frame use: read_clog(filename)[1]
-    For printing full cluster data use: read_clog(filename)[2]
+    This function takes in the full filename of a .clog file as an input and is used to read through the file.
+    The function opens the .clog file and reads all the lines of the file. It then uses a for loop to iterate 
+    through each line in the file. The function looks for lines that begin with "Frame" and extracts the Unix 
+    time and Acquisition time of each frame. These values are stored in lists called frames_unix_time and 
+    frame_times, respectively. The function also looks for lines that contain a specific pattern (using regular 
+    expressions) and extracts the x, y, ToT, and ToA values of each event in the frame. These values are stored 
+    in a nested list called all_values. The function returns three values: a list of Unix times of all frames, 
+    a list of Acquisition times of all frames, and a nested list of all the cluster data in the .clog file.
+    You can access the Unix times of all frames by calling read_clog(filename)[0], the Acquisition times of all 
+    frames by calling read_clog(filename)[1], and the full cluster data by calling read_clog(filename)[2].
 
     When using 'data = read_clog(FileInPath, filename)[2]', you can traverse the data on level of Frames, 
     registered values (group of 4 values - [x, y, ToT, ToA]) and selected value from one of the 
     four possible - x or y or ToT or ToA.
-
     To access first layer (selected frame) use: data[0]
     To access second layer (selected 4-group of selected frame) use: data[0][0]
     To access third layer (selected value from selected 4-group of selected frame) use: data[0][0][0] 
     """
 
-    inputFile = open(full_filename)
+    inputFile = open(filename)
     lines = inputFile.readlines()
+    inputFile.close()
+
+    frame_unix_time = np.empty([0])
+    frame_times = np.empty([0])
+
     current_cluster = list()
     all_values = list()
-    frames_unix_time = list()
-    frame_times = list()
+
     a = []
     pattern_b = r"\[[^][]*]"
+
     for line in lines:
         if line != "\n":
             if (line.split()[0] == "Frame"):
                 unixtime = float(line.split()[2].lstrip("(").rstrip(","))
-                frames_unix_time.append(unixtime)
-                # print(unixtime)
-                meas_time = float(line.split()[3].rstrip(","))
-                frame_times.append(meas_time)
-                # print(frametime)
+                frame_unix_time = np.append(frame_unix_time, unixtime)
+                measurement_time = float(line.split()[3].rstrip(","))
+                frame_times = np.append(frame_times, measurement_time)
 
                 all_values.append(current_cluster)
                 current_cluster = []
                 continue
+
             a = (re.findall(pattern_b, line))
+
             for element in a:
                 b = ("".join(element)).rstrip("]").lstrip("[").split(",")
                 b = [float(x) for x in b]
                 current_cluster.append(b)
 
-    # to fix problem with first list being empty, needs solution without copying
-    return frames_unix_time[:], frame_times[:], all_values[1:].copy()
+    # to fix problem with first list being empty, needs solution without copying for better performance
+    return frame_unix_time, frame_times, all_values[1:].copy()
 
 
-def get_column(FileInPath, filename, col_name):
+def get_elist_column(filename, col_name):
     """
+    This function is used to extract a specific column from a file in Elist format, based on the exact name 
+    of the column. It takes in three inputs, the file path of the Elist, the name of the file, and the name 
+    of the column that needs to be extracted. It returns the data in the column in a python list format. 
+    The function first reads the first two lines of the file to get the names and units of all columns. 
+    It then iterates through the names of the columns and finds the column with the name that was passed 
+    as input. It then extracts the data in that column and returns it as a numpy array.
+
     From Elist extract a specific column based on the exact name of the column
-    Function returns a list of data in python list format
+    Function returns a numpy array of data in python list format
     col_name = name of the variable from Elist
 
     Example, select column with Energy values:
     selected_column = get_column('path/to/Elist.txt', 'E') 
     """
-    inputFile = open(FileInPath + filename, 'r')
+
+    inputFile = open(filename, 'r')
     lines = inputFile.readlines()
+    inputFile.close()
+
     names = []
     units = []
+
     names.append(lines[0].rstrip().split(';'))
     units.append(lines[1].rstrip().split(';'))
 
@@ -300,586 +327,506 @@ def get_column(FileInPath, filename, col_name):
         else:
             pass
 
-    # print('\n *** From get_column() you are printing parameter {} in units {} \n'.format(str(names[0][col_num]), str(units[0][col_num])))
+    # print(f'From get_column() you are printing parameter {str(names[0][col_num])} in units {str(units[0][col_num])}\n'.)
 
-    column_data = []
+    column_data = np.empty([0])
+
     for line in lines:
-        column_data.append(line.rstrip().split(';')[col_num])
+        column_data = np.append(column_data, line.rstrip().split(';')[col_num])
 
     return column_data
 
 
 def read_elist(filename):
     """
+    *** NOT NECESSARY - USE NUMPY LOADTXT ***
+    *** np.loadtxt(filename, skiprows=2) ***
+    The read_elist function reads an Elist file and returns its data in the form of a list of lists, 
+    where the first list is the header, the second list is the units and the rest of the lists are 
+    the data. The user can then access the header and units by calling 
+    header, units, _ = read_elist('path/to/Elist.txt') or the data by calling 
+    data = read_elist('path/to/Elist.txt')[2].
+
     Access full Elist data including header
 
-    Example, return header and units:
+    Example - return header and units:
     header, units, _ = read_elist('path/to/Elist.txt')
 
     Example, return data only
     data = read_elist('path/to/Elist.txt')[2]
     """
+
     inputFile = open(filename, "r")
     lines = inputFile.readlines()
     inputFile.close()
+
     splitlines = []
+
     for line in lines:
         splitlines.append(list(line.rstrip().split(";")))
     return splitlines[0], splitlines[1], splitlines[2:]
 
 
-def read_elist_make_ext_elist(filename, col_num_pairs_for_ratios, header_txt_new_cols, units_txt_new_cols):
+def read_elist_add_new_parameters(filename, column_number_pairs_for_ratios, header_text_new_columns, units_text_new_columns):
     """
-    # new funkce read_elist to include option to filter events (Lukas 8 Aug 22)
-    Function to read elist (calibrated, output of DPE_CP)
-    it newly calculates RATIOS of pairs of CA PAR
-    and puts them into new COLs
-    output is the same elist with the added new COLs at right (COL = 16+17+...)
-    ---- syntax of input variables ----
-    - filename = elist (output of DPE CP, stored in Files DIR output)
-    - col_num_pairs_for_ratios = e.g. = [4,7,9,7] # E,A,  BordPx,A
-    - header_txt_new_cols = e.g. = ['E/A','BordPx/A']
-    - units_txt_new_cols = e.g. = ['keV/px','a.u.']
+    *** PROBABLY UPDATED IN CARLOS read_elist_filter, check and delete if obsolete ***
+    Lukas 8 August 2022
+    New version of read_elist to calculate new parameters and ratios
+    old name "read_elist_make_ext_elist"
+
+    This function reads an elist file, and calculates new columns which are the ratios of pairs of 
+    CA PAR (columns) specified in the col_num_pairs_for_ratios input. The new columns are added to the right
+    of the original elist, and the new header and units for these new columns are specified in 
+    header_txt_new_cols and units_txt_new_cols inputs. The function returns the elist with the added columns, 
+    where the output is split into three objects: the header, the units, and the data. The function also prints 
+    the number of all clusters processed and the line number of the first and second row.
+
+    How to use:
+    filename = elist_txt_name
+    column_number_pairs_for_ratios = [4,7,9,7]    # Energy, Size, BorderPixel, Size
+    header_text_new_columns = ['E/Size', 'BorderPixel/Size']
+    units_text_new_columns = ['keV/px', 'a.u.']
     """
+
     inputFile = open(filename, "r")
     lines = inputFile.readlines()
-    # -- add new cols
-
-    # --
     inputFile.close()
+
     splitlines = []
 
-    # when there is filter entered:
-    clu_cou_all = 0  # counter of all clusters
-    # clu_cou_ok = 0 # counter of OK clu's
-    # clu_cou_bad = 0 # counter of rejected clu's
-    num_pairs_new_cols = int(len(col_num_pairs_for_ratios)/2)
-    line_num = 0
-    # if new_filter is not None:
+    #cluster_count_all = 0  # counter of all clusters, innitiate if you want to
+
+    number_pairs_new_columns = int(len(column_number_pairs_for_ratios) / 2)
+    line_number = 0
 
     for line in lines:
-        line_num += 1
-        cluster_var = list(line.rstrip().split(";"))
+        line_number += 1
+        cluster_variable = list(line.rstrip().split(";"))
         # for the first heading 2 rows
-        if line_num < 3:
-            if line_num == 1:
-                print('first row = ', line_num)
-                for k in range(num_pairs_new_cols):
-                    cluster_var.append(header_txt_new_cols[k])
-                splitlines.append(cluster_var)
+
+        if line_number <= 2:
+            if line_number == 1:
+                for k in range(number_pairs_new_columns):
+                    cluster_variable.append(header_text_new_columns[k])
+                splitlines.append(cluster_variable)
             else:
-                print('second row = ', line_num)
-                for k in range(num_pairs_new_cols):
-                    cluster_var.append(units_txt_new_cols[k])
-                splitlines.append(cluster_var)
-            # if line_num >= 3 and new_filter is not None:
-            # print('ostatni radky',line_num)
+                for k in range(number_pairs_new_columns):
+                    cluster_variable.append(units_text_new_columns[k])
+                splitlines.append(cluster_variable)
+
         else:
-            cluster_var = [float(i) for i in list(line.rstrip().split(";"))]
-            # print(new_filter.pass_filter(cluster_var))
-            clu_cou_all = clu_cou_all + 1
-            for i in range(num_pairs_new_cols):
-                # new_col_value = 10
-                new_col_value = cluster_var[col_num_pairs_for_ratios[i*2]
-                                            ]/cluster_var[col_num_pairs_for_ratios[(i*2)+1]]
-                cluster_var.append(new_col_value)
-                # --
-            splitlines.append(cluster_var)
-    print('all clusters thru = ', clu_cou_all)
-    # print('OK clusters = ', clu_cou_ok)
-    # print('bad clusters = ', clu_cou_bad)
+            cluster_variable = [float(i) for i in list(line.rstrip().split(";"))]
+            #cluster_count_all += 1
+
+            for i in range(number_pairs_new_columns):
+                new_column_value = cluster_variable[column_number_pairs_for_ratios[i * 2]
+                                            ] / cluster_variable[column_number_pairs_for_ratios[(i * 2) + 1]]
+                cluster_variable.append(new_column_value)
+
+            splitlines.append(cluster_variable)
+
+    # print('Number of all clusters = ', cluster_count_all)
 
     # the full elist with extended col output as single object
     return splitlines[0], splitlines[1], splitlines[2:]
-    # the elist output split into three objects
-    # return splitlines[0], splitlines[1], splitlines[2:]
-
-    # else:
-    # print('No new columns, nothing processed')
-    # splitlines = inputFile
 
 
-def read_elist_filter(filename, col_num_pairs_for_ratios, header_txt_new_cols, units_txt_new_cols, new_filter=None):
+def read_elist_filter_parameters(filename, column_number_pairs_for_ratios, header_text_new_columns, units_text_new_columns, new_filter=None):
     """
-    # new funkce read_elist to include option to filter events (Lukas 8 Aug 22)
-    Function to read elist (calibrated, output of DPE_CP)
-    and applies a filter of clusters according CA PAR
-    arbitrary number e.g.
-    1 filter (H): [100,500],[8]
-    2 filters (H,A): [100,500,10,30],[8,7]
-    and adds to the elist a new col at the end to indicate
-    1 = filter pass
-    0 = filter fail   
-    output is the same elist with the added new col at right (COL = 16)
+    # New read_elist function to include option to filter events (Lukas 8 August 22)
+
+    This function reads an elist file (which is the calibrated output of DPE_CP) and applies a filter 
+    to the clusters based on certain CA PARs (cluster analysis parameters). The function takes in 
+    several arguments:
+
+    filename - name of the elist file,
+
+    column_number_pairs_for_ratios - a list of column numbers of the CA PARs that are used to create 
+    new columns of ratios. For example, [4,7,9,7] would use the values in column 4, 7, 9 and 7 to 
+    calculate the ratios E/A, BordPx/A, etc.
+
+    header_text_new_columns - a list of headers for the new columns of ratios that are created,
+
+    units_text_new_columns - a list of units for the new columns of ratios that are created,
+
+    new_filter - an instance of the Cluster_filter_multiple_parameter class, which is used to filter 
+    the clusters based on certain CA PARs. If no filter is provided, the function will not filter 
+    the clusters and will only add new columns of ratios.
+
+    The function reads the elist file line by line and processes each line accordingly. It first checks 
+    if the line is one of the first two rows (the header and units rows), in which case it adds the new 
+    column headers. For the rest of the lines, it checks if the new_filter is provided, and if it is, 
+    it applies the filter to the cluster variables. If the cluster passes the filter, it adds a value 
+    of 1 in the new column, otherwise it adds a value of 0. It also keeps track of the number of clusters, 
+    the number of clusters that pass the filter, and the number of clusters that fail the filter. 
+    Once all lines have been processed, the function returns the updated elist.
+    
+    A new columns is appended to the Elist:
+    Cluster passed the filter = 1
+    Cluster failed the filter = 0
+
+    Example:
+    One filter for Height parameter - [100,500],[8]
+    Two filters for Height and Size - [100,500,10,30], [8,7]
+
+    The output is the same elist, now with the added new column (column number = 16)
     """
 
     inputFile = open(filename, "r")
     lines = inputFile.readlines()
     inputFile.close()
+
     splitlines = []
 
-    line_num = 0
-    # when there is filter entered:
-    clu_cou_all = 0  # counter of all clusters
-    clu_cou_ok = 0  # counter of OK clu's
-    clu_cou_bad = 0  # counter of rejected clu's
+    line_number = 0
+    
+    # cluster_count_all = 0  # counter of all clusters
+    # cluster_count_ok = 0  # counter of OK clu's
+    # cluster_count_bad = 0  # counter of rejected clu's
+    
     if new_filter is not None:
-
         for line in lines:
-            line_num += 1
-            cluster_var = list(line.rstrip().split(";"))
-            # for the first heading 2 rows
-            if line_num < 3:
-                print('first two rows', line_num)
-                cluster_var.append('Filter')
-                splitlines.append(cluster_var)
-            # for the rest
-            else:
-                # if line_num >= 3 and new_filter is not None:
-                # print('ostatni radky',line_num)
-                cluster_var = [float(i)
-                               for i in list(line.rstrip().split(";"))]
-                # print(new_filter.pass_filter(cluster_var))
-                clu_cou_all = clu_cou_all + 1
-                if new_filter.pass_filter(cluster_var):
-                    # print('Filter ok ', end='') # removes enter
-                    clu_cou_ok = clu_cou_ok + 1
-                    cluster_var.append(1)
-                else:
-                    # print('False B ')
-                    clu_cou_bad = clu_cou_bad + 1
-                    # print('Filter bad ', end='')
-                    cluster_var.append(0)
-                    # print(cluster_var)
-                # print(line_num)
-                splitlines.append(cluster_var)
-        print('all clusters = ', clu_cou_all)
-        print('OK clusters = ', clu_cou_ok)
-        print('bad clusters = ', clu_cou_bad)
+            line_number += 1
+            cluster_variable = list(line.rstrip().split(";"))
 
-        # the full elist with extended col output as single object
+            if line_number <= 2:
+                cluster_variable.append('Applied_filter')
+                splitlines.append(cluster_variable)
+            else:
+                cluster_variable = [float(i)
+                               for i in list(line.rstrip().split(";"))]
+                #cluster_count_all += 1
+
+                if new_filter.pass_filter(cluster_variable):
+                    cluster_count_ok += 1
+                    cluster_variable.append(1)
+                else:
+                    #cluster_count_bad += 1
+                    cluster_variable.append(0)
+
+                splitlines.append(cluster_variable)
+
+        # print('Number of all clusters = ', cluster_count_all)
+        # print('Number of OK clusters = ', cluster_count_ok)
+        # print('Number of bad clusters = ', cluster_count_bad)
+
         return splitlines[0], splitlines[1], splitlines[2:]
-        # the elist output split into three objects
-        # return splitlines[0], splitlines[1], splitlines[2:]
 
     else:
-        print('No filter, nothing processed')
-        # splitlines = inputFile
+        print('No filter was used, there is nothing to be processed')
 
 
-def read_elist_make_ext_filter(filename, col_num_pairs_for_ratios, header_txt_new_cols, units_txt_new_cols, new_filter=None):
+def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_columns, units_text_new_columns, new_filter=None):
     """
-    Carlos, 23aug2022
-    Function to read elist (calibrated, output of DPE_CP)
-    it newly calculates RATIOS of pairs of CA PAR
-    and puts them into new COLs
-    and then applies a filter of clusters according CA PAR incl. the new RATIOS
-    and adds to the elist a new col at the end to indicate
-    1 = filter pass
-    0 = filter fail   
-    output is the same elist with the added new COLs at right (COL = 16+17+...)
-    core/template from Lukas+Andrej, modified Carlos 23aug2022
-    output is the same elist with the added new col at right (COL = 18)
-    ---- syntax of input variables ----
-    - filename = elist (output of DPE CP, stored in Files DIR output)
-    - col_num_pairs_for_ratios = e.g. = [4,7,9,7] # E,A,  BordPx,A
-    - header_txt_new_cols = e.g. = ['E/A','BordPx/A']
-    - units_txt_new_cols = e.g. = ['keV/px','a.u.']
-    - new_filter = e.g. [90,5000,4500,5.E5,0.9,1.7,4,300,30,5000],[8,4,10,7,15]) # H E R A, E/A, 
+    Carlos Granja, 23 August 2022
+    old name "read_elist_make_ext_filter"
+    *** this is probably updated version of read_elist_add_new_parameters, delete the old one if it is the case ***
+
+    This function reads an elist file (output from DPE_CP), calculates ratios of pairs of CA PAR and adds them 
+    as new columns to the elist. Then, it applies a filter to the clusters based on the CA PAR and the new ratios, 
+    and adds a new column indicating whether the cluster passed or failed the filter. The output is the same elist 
+    with the added new columns at the right. The function takes the following inputs:
+
+    filename - path to the elist file
+
+    column_number_pairs_for_ratios - a list of integers representing the column numbers of the CA PAR that will be 
+    used to calculate ratios. The list should contain pairs of integers, where the first integer of each pair is 
+    the numerator and the second integer is the denominator of the ratio.
+
+    header_text_new_columns - a list of strings representing the names of the new columns with the ratios. The length 
+    of this list should be the same as the number of pairs in column_number_pairs_for_ratios.
+
+    units_text_new_columns - a list of strings representing the units of the new columns with the ratios. The length 
+    of this list should be the same as the number of pairs in column_number_pairs_for_ratios.
+
+    new_filter - an object of a class that defines the filter to be applied to the clusters. The class should have 
+    a function pass_filter(cluster_variable) that takes the list of variables of a cluster as input and returns 
+    a Boolean indicating whether the cluster passes or fails the filter. If no filter is desired, set new_filter 
+    to None.
+
+    Cluster passed the filter = 1
+    Cluster failed the filter = 0
+
+    Example:
+    filename = elist (output of DPE CP, stored in Files DIR output)
+    column_number_pairs_for_ratios = [4, 7, 9, 7]  # Energy, Size, BorderPixel, Size
+    header_text_new_columns = ['Energy/Size', 'BorderPixel/Size']
+    units_text_new_columns = ['keV/px', 'a.u.']
+    new_filter = [90, 5000, 4500, 5.E5, 0.9, 1.7, 4, 300, 30, 5000], [8, 4, 10, 7, 15]) # Height Energy Roundness Size, Energy/Size, 
     """
 
-    print('--- read elist ext filt running ---')
     inputFile = open(filename, "r")
     lines = inputFile.readlines()
     inputFile.close()
+
     splitlines = []
 
-    num_pairs_new_cols = int(len(col_num_pairs_for_ratios)/2)
-    line_num = 0
-    # when there is filter entered:
-    clu_cou_all = 0  # counter of all clusters
-    clu_cou_ok = 0  # counter of OK clu's
-    clu_cou_bad = 0  # counter of rejected clu's
-    if new_filter is not None:
+    number_pairs_new_columns = int(len(column_number_pairs_for_ratios) / 2)
 
+    line_number = 0
+
+    # cluster_count_all = 0  # counter of all clusters
+    # cluster_count_ok = 0  # counter of OK clu's
+    # cluster_count_bad = 0  # counter of rejected clu's
+
+    if new_filter is not None:
         for line in lines:
-            line_num += 1
-            cluster_var = list(line.rstrip().split(";"))
-            # for the first heading 2 rows
-            if line_num < 3:
-                if line_num == 1:
-                    print('first row = ', line_num)
-                    # -- the new COLs of RATIOS of CA PARs
-                    for k in range(num_pairs_new_cols):
-                        cluster_var.append(header_txt_new_cols[k])
-                    # -- the new COL of FILTER
-                    cluster_var.append('Filter')
-                    splitlines.append(cluster_var)
+            line_number += 1
+            cluster_variable = list(line.rstrip().split(";"))
+
+            if line_number <= 2:
+                if line_number == 1:
+                    for k in range(number_pairs_new_columns):
+                        cluster_variable.append(header_text_new_columns[k])
+
+                    cluster_variable.append('Applied_filter')
+                    splitlines.append(cluster_variable)
                 else:
-                    print('second row = ', line_num)
-                    # -- the new COLs of RATIOS of CA PARs
-                    for k in range(num_pairs_new_cols):
-                        cluster_var.append(units_txt_new_cols[k])
-                    # -- the new COL of FILTER
-                    cluster_var.append('1 = ok')
-                    splitlines.append(cluster_var)
-                # if line_num >= 3 and new_filter is not None:
-                # print('ostatni radky',line_num)
-                print('first two rows done', line_num)
-                # splitlines.append(cluster_var)
-            # for the rest
+                    for k in range(number_pairs_new_columns):
+                        cluster_variable.append(units_text_new_columns[k])
+
+                    cluster_variable.append('1 = ok')
+                    splitlines.append(cluster_variable)
+
             else:
-                # if line_num >= 3 and new_filter is not None:
-                # print('ostatni radky',line_num)
-                cluster_var = [float(i)
+                cluster_variable = [float(i)
                                for i in list(line.rstrip().split(";"))]
-                # print(new_filter.pass_filter(cluster_var))
-                clu_cou_all = clu_cou_all + 1
-                # -- make and add the new COLs of RATIOS of CA PARs
-                for i in range(num_pairs_new_cols):
-                    # new_col_value = 10
-                    new_col_value = round(
-                        cluster_var[col_num_pairs_for_ratios[i*2]]/cluster_var[col_num_pairs_for_ratios[(i*2)+1]], 3)
-                    cluster_var.append(new_col_value)
-                    # --
-                # -- apply make the filter
-                if new_filter.pass_filter(cluster_var):
-                    # print('Filter ok ', end='') # removes enter
-                    clu_cou_ok = clu_cou_ok + 1
-                    cluster_var.append(1)
+                
+                # cluster_count_all += 1
+
+                for i in range(number_pairs_new_columns):
+                    new_column_value = round(
+                        cluster_variable[column_number_pairs_for_ratios[i * 2]] / cluster_variable[column_number_pairs_for_ratios[(i * 2) + 1]], 3)
+                    
+                    cluster_variable.append(new_column_value)
+
+                if new_filter.pass_filter(cluster_variable):
+                    # cluster_count_ok += 1
+                    cluster_variable.append(1)
                 else:
-                    # print('False B ')
-                    clu_cou_bad = clu_cou_bad + 1
-                    # print('Filter bad ', end='')
-                    cluster_var.append(0)
-                    # print(cluster_var)
-                # print(line_num)
-                splitlines.append(cluster_var)
-        # -- end of adding new COLS and of filtering
-        print('all clusters = ', clu_cou_all)
-        print('OK clusters = ', clu_cou_ok)
-        print('bad clusters = ', clu_cou_bad)
-        # --
-        print('--- read elist ext filt done ---')
-        # the full elist with extended col output as single object
+                    # cluster_count_bad += 1
+                    cluster_variable.append(0)
+
+                splitlines.append(cluster_variable)
+
+        # print('Number of all clusters = ', cluster_count_all)
+        # print('Number of OK clusters = ', cluster_count_ok)
+        # print('Number of bad clusters = ', cluster_count_bad)
+
+        # print('--- read elist ext filt done ---')
+
         return splitlines[0], splitlines[1], splitlines[2:]
-        # the elist output split into three objects
-        # return splitlines[0], splitlines[1], splitlines[2:]
 
     else:
-        print('No filter, nothing processed')
-        # splitlines = inputFile
+        print('No filter was used, there is nothing to be processed')
 
 
 def write_elist(filename_out, header, units, data):
     """
-    *** UNNECESSARY FUNCTION, numpy.loadtxt(skiprows=2) is already possible with classic Elist ***
-    Use this function to re-print input Elist in a form
-    that is readable by numpy.loadtxt(filename, skiprows=2)
+    This function writes a file in a specific Elist format. The function takes in four parameters: filename_out, 
+    header, units, and data. The filename_out is the name of the file to be written. The header and units are lists 
+    of strings that are written as the first two lines in the file. The data parameter is a 2D list, where each row 
+    represents a line in the file, and each element in the row represents a column. The function writes each row of 
+    data as a string, separated by semicolons, and ends each line with a newline character. The function uses the 
+    python built-in open function to open the file in write mode.
     """
     with open(filename_out, 'w') as f:
         f.write(' '.join(map(str, header))+'\n')
         f.write(' '.join(map(str, units))+'\n')
+        
         for row in data:
             s = ';'.join(map(str, row))
             f.write(s+'\n')
 
 
-def create_matrix_filter_tpx3_t3pa(elist_filtered, clog, num_col_filter, num_frames):
-    # def create_matrix_filter(elist_filtered,clog, num_frames, rand):
+def create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_frames):
     """
-    Carlos+Lukas+Andrej, ADV, Prague, 8 Aug 2022
-    Function to create E and ToA sq matrix for 2D plot of det px matrix
-    customized for TPX3 t3pa data, and its DPE_CP clog output with f's of short time e.g. 100 ns
-    inputs:
-    - elist_filtered which is the DPE_CP output elist with the added COL from cluster_filter
-    - clog is the clog calib output of DPE_CP
-    - num_frames = # of f to integrate i.e to add to merged plot from beginning i.e. from f zero
-        in the clog file output of DPE_CP for TPX3 data a f is created every 100 ns
-        for TPX3 t3pa data: Input num_frames is the cluster i.e. event number
-        for raw clog frame data: num_frames is the f #
+    Carlos + Lukas + Andrej, 8 August 2022
+
+    This function creates a filter for a 2D plot of a detector pixel matrix, specifically for TPX3 t3pa data 
+    and its clog output with short time frames (e.g. 100 ns). The function takes in three parameters: 
+    filtered_elist, clog, and number_frames. The filtered_elist is the output of a DPE_CP elist with an added 
+    column from a cluster filter. The clog is the output of a DPE_CP calibration. The number_frames is the number 
+    of frames to integrate, which is either the cluster number (for TPX3 t3pa data) or the frame number (for raw 
+    clog frame data).
+
+    The function creates several matrices: matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, 
+    matrix_energy_bad, and matrix_toa_bad. The function iterates over a list of random numbers and for each 
+    iteration, it retrieves the size of the cluster from the clog, and for each element in the cluster, it 
+    increments the corresponding element (Energy and ToA value) in the matrices. The function also keeps track 
+    of multiplets, which are clusters that have more than one pixel. The function returns the six matrices created.
+
+    Description:
+
+    elist_filtered - the DPE output elist with the added COL from cluster_filter,
+
+    clog - clog output of DPE,
+
+    number_frames - number of frames to integrate, to add to merged plot from the beginning, from frame number zero in the 
+    clog file output of DPE for TPX3 data a frame is created every 100 ns. For TPX3 t3pa data - input number_frames 
+    is the cluster - event number. For raw clog frame data - number_frames is the frame number.
     """
 
-    # if rand == 'True':
-    #    rand_nums = sorted(random.sample(range(0, len(clog[:])), len(num_frames)))
-    # else:
-    rand_nums = list(range(0, num_frames))       # list(range(0,num_frames))
-    # the sq matrix for all clusters
-    matrix_E_all = np.zeros([256, 256])
-    # the sq matrix for the filter OK clusters
-    matrix_ToA_all = np.zeros([256, 256])
-    matrix_E_ok = np.zeros([256, 256])
-    matrix_ToA_ok = np.zeros([256, 256])
-    # the sq matrix for the filter REJECTED = BAD clusters
-    matrix_E_bad = np.zeros([256, 256])
-    matrix_ToA_bad = np.zeros([256, 256])
-    # for cyclus cluster by cluster
+    random_numbers = list(range(0, number_frames))
+
+    matrix_energy_all = np.zeros([256, 256])
+    matrix_toa_all = np.zeros([256, 256])
+
+    matrix_energy_ok = np.zeros([256, 256])
+    matrix_toa_ok = np.zeros([256, 256])
+
+    matrix_energy_bad = np.zeros([256, 256])
+    matrix_toa_bad = np.zeros([256, 256])
+
     jump = 0
-    f_jump = 0
-    multiplet_num = 0  # to keep record of multiplet occurrence
-    for idx, elist_row in enumerate(rand_nums):
-        # for elist_row in enumerate(rand_nums):
+    frame_jump = 0
+    multiplet_number = 0  # to keep record of multiplet occurrence
 
-        # counter for the drawing of clusters in clog
-        # f_num = elist_row - multiplet_num
-        f_num = elist_row
-        # cluster area from clog
-        clu_A_clog = len(clog[f_num][:])
-        # cluster area from elist
-        clu_A_elist = elist_filtered[2][elist_row][7]
-        '''
-        print('elist_row = ',elist_row,  ', f_num = ',f_num,', filter = ',elist_filtered[2][elist_row][15])
-        print(', clu_A_elist = ',clu_A_elist, ', clu_A_clog = ',clu_A_clog)
-        '''
-        # ----------------------------
-        # for all clusters:
-        # ----------------------------
-        for j in range(clu_A_clog):
-            # for j in len(clog[elist_row][:]):
-            x = int(clog[f_num][j][0])
-            y = int(clog[f_num][j][1])
-            matrix_E_all[x, y] = matrix_E_all[x, y] + clog[f_num][j][2]
-            matrix_ToA_all[x, y] = clog[f_num][j][3]
+    for idx, var in enumerate(random_numbers):
+        cluster_size_clog = len(clog[var][:])
+        cluster_size_elist = filtered_elist[2][var][7]
 
-        # ----------------------------
-        # for clusters with OK filter:
-        # ----------------------------
-        if elist_filtered[2][elist_row][num_col_filter] == 1:
-            # print('sq matrix filter ok')
-            # -- to take into account multiplets
-            # these can be resolved in elist, but not in clog
-            '''
-            if elist_row < num_frames and elist_filtered[2][elist_row][1] == elist_filtered[2][elist_row+1][1]:
-                jump = jump + 1 
-                multiplet_num = multiplet_num + 1
-            '''
-            # for each cluster record in clog:
-            # f_jump = jump
-            # print('filter ok, jump = ',jump)
-            for j in range(clu_A_clog):
-                # for j in len(clog[elist_row][:]):
+        for j in range(cluster_size_clog):
+            x, y = int(clog[var][j][0]), int(clog[var][j][1])
 
-                # print(elist_row,j)
-                # print(clog[elist_row][j])
-                # print(elist_row,j,clog[elist_row][j][0],clog[elist_row][j][1])
-                x = int(clog[f_num][j][0])
-                y = int(clog[f_num][j][1])
-                # x = clog[elist_row][j][0]
-                # y = clog[elist_row][j][1]
-                matrix_E_ok[x, y] = matrix_E_ok[x, y] + clog[f_num][j][2]
-                matrix_ToA_ok[x, y] = clog[f_num][j][3]
-                '''
-                toa = []
-                for i in range(len(clog[elist_row][:])):
-                    toa.append(clog[val][i][3])                
-                else:
-                    pass
-                if max(toa) != 0:
-                    matrix_ToA_ok[x,y] = (clog[val][j][3]) / max(toa)
-                else:
-                    matrix_ToA_ok[x,y] = clog[val][j][3]
-                '''
-            # ----------------------------------------------------
-            # for BAD clusters i.e. which did not pass the filter:
-            # ----------------------------------------------------
+            matrix_energy_all[x, y] += clog[var][j][2]
+            matrix_toa_all[x, y] = clog[var][j][3]
+
+        if filtered_elist[2][var][number_column_filter] == 1:
+            # to take into account multiplets, these can be resolved in elist, but not in clog
+
+            for j in range(cluster_size_clog):
+                x, y = int(clog[var][j][0]), int(clog[var][j][1])
+
+                matrix_energy_ok[x, y] += clog[var][j][2]
+                matrix_toa_ok[x, y] = clog[var][j][3]
+
         else:
-            if jump < 1:
-                # jump = 0
-                # print('sq matrix filter bad')
-                # print('filter BAD, jump = ',jump)
-                '''
-                if elist_row < num_frames and elist_filtered[2][elist_row][1] == elist_filtered[2][elist_row+1][1]:
-                    jump = jump + 1 
-                    multiplet_num = multiplet_num + 1
-                '''
+            if jump == 1:
+                for j in range(cluster_size_clog):
+                    x, y = int(clog[var][j][0]), int(clog[var][j][1])
 
-                for j in range(clu_A_clog):
-                    x = int(clog[f_num][j][0])
-                    y = int(clog[f_num][j][1])
-                    matrix_E_bad[x, y] = matrix_E_bad[x, y] + clog[f_num][j][2]
-                    matrix_ToA_bad[x, y] = clog[f_num][j][3]
+                    matrix_energy_bad[x, y] += matrix_energy_bad[x, y]
+                    matrix_toa_bad[x, y] = clog[var][j][3]
 
-                    '''
-                    toa = []
-                    for i in range(len(clog[val][:])):
-                        toa.append(clog[val][i][3])                
-                        matrix_E_bad[x,y] = matrix_E_bad[x,y] + clog[val][j][2]
-                    else:
-                        pass
-                    if max(toa) != 0:
-                        matrix_ToA_bad[x,y] = (clog[val][j][3]) / max(toa)
-                    else:
-                        matrix_ToA_bad[x,y] = clog[val][j][3]                        
-                    
-        if elist_filtered[2][elist_row][1] < elist_filtered[2][elist_row+1][1]:
-            jump = 0
-                    '''
-
-    return matrix_E_all, matrix_ToA_all, matrix_E_ok, matrix_ToA_ok, matrix_E_bad, matrix_ToA_bad
+    return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad
 
 
-def create_matrix_filter_tpx_f(elist_filtered, clog, num_col_filter, num_particles):
-    # def create_matrix_filter(elist_filtered,clog, num_frames, rand):
+def create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
     """
-    Carlos+Lukas+Andrej, ADV, Prague, 8 Aug 2022
-    Function to create E and ToA sq matrix for 2D plot of det px matrix
-    customized for TPX frame data, and its clog output with f
-    inputs:
-    - elist_filtered is the DPE_CP output elist with additional col from filter
-    - clog is the clog calib output of DPE_CP
-    - num_particles = # of events to integrate i.e to add to merged plot from beginning i.e. from f zero
-        in the clog file output of DPE_CP for TPX data frames
-        for TPX frame data ToT: Input num_particles is the cluster i.e. event number
-        for raw clog frame data: num_particles is the f #
+    Carlos + Lukas + Andrej, 8 August 2022
+    old name: create_matrix_filter_tpx_f
+
+    This function creates a filter for a 2D plot of a detector pixel matrix, specifically for TPX frame data and its 
+    clog output with frames. The function takes in three parameters: filtered_elist, clog, and number_particles. 
+    The filtered_elist is the output of a DPE_CP elist with an added column from a filter. The clog is the output 
+    of a DPE_CP calibration. The number_particles is the number of events to integrate, which is either the cluster 
+    number (for TPX frame data) or the frame number (for raw clog frame data).
+
+    The function creates several matrices: matrix_E_all, matrix_E_ok, and matrix_E_bad. The function iterates over 
+    a list of random numbers and for each iteration, it retrieves the size of the cluster from the clog, and for each 
+    element in the cluster, it increments the corresponding element in the matrices. The function also keeps track 
+    of multiplets, which are clusters that have more than one pixel fired. The function returns the three matrices 
+    created.
+
+    Example:
+
+    filtered_elist -  the DPE output elist with additional column from filter,
+
+    clog - the clog output of DPE,
+
+    number_particles - number of events to integrate, to add to merged plot from beginning, from frame number zero 
+    in the clog file output of DPE for TPX data frames. For TPX frame data ToT - input number_particles is the 
+    cluster i.e. event number. For raw clog frame data - number_particles is the frame number.
     """
-    print('--- crea_matr_filt_tpx_f running ---')
-    # if rand == 'True':
-    #    rand_nums = sorted(random.sample(range(0, len(clog[:])), len(num_frames)))
-    # else:
-    rand_nums = list(range(0, num_particles))       # list(range(0,num_frames))
-    # the sq matrix for all clusters
-    matrix_E_all = np.zeros([256, 256])
-    # matrix_ToA_all = np.zeros([256,256])    # the sq matrix for the filter OK clusters
-    matrix_E_ok = np.zeros([256, 256])
-    # matrix_ToA_ok = np.zeros([256,256])
-    # the sq matrix for the filter REJECTED = BAD clusters
-    matrix_E_bad = np.zeros([256, 256])
-    # matrix_ToA_bad = np.zeros([256,256])
-    # int counters of clu's according filter
-    c_all = 0
-    c_ok = 0
-    c_bad = 0
-    # for cyclus cluster by cluster
+
+    random_numbers = list(range(0, number_particles))
+
+    matrix_all = np.zeros([256, 256])
+    matrix_ok = np.zeros([256, 256])
+    matrix_bad = np.zeros([256, 256])
+
+    # cluster_count_all = 0
+    # cluster_count_ok = 0
+    # cluster_count_bad = 0
+
     jump = 0
     # f_jump = 0
     # multiplet_num = 0 # to keep record of multiplet occurrence
-    for idx, elist_row in enumerate(rand_nums):
-        # for elist_row in enumerate(rand_nums):
 
-        # counter for the drawing of clusters in clog
-        # f_num = elist_row - multiplet_num
-        f_num = elist_row
-        # cluster area from clog
-        clu_A_clog = len(clog[f_num][:])
-        # cluster area from elist
-        # clu_A_elist = elist_filtered[2][elist_row][7]
+    for idx, var in enumerate(random_numbers):
+        cluster_size_clog = len(clog[var][:])
+        
+        # cluster_count_all += 1
 
-        # print('elist_row = ',elist_row,  ', f_num = ',f_num,', filter = ',elist_filtered[2][elist_row][15])
-        # print(', clu_A_elist = ',clu_A_elist, ', clu_A_clog = ',clu_A_clog)
-        c_all = c_all + 1
+        for j in range(cluster_size_clog):
+            x, y = int(clog[var][j][0]), int(clog[var][j][1])
+            matrix_all[x, y] += clog[var][j][2]
 
-        # print('<< ALL clusters >>')
-        # ----------------------------
-        # for all clusters:
-        # ----------------------------
-        for j in range(clu_A_clog):
-            # for j in len(clog[elist_row][:]):
-            # print('all clu, clu px # = ',j)
-            x = int(clog[f_num][j][0])
-            y = int(clog[f_num][j][1])
-            matrix_E_all[x, y] = matrix_E_all[x, y] + clog[f_num][j][2]
-            # matrix_ToA_all[x,y] = clog[f_num][j][3]
+        if filtered_elist[2][var][number_column_filter] == 1:
+            # cluster_count_ok += 1
 
-        # ----------------------------
-        # for clusters with OK filter:
-        # ----------------------------
-        if elist_filtered[2][elist_row][num_col_filter] == 1:
-            # print('<< sq matrix filter ok >>')
-            # -- to take into account multiplets
-            # these can be resolved in elist, but not in clog
-            '''
-            if elist_row < num_particles and elist_filtered[2][elist_row][1] == elist_filtered[2][elist_row+1][1]:
-                jump = jump + 1 
-                multiplet_num = multiplet_num + 1
-            '''
-            # for each cluster record in clog:
-            # f_jump = jump
-            # print('filter ok, jump = ',jump)
-            c_ok = c_ok + 1
+            for j in range(cluster_size_clog):
+                x, y = int(clog[var][j][0]), int(clog[var][j][1])
+                matrix_ok[x, y] += clog[var][j][2]
 
-            for j in range(clu_A_clog):
-                # for j in len(clog[elist_row][:]):
-
-                # print('OK clu, clu px # = ',j)
-                # print(elist_row,j)
-                # print(clog[elist_row][j])
-                # print(elist_row,j,clog[elist_row][j][0],clog[elist_row][j][1])
-                x = int(clog[f_num][j][0])
-                y = int(clog[f_num][j][1])
-                # x = clog[elist_row][j][0]
-                # y = clog[elist_row][j][1]
-                matrix_E_ok[x, y] = matrix_E_ok[x, y] + clog[f_num][j][2]
-                # matrix_ToA_ok[x,y] = clog[f_num][j][3]
-                '''
-                toa = []
-                for i in range(len(clog[elist_row][:])):
-                    toa.append(clog[val][i][3])                
-                else:
-                    pass
-                if max(toa) != 0:
-                    matrix_ToA_ok[x,y] = (clog[val][j][3]) / max(toa)
-                else:
-                    matrix_ToA_ok[x,y] = clog[val][j][3]
-                '''
-            # ----------------------------------------------------
-            # for BAD clusters i.e. which did not pass the filter:
-            # ----------------------------------------------------
         else:
             if jump < 1:
-                # jump = 0
-                # print('sq matrix filter bad')
-                # print('filter BAD, jump = ',jump)
-                c_bad = c_bad + 1
-                '''
-                if elist_row < num_particles and elist_filtered[2][elist_row][1] == elist_filtered[2][elist_row+1][1]:
-                    jump = jump + 1 
-                    multiplet_num = multiplet_num + 1
-                '''
+                # cluster_count_bad += 1
 
-                for j in range(clu_A_clog):
-                    # print('BAD clu, clu px # = ',j)
-                    x = int(clog[f_num][j][0])
-                    y = int(clog[f_num][j][1])
-                    matrix_E_bad[x, y] = matrix_E_bad[x, y] + clog[f_num][j][2]
-                    # matrix_ToA_bad[x,y] = clog[f_num][j][3]
+                for j in range(cluster_size_clog):
+                    x, y = int(clog[var][j][0]), int(clog[var][j][1])
+                    matrix_bad[x, y] += clog[var][j][2]
 
-    print('all clu = ', c_all)
-    print('all ok = ', c_ok)
-    print('all bad = ', c_bad)
-    # --
-    print('--- crea_matr_filt_tpx_f done ---')
-    # return matrix_E_all, matrix_E_ok, matrix_E_bad
-    return matrix_E_all, matrix_E_ok, matrix_E_bad, c_all, c_ok, c_bad
+
+    # print('all clu = ', cluster_count_all)
+    # print('all ok = ', cluster_count_ok)
+    # print('all bad = ', cluster_count_bad)
+
+    # return matrix_all, matrix_ok, matrix_bad, cluster_count_all, cluster_count_ok, cluster_count_bad
+
+    return matrix_all, matrix_ok, matrix_bad
 
 
 def calibrate_frame(a_path, b_path, c_path, t_path, matrix):
     """
-    *** Rewritten from Carlos's MATLAB script ***
+    *** REWRITEN FROM CARLOS' MATLAB SCRIPT ***
 
-    Function that recalculated uncalibrated ToT matrix to Energy
-    using input calibration matrices (their names or full path)
+    This function calibrates an uncalibrated matrix to energy using input calibration matrices. The function takes in 
+    five parameters: a_path, b_path, c_path, t_path and matrix for the calibration. The a_path, b_path, c_path and 
+    t_path are the names or full paths of the respective calibration matrices. The matrix is the uncalibrated input.
+
+    The function loads the calibration matrices from the provided paths using the numpy np.loadtxt(). It then creates 
+    a new matrix called tot, which is the calibrated energy matrix. It iterates over the elements of the input matrix, 
+    and for each element, if the value of matrix[i, j] > 0.8, it uses the calibration matrices to recalculate the 
+    corresponding element in the matrix. Otherwise, it sets the corresponding element of the tot matrix to 0. It then 
+    returns the tot matrix.
     """
+
     a = np.loadtxt(a_path)
     b = np.loadtxt(b_path)
     c = np.loadtxt(c_path)
     t = np.loadtxt(t_path)
 
     tot = np.zeros([256, 256])
+
     for i in range(256):
         for j in range(256):
             if matrix[i, j] > 0.8:
                 tot[i, j] = (a[i, j] * t[i, j] + matrix[i, j] + np.abs(np.sqrt((a[i, j] *
-                             t[i, j] + b[i, j] - matrix[i, j])**2 + 4 * a[i, j] * c[i, j]))) / (2 * a[i, j])
+                             t[i, j] + b[i, j] - matrix[i, j]) ** 2 + 4 * a[i, j] * c[i, j]))) / (2 * a[i, j])
             else:
                 tot[i, j] = 0
 
     return tot
 
 
-def print_fig_E(matrix, vmax, title, OutputPath, OutputName):
+def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
+    """
+    Old name: print_fig_E
 
-    # Changing colormap to start at transparent zero
-    ncolors = 256
+    Function to print a figure of deposited energy in logarithmic colorbar scale.
+    """
 
     mydpi = 300
     tickfnt = 14
@@ -904,8 +851,8 @@ def print_fig_E(matrix, vmax, title, OutputPath, OutputName):
     cbar.ax.tick_params(labelsize=tickfnt)
     # plt.clim(vmin,vmax) - set your own range using vmin, vmax
     plt.clim(1, vmax)
-    plt.xlabel('X position [px]', fontsize=tickfnt)
-    plt.ylabel('Y position [px]', fontsize=tickfnt)
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
     plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.tick_params(axis='x', labelsize=tickfnt)
@@ -916,7 +863,13 @@ def print_fig_E(matrix, vmax, title, OutputPath, OutputName):
     np.savetxt(OutputPath + OutputName + '.txt', matrix)
 
 
-def print_fig_ToA(matrix, vmax, title, OutputPath, OutputName):
+def print_figure_toa(matrix, vmax, title, OutputPath, OutputName):
+    """
+    Old name: print_fig_ToA
+
+    Function to print a figure of ToA values in linear scale.
+    """
+    
     tickfnt = 14
     mydpi = 300
 
@@ -931,18 +884,16 @@ def print_fig_ToA(matrix, vmax, title, OutputPath, OutputName):
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
     # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot')
     # If the orientation of matrix doesnt fit, use this instead
-    # cmap='modified_hot' 'viridis'
     plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
-                origin='lower', cmap='viridis')
+                origin='lower', cmap='modified_hot')    # cmap='modified_hot' 'viridis'
     plt.gca().xaxis.tick_bottom()
     cbar = plt.colorbar(label='ToA [ns]', shrink=0.8, aspect=20*0.8)
     cbar.set_label(label='ToA [ns]', size=tickfnt,
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
-    # plt.clim(vmin,vmax) - set your own range using vmin, vmax
-    plt.clim(1, vmax)
-    plt.xlabel('X position [px]', fontsize=tickfnt)
-    plt.ylabel('Y position [px]', fontsize=tickfnt)
+    plt.clim(0, vmax)
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
     plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.tick_params(axis='x', labelsize=tickfnt)
@@ -955,88 +906,130 @@ def print_fig_ToA(matrix, vmax, title, OutputPath, OutputName):
 
 def parameter_filter(data_column, min_value, max_value):
     """
-    Find out which elements of column data passed filter
-    Use passed filter index number to select cluster number from clog file 
+
+    This function is used to filter data based on a specific column's value. The function takes in three parameters: 
+    data_column, min_value, and max_value. The data_column parameter is a list of values for a specific column of 
+    data, min_value is the minimum acceptable value for the column's data, and max_value is the maximum acceptable 
+    value for the column's data.
+
+    The function first creates two empty lists passed and bad, which will be used to store the line numbers of the data 
+    that pass the filter and those that don't pass the filter, respectively. Then it iterates over the data_column 
+    and compares each value to the min_value and max_value. If the value is greater than or equal to min_value and 
+    less than or equal to max_value, the function appends the index of that value to the passed list. If the value 
+    is not within the acceptable range, the function appends the index of that value to the bad list. It then returns 
+    the passed and bad lists.
+
+    Example: 
+    
     For data_column use function get_column(filename, col_name)
-    Example: parameter_filter(get_column('Elist.txt', 'E'), 1, 1E3)
+
+    parameter_filter(get_column('Elist.txt', 'E'), 1, 1E3)
     """
+
     passed = []
     bad = []
-    print(len(data_column))
+
     for idx, val in enumerate(data_column):
         if float(val) >= min_value and float(val) <= max_value:
-            passed.append(int(idx))
+            passed.append(idx)
         else:
-            bad.append(int(idx))
+            bad.append(idx)
 
     return passed, bad
 
 
-def create_matrix(data, num_frames, rand):
+def create_matrix_tpx3_old(data, number_frames, random):
     """
-    Function to create E and ToA sq matrix for 2D plot of det px matrix
-    - data is the clog calib output of DPE_CP
-    - num_frames = # of f to integrate i.e to add to merged plot from beginning i.e. from f zero
-        in the clog file output of DPE_CP for TPX3 data a f is created every 100 ns
-        for TPX3 t3pa data: Input num_frames is the cluster i.e. event number
-        for raw clog frame data: num_frames is the f #
-    - rand = determines whether random numbers are chosen or not
+    Old name: create_matrix
+
+    This function creates a 2D plot of a detector pixel matrix using the data input, and a number of frames to 
+    integrate. The function takes three parameters: data, number_frames, and random. The data parameter is the clog 
+    calibration output of DPE_CP, number_frames is the number of frames to integrate from the beginning, and random 
+    is a string that determines whether or not random numbers are chosen.
+
+    The function first creates a list of random numbers, either by using the random.sample() function or by creating 
+    a range of numbers based on the number_frames parameter. It then creates two matrices, matrix_energy and 
+    matrix_toa, that are initially filled with zeroes.
+
+    The function then iterates over the random_numbers list, and for each iteration, it retrieves the size of the 
+    cluster from the data, and for each element in the cluster, it increments the corresponding element in the 
+    matrices. The function also keeps track of multiplets, which are clusters that have more than one pixel fired. 
+    The function returns the two matrices created.
+
+    The matrix_energy is the sum of energies in each pixel, and matrix_toa is the ratio of ToA of each pixel to the 
+    maximum ToA in the cluster.
+
+    Description:
+
+    data - the clog output of DPE,
+
+    number_frames - number of frames to integrate, to add to merged plot from beginning, from frame number zero in 
+    the clog file output of DPE. For TPX3 data a frame is created every 100 ns. For TPX3 t3pa data - input 
+    number_frames is the cluster - event number. For raw clog frame data - number_frames is the frame number.
+
+    random - determines whether random frames are chosen or not.
     """
 
-    if rand == 'True':
-        rand_nums = sorted(random.sample(
-            range(0, len(data[:])), len(num_frames)))
+    if random == 'True':
+        random_numbers = sorted(random.sample(
+            range(0, len(data[:])), len(number_frames)))
     else:
-        # list(range(0,num_frames))
-        rand_nums = list(range(0, num_frames))
+        random_numbers = list(range(0, number_frames))
 
-    matrix_E = np.zeros([256, 256])
-    matrix_ToA = np.zeros([256, 256])
+    matrix_energy = np.zeros([256, 256])
+    matrix_toa = np.zeros([256, 256])
 
-    for idx, val in enumerate(rand_nums):
+    for idx, val in enumerate(random_numbers):
         for j in range(len(data[val][:])):
-            x = int(data[val][j][0])
-            y = int(data[val][j][1])
+            x, y = int(data[val][j][0]), int(data[val][j][1])
+
             toa = []
+            
             for i in range(len(data[val][:])):
                 toa.append(data[val][i][3])
-
-                matrix_E[x, y] = matrix_E[x, y] + data[val][j][2]
+                matrix_energy[x, y] += data[val][j][2]
             else:
                 pass
+
             if max(toa) != 0:
-                matrix_ToA[x, y] = (data[val][j][3]) / max(toa)
+                matrix_toa[x, y] = (data[val][j][3]) / max(toa)
             else:
-                matrix_ToA[x, y] = data[val][j][3]
+                matrix_toa[x, y] = data[val][j][3]
 
-    return matrix_E, matrix_ToA
+    return matrix_energy, matrix_toa
 
 
-def plot_single_cluster_ToT(output_path, clog_path, frame_number):
-    clog = read_clog(clog_path)[2]
+def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, OutputPath, OutputName):
+    """
+    Old name: plot_single_cluster_ToT
+    
+    
+    """
+
     tickfnt = 14
     margin = 5
+
+    clog = read_clog(clog_path)[2]
     matrix = np.zeros([256, 256])
 
-    i = 0
     x = []
     y = []
+
     for i in range(len(clog[frame_number][:])):
         x.append(clog[frame_number][i][0])
         y.append(clog[frame_number][i][1])
 
-    i = 0
     for i in range(len(clog[frame_number][:])):
         matrix[int(x[i]), int(y[i])] += clog[frame_number][i][2]
 
-    if (max(x)-min(x)) < (max(y)-min(y)):
-        diff_x = np.abs((max(x)-min(x))-(max(y)-min(y)))
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
     else:
-        diff_x = 0
-    if (max(y)-min(y)) < (max(x)-min(x)):
-        diff_y = np.abs((max(y)-min(y))-(max(x)-min(x)))
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
     else:
-        diff_y = 0
+        difference_position_y = 0
 
     plt.close()
     plt.cla()
@@ -1048,48 +1041,52 @@ def plot_single_cluster_ToT(output_path, clog_path, frame_number):
     plt.matshow(np.flip(np.rot90(
         matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
-    # plt.clim(vmin,vmax) - set your own range using vmin, vmax
-    plt.clim(1, 1E3)
+    plt.clim(1, vmax)
     cbar = plt.colorbar(label='Energy [keV]', shrink=0.8, aspect=20*0.8)
     cbar.set_label(label='Energy [keV]', size=tickfnt,
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
-    plt.title(label='ToT Cluster #'+str(frame_number), fontsize=tickfnt)
-    plt.xlim([min(x)-diff_x/2-margin, max(x)+diff_x/2+margin])
-    plt.ylim([min(y)-diff_y/2-margin, max(y)+diff_y/2+margin])
-    plt.xlabel('X position [px]', fontsize=tickfnt)
-    plt.ylabel('Y position [px]', fontsize=tickfnt)
-    plt.savefig(output_path + '/ToT_cluster_' + str(frame_number) + '.png',
+    plt.title(label=title, fontsize=tickfnt+4)
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(output_path + '/ToT_cluster_' +
+    np.savetxt(OutputPath + OutputName + '_' +
                str(frame_number) + '.txt', matrix)
 
 
-def plot_single_cluster_ToA(output_path, clog_path, frame_number):
-    clog = read_clog(clog_path)[2]
+def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, OutputPath, OutputName):
+    """
+    Old name: plot_single_cluster_ToA
+    
+    For Timepix3 and Timepix2 detectors.
+    """
     tickfnt = 14
     margin = 5
+
+    clog = read_clog(clog_path)[2]
     matrix = np.zeros([256, 256])
 
-    i = 0
     x = []
     y = []
+
     for i in range(len(clog[frame_number][:])):
         x.append(clog[frame_number][i][0])
         y.append(clog[frame_number][i][1])
 
-    i = 0
     for i in range(len(clog[frame_number][:])):
-        matrix[int(x[i]), int(y[i])] += clog[frame_number][i][3]
+        matrix[int(x[i]), int(y[i])] = clog[frame_number][i][3]
 
-    if (max(x)-min(x)) < (max(y)-min(y)):
-        diff_x = np.abs((max(x)-min(x))-(max(y)-min(y)))
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
     else:
-        diff_x = 0
-    if (max(y)-min(y)) < (max(x)-min(x)):
-        diff_y = np.abs((max(y)-min(y))-(max(x)-min(x)))
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
     else:
-        diff_y = 0
+        difference_position_y = 0
 
     plt.close()
     plt.cla()
@@ -1101,64 +1098,52 @@ def plot_single_cluster_ToA(output_path, clog_path, frame_number):
     plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
                 origin='lower', cmap='modified_hot')
     plt.gca().xaxis.tick_bottom()
-    # plt.clim(vmin,vmax) - set your own range using vmin, vmax
-    plt.clim(0, None)
+    plt.clim(0, vmax)
     cbar = plt.colorbar(label='ToA [ns]', shrink=0.8, aspect=20*0.8)
     cbar.set_label(label='ToA [ns]', size=tickfnt,
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
-    plt.title(label='ToA Cluster #'+str(frame_number), fontsize=tickfnt)
-    plt.xlim([min(x)-diff_x/2-margin, max(x)+diff_x/2+margin])
-    plt.ylim([min(y)-diff_y/2-margin, max(y)+diff_y/2+margin])
-    plt.xlabel('X position [px]', fontsize=tickfnt)
-    plt.ylabel('Y position [px]', fontsize=tickfnt)
-    plt.savefig(output_path + '/ToA_cluster_' + str(frame_number) + '.png',
+    plt.title(label=title, fontsize=tickfnt+4)
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(output_path + '/ToA_cluster_' +
+    np.savetxt(OutputPath + OutputName + '_' +
                str(frame_number) + '.txt', matrix)
 
 
-def plot_single_cluster_ToA_gaas(output_path, clog_path, frame_number, indicator, vmax):
-    clog = read_clog(clog_path)[2]
+def print_figure_single_cluster_toa_tpx(clog_path, frame_number, vmax, title, OutputPath, OutputName):
+    """
+    Old name: plot_single_cluster_ToA
+    
+    For Timepix detectors.
+    """
     tickfnt = 14
     margin = 5
+
+    clog = read_clog(clog_path)[2]
     matrix = np.zeros([256, 256])
 
-    i = 0
     x = []
     y = []
+
     for i in range(len(clog[frame_number][:])):
         x.append(clog[frame_number][i][0])
         y.append(clog[frame_number][i][1])
 
-    i = 0
     for i in range(len(clog[frame_number][:])):
-        matrix[int(x[i]), int(y[i])] += clog[frame_number][i][3]
+        matrix[int(x[i]), int(y[i])] = clog[frame_number][i][2]
 
-    if indicator == True:
-        i = 0
-        x_add = []
-        y_add = []
-        for i in range(len(clog[frame_number+1][:])):
-            x_add.append(clog[frame_number][i][0])
-            y_add.append(clog[frame_number][i][1])
-
-        i = 0
-        for i in range(len(clog[frame_number+1][:])):
-            matrix[int(x_add[i]), int(y_add[i])] += clog[frame_number+1][i][3]
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
     else:
-        pass
-
-    if (max(x)-min(x)) < (max(y)-min(y)):
-        diff_x = np.abs((max(x)-min(x))-(max(y)-min(y)))
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
     else:
-        diff_x = 0
-    if (max(y)-min(y)) < (max(x)-min(x)):
-        diff_y = np.abs((max(y)-min(y))-(max(x)-min(x)))
-    else:
-        diff_y = 0
-
-    # cmap = matplotlib.cm.get_cmap('modified_hot', 5)
+        difference_position_y = 0
 
     plt.close()
     plt.cla()
@@ -1167,28 +1152,98 @@ def plot_single_cluster_ToA_gaas(output_path, clog_path, frame_number, indicator
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
     # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
-    # 'modified_hot'
     plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
                 origin='lower', cmap='modified_hot')
     plt.gca().xaxis.tick_bottom()
-    # plt.clim(vmin,vmax) - set your own range using vmin, vmax
+    plt.clim(0, vmax)
+    cbar = plt.colorbar(label='ToA [ns]', shrink=0.8, aspect=20*0.8)
+    cbar.set_label(label='ToA [ns]', size=tickfnt,
+                   weight='regular')   # format="%.1E"
+    cbar.ax.tick_params(labelsize=tickfnt)
+    plt.title(label=title, fontsize=tickfnt+4)
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
+                dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    np.savetxt(OutputPath + OutputName + '_' +
+               str(frame_number) + '.txt', matrix)
+
+
+def plot_single_cluster_toa_gaas(OutputPath, clog_path, frame_number, indicator, vmax):
+    """
+    This is a plot function that I used for Elitech 2023 school article, it is not really published.
+    """
+    tickfnt = 14
+    margin = 5
+
+    clog = read_clog(clog_path)[2]
+    matrix = np.zeros([256, 256])
+
+    x = []
+    y = []
+
+    for i in range(len(clog[frame_number][:])):
+        x.append(clog[frame_number][i][0])
+        y.append(clog[frame_number][i][1])
+
+    for i in range(len(clog[frame_number][:])):
+        matrix[int(x[i]), int(y[i])] = clog[frame_number][i][3]
+
+    if indicator == True:
+        x_add = []
+        y_add = []
+
+        for i in range(len(clog[frame_number + 1][:])):
+            x_add.append(clog[frame_number][i][0])
+            y_add.append(clog[frame_number][i][1])
+
+        for i in range(len(clog[frame_number + 1][:])):
+            matrix[int(x_add[i]), int(y_add[i])] = clog[frame_number + 1][i][3]
+    else:
+        pass
+
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+    else:
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+    else:
+        difference_position_y = 0
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    plt.subplot()
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
+    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # If the orientation of matrix doesnt fit, use this instead
+    plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
+                origin='lower', cmap='modified_hot')
+    plt.gca().xaxis.tick_bottom()
     plt.clim(0, vmax)
     cbar = plt.colorbar(label='ToA [ns]', shrink=0.8, aspect=20*0.8)
     cbar.set_label(label='ToA [ns]', size=tickfnt,
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
     plt.title(label='ToA Cluster #'+str(frame_number), fontsize=tickfnt)
-    plt.xlim([min(x)-diff_x/2-margin, max(x)+diff_x/2+margin])
-    plt.ylim([min(y)-diff_y/2-margin, max(y)+diff_y/2+margin])
-    plt.xlabel('X position [px]', fontsize=tickfnt)
-    plt.ylabel('Y position [px]', fontsize=tickfnt)
-    plt.savefig(output_path + '/ToA_cluster_' + str(frame_number) + '.png',
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.savefig(OutputPath + '/ToA_cluster_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(output_path + '/ToA_cluster_' +
+    np.savetxt(OutputPath + '/ToA_cluster_' +
                str(frame_number) + '.txt', matrix)
 
 
 def gaas_core_halo_study(FileInPath, FileInName, FileOutPath, FileOutName, angle, max_toa_diff, num_of_frames):
+    """
+    This is a plot function that I used for Elitech 2023 school article, it is not really published.
+    """
+
     all_unix_times = read_clog(FileInPath + FileInName)[0]
     all_frame_times = read_clog(FileInPath + FileInName)[1]
     all_data = read_clog(FileInPath + FileInName)[2]
@@ -1199,7 +1254,7 @@ def gaas_core_halo_study(FileInPath, FileInName, FileOutPath, FileOutName, angle
     ToA_values_halo = list()
 
     for i in range(len(all_data[:]) - 1):
-        matrix_ToA = np.zeros([256, 256])
+        matrix_toa = np.zeros([256, 256])
 
         x_list_first = list()
         y_list_first = list()
@@ -1210,47 +1265,45 @@ def gaas_core_halo_study(FileInPath, FileInName, FileOutPath, FileOutName, angle
         first_unix = all_unix_times[i]
         first_meas = all_frame_times[i]
 
-        second_unix = all_unix_times[i+1]
-        second_meas = all_frame_times[i+1]
+        second_unix = all_unix_times[i + 1]
+        second_meas = all_frame_times[i + 1]
 
         unix_diff = second_unix - first_unix
 
         for j in range(len(all_data[i][:])):
-            x_first = int(all_data[i][j][0])
-            y_first = int(all_data[i][j][1])
+            x_first, y_first = int(all_data[i][j][0]), int(all_data[i][j][1])
 
             x_list_first.append(x_first)
             y_list_first.append(y_first)
 
-            matrix_ToA[x_first, y_first] = all_data[i][j][3]
+            matrix_toa[x_first, y_first] = all_data[i][j][3]
 
             ToA_values.append(str(all_data[i][j][3]))
 
             indicator = False
 
-        if unix_diff < maximum_ToA_frame_difference and len(all_data[i+1][:]) < 10:
-            for j in range(len(all_data[i+1][:])):
-                x_second = int(all_data[i+1][j][0])
-                y_second = int(all_data[i+1][j][1])
+        if unix_diff < maximum_ToA_frame_difference and len(all_data[i + 1][:]) < 10:
+            for j in range(len(all_data[i + 1][:])):
+                x_second, y_second = int(all_data[i + 1][j][0]), int(all_data[i + 1][j][1])
 
                 x_list_second.append(x_second)
                 y_list_second.append(y_second)
 
                 if (x_second) in x_list_first or (x_second) in x_list_first or (x_second - 1) in x_list_first or (x_second + 1) in x_list_first and (y_second - 1) in y_list_first or (y_second + 1) in y_list_first or (y_second) in y_list_first or (y_second) in y_list_first:
-                    matrix_ToA[x_second, y_second] = all_data[i +
+                    matrix_toa[x_second, y_second] = all_data[i +
                                                               1][j][3] + unix_diff
-                    ToA_values.append(str(all_data[i+1][j][3] + unix_diff))
+                    ToA_values.append(str(all_data[i + 1][j][3] + unix_diff))
                     ToA_values_halo.append(
-                        str(all_data[i+1][j][3] + unix_diff))
+                        str(all_data[i + 1][j][3] + unix_diff))
                     indicator = True
 
         else:
             indicator = False
 
         if i <= num_of_frames:
-            print_fig_ToA(matrix_ToA, 100, 'test ToA frame #' +
+            print_figure_toa(matrix_toa, 100, 'test ToA frame #' +
                           str(i), FileOutPath, FileOutName + '_frame_'+str(i))
-            plot_single_cluster_ToA_gaas(
+            plot_single_cluster_toa_gaas(
                 FileOutPath, FileInPath+FileInName, i, indicator)
         else:
             pass
@@ -1320,45 +1373,82 @@ def gaas_core_halo_study(FileInPath, FileInName, FileOutPath, FileOutName, angle
     return
 
 
-def frame_matrix_tpx3(clog_path, filename, frame_number):
+def create_matrix_tpx3(filename, frame_number):
     """
-    Carlos, from Andrej's script, 4 Aug 2022'
-    input is the clog calib file of output of DPE_CP
-    it reads the clog calib file, finds one f, and makes it
-    (it draws it and stores it - calling the print_fig_E funkce)
-    the output is stored in a new automatic DIR within the Files DIR of DPE_CP output
-    for TPX3 data in ToT+ToA
-    """
-    clog = read_clog(filename)[2]
-    matrix_tot = np.zeros([256, 256])  # tot
-    matrix_toa = np.zeros([256, 256])  # toa
+    4 August 2022
 
-    for j in range(len(clog[frame_number][:])):
-        x = int(clog[frame_number][j][0])  # x coord
-        y = int(clog[frame_number][j][1])  # y coord
-        matrix_tot[x, y] = matrix_tot[x, y] + clog[frame_number][j][2]  # tot
-        matrix_toa[x, y] = matrix_toa[x, y] + clog[frame_number][j][3]  # toa
+    This function creates a 2D plot of a detector pixel matrix for Timepix3 and Timepix2 detectors using the data 
+    in a clog file and a specific frame number. The function takes two parameters: filename and frame_number. The 
+    filename parameter is the path to the clog file, and the frame_number parameter is the specific frame from which 
+    to draw data from the clog file.
+
+    The function first reads the clog file using the read_clog() function and assigns the data to the variable clog. 
+    Then it creates two matrices, matrix_tot and matrix_toa, that are initially filled with zeroes.
+
+    The function then iterates over the data in the clog file, and for each iteration, it retrieves the x and y 
+    coordinates and the ToT and ToA values of the pixel. It then increments the corresponding element in the 
+    matrix_tot and assigns the ToA value to the corresponding element in the matrix_toa. The function returns the 
+    two matrices created, matrix_tot and matrix_toa.
+
+    Description:
+
+    filename - clog file of the DPE output,
+
+    frame_number - frame to be drawn from the clog file.
+    """
+
+    clog = read_clog(filename)[2]
+    matrix_tot = np.zeros([256, 256])
+    matrix_toa = np.zeros([256, 256])
+
+    for i in range(len(clog[frame_number][:])):
+        x, y = int(clog[frame_number][i][0]), int(clog[frame_number][i][1])
+    
+        matrix_tot[x, y] += clog[frame_number][i][2]
+        matrix_toa[x, y] = clog[frame_number][i][3]
 
     return matrix_tot, matrix_toa
 
 
-def frame_matrix_tpx(clog_path, filename, frame_number):
+def create_matrix_tpx(filename, frame_number, what_type):
     """
-    Carlos, from Andrej's script, 4 Aug 2022'
-    same as frame_matrix_tpx3
-    for TPX data in ToT
+    4 August 2022
+
+    This function creates a 2D plot of a detector pixel matrix for Timepix detectors using the data in a clog file 
+    and a specific frame number. The function takes three parameters: filename, frame_number, and what_type. 
+    The filename parameter is the path to the clog file, the frame_number parameter is the specific frame from which 
+    to draw data from the clog file, and the what_type parameter is a string that indicates whether to create 
+    a matrix of "ToT" or "ToA" values.
+
+    The function first reads the clog file using the read_clog() function and assigns the data to the variable clog. 
+    Then it creates a matrix, matrix, that is initially filled with zeroes.
+
+    The function then iterates over the data in the clog file, and for each iteration, it retrieves the x and y 
+    coordinates and the ToT and ToA values of the pixel. It then increments the corresponding element in the matrix 
+    with the value of ToT or assigns the ToA value to the corresponding element in the matrix depending on the value 
+    of what_type. The function returns the matrix created.
+
+    Description:
+
+    filename - clog file of the DPE output,
+
+    frame_number - frame to be drawn from the clog file,
+
+    what_type - to get info whether ToT or ToA is being processed, input either 'ToT' or 'ToA'.
     """
+
     clog = read_clog(filename)[2]
-    matrix_tot = np.zeros([256, 256])  # tot
-    # matrix_toa = np.zeros([256,256]) # toa
+    matrix = np.zeros([256, 256])
 
     for j in range(len(clog[frame_number][:])):
-        x = int(clog[frame_number][j][0])  # x coord
-        y = int(clog[frame_number][j][1])  # y coord
-        matrix_tot[x, y] = matrix_tot[x, y] + clog[frame_number][j][2]  # tot
-        # matrix_toa[x,y] = matrix_toa[x,y] + clog[frame_number][j][3] # toa
+        x, y = int(clog[frame_number][j][0]), int(clog[frame_number][j][1])
 
-    return matrix_tot
+        if what_type == 'ToT':
+            matrix[x, y] += clog[frame_number][j][2]
+        else:
+            matrix[x, y] = clog[frame_number][j][2]
+
+    return matrix
 
 
 """
@@ -1370,7 +1460,7 @@ FUNCTIONS TO IMPLEMENT
 
 3) single particle tracks with histograms on top and right side of the track to indicate the energy deposited in each row and column
 
-4) 3D
+4) 3D particle track
 
 5) next to single particle tracks draw 1D cuts along line
 
@@ -1384,5 +1474,5 @@ FUNCTIONS TO IMPLEMENT
 
 9) Add calculation of a 
 
-
+10) Make a new figure for energy with two histograms on top and on the right.
 """
