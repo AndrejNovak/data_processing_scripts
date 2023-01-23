@@ -19,7 +19,7 @@ for idx2, var2 in enumerate(subfolders[12:]):
         path = 'Q:/DPE_carlos_data_output/2022_12_VdG/2022_12_VdG_D05/' + directory + '/Files/ClusterLog_clog_r00000000' + clog_poradie + '.clog'
         clog = read_clog(path)[2]
 
-        print(len(read_clog(path)[3]), np.shape(read_clog(path)[3]), read_clog(path)[3][0:8])
+        #print(len(read_clog(path)[3]), np.shape(read_clog(path)[3]), read_clog(path)[3][0:8])
 
         print(f'The number of frames in clog is {len(read_clog(path)[0])} with specific values {read_clog(path)[0]}')
         matrix = np.zeros([256,256])
