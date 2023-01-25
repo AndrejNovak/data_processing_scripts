@@ -140,7 +140,7 @@ class Cluster_filter_multiple_parameter:
             i_variables = self.indices[i]
 
             if (cluster_variable[i_variables] >= down_edge and cluster_variable[i_variables] <= up_edge):
-                ok = ok + 1
+                ok += 1
             else:
                 return False
         if ok == len(self.indices):
@@ -215,6 +215,33 @@ class Cluster_filter_multiple_parameter_ratios:
                     return False
             if ok_ratio == number_ratio_filters:
                 return True
+
+
+def get_subdirectory_names(path_into_folder):
+    """
+    This function takes the full path to the directory for which you want the list of its subdirectories.
+    It is a single line of code but one can use this function rather than always think of a way how to do this. 
+
+    Example:
+    subdirectories = get_subdirectory_names('Q:/DPE_carlos_data_output/2022_12_VdG/2022_12_VdG_D05/')
+    """
+    return [ f.name for f in os.scandir(path_into_folder) if f.is_dir() ]
+
+
+def get_number_of_files(path_into_folder, file_extension):
+    """
+    This function returns the number of specific files in a given folder.
+    Use for determination of the number of all clog or t3pa files.
+
+    Example:
+    path = 'Q:/DPE_carlos_data_output/2022_12_VdG/2022_12_VdG_D05/00/Files/'
+    clog_count = get_number_of_files(path, 'clog')[0]
+    clog_names = get_number_of_files(path, 'clog')[1]
+    """
+    file_count = len(fnmatch.filter(os.listdir(path_into_folder), '*.' + file_extension))
+    file_names = [ fnmatch.filter(os.listdir(path_into_folder), '*.' + file_extension) ]
+
+    return file_count, file_names
 
 
 def print_out_elist(FileOutPath, filename, input_data):
@@ -860,7 +887,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt+4)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix)
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_toa(matrix, vmax, title, OutputPath, OutputName):
@@ -901,7 +928,7 @@ def print_figure_toa(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt+4)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix)
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def parameter_filter(data_column, min_value, max_value):
@@ -1054,7 +1081,7 @@ def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, Out
     plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix)
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, OutputPath, OutputName):
@@ -1111,7 +1138,7 @@ def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, O
     plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix)
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_single_cluster_toa_tpx(clog_path, frame_number, vmax, title, OutputPath, OutputName):
@@ -1168,7 +1195,7 @@ def print_figure_single_cluster_toa_tpx(clog_path, frame_number, vmax, title, Ou
     plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix)
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def plot_single_cluster_toa_gaas(OutputPath, clog_path, frame_number, indicator, vmax):
@@ -1236,7 +1263,7 @@ def plot_single_cluster_toa_gaas(OutputPath, clog_path, frame_number, indicator,
     plt.savefig(OutputPath + '/ToA_cluster_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + '/ToA_cluster_' +
-               str(frame_number) + '.txt', matrix)
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def gaas_core_halo_study(FileInPath, FileInName, FileOutPath, FileOutName, angle, max_toa_diff, num_of_frames):
