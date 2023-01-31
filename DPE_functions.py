@@ -7,12 +7,15 @@ import fnmatch
 import random
 import numpy as np
 import matplotlib
+import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import json
 from scipy.optimize import curve_fit
 import pandas as pd
+from collections import Counter
 
 # matplotlib.use('Agg')   # To solve issue: Fail to create pixmap with Tk_GetPixmap
 
@@ -140,7 +143,7 @@ class Cluster_filter_multiple_parameter:
             i_variables = self.indices[i]
 
             if (cluster_variable[i_variables] >= down_edge and cluster_variable[i_variables] <= up_edge):
-                ok = ok + 1
+                ok += 1
             else:
                 return False
         if ok == len(self.indices):
@@ -215,6 +218,33 @@ class Cluster_filter_multiple_parameter_ratios:
                     return False
             if ok_ratio == number_ratio_filters:
                 return True
+
+
+def get_subdirectory_names(path_into_folder):
+    """
+    This function takes the full path to the directory for which you want the list of its subdirectories.
+    It is a single line of code but one can use this function rather than always think of a way how to do this. 
+
+    Example:
+    subdirectories = get_subdirectory_names('Q:/DPE_carlos_data_output/2022_12_VdG/2022_12_VdG_D05/')
+    """
+    return [ f.name for f in os.scandir(path_into_folder) if f.is_dir() ]
+
+
+def get_number_of_files(path_into_folder, file_extension):
+    """
+    This function returns the number of specific files in a given folder.
+    Use for determination of the number of all clog or t3pa files.
+
+    Example:
+    path = 'Q:/DPE_carlos_data_output/2022_12_VdG/2022_12_VdG_D05/00/Files/'
+    clog_count = get_number_of_files(path, 'clog')[0]
+    clog_names = get_number_of_files(path, 'clog')[1]
+    """
+    file_count = len(fnmatch.filter(os.listdir(path_into_folder), '*.' + file_extension))
+    file_names = [ fnmatch.filter(os.listdir(path_into_folder), '*.' + file_extension) ]
+
+    return file_count, file_names
 
 
 def print_out_elist(FileOutPath, filename, input_data):
@@ -860,7 +890,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt+4)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix)
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_toa(matrix, vmax, title, OutputPath, OutputName):
@@ -901,7 +931,7 @@ def print_figure_toa(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt+4)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix)
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def parameter_filter(data_column, min_value, max_value):
@@ -1001,11 +1031,8 @@ def create_matrix_tpx3_old(data, number_frames, random):
 
 def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, OutputPath, OutputName):
     """
-    Old name: plot_single_cluster_ToT
-    
-    
+    Old name: plot_single_cluster_ToT   
     """
-
     tickfnt = 14
     margin = 5
 
@@ -1054,7 +1081,81 @@ def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, Out
     plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix)
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
+
+
+def print_figure_single_cluster_energy_histograms(clog_path, frame_number, vmax, title, OutputPath, OutputName):
+    """
+    The same function as print_figure_single_cluster_energy but with histograms.
+    """
+    tickfnt = 9
+
+    clog = read_clog(clog_path)[2]
+    matrix = np.zeros([256, 256])
+
+    x = []
+    y = []
+
+    for i in range(len(clog[frame_number][:])):
+        x.append(clog[frame_number][i][0])
+        y.append(clog[frame_number][i][1])
+
+    for i in range(len(clog[frame_number][:])):
+        matrix[int(x[i]), int(y[i])] += clog[frame_number][i][2]
+
+    x_column_values = np.empty([0])
+    y_row_values = np.empty([0])
+
+    for i in range(len(x)):
+        x_column_values = np.append(x_column_values, np.sum(matrix[int(x[i]),:]))
+
+    for i in range(len(y)):
+        y_row_values = np.append(y_row_values, np.sum(matrix[:,int(y[i])]))
+    
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+    else:
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+    else:
+        difference_position_y = 0
+
+    margin = 0.5
+    plt.close()
+    plt.cla()
+    plt.clf()
+    matplotlib.rc('xtick', labelsize=tickfnt) 
+    matplotlib.rc('ytick', labelsize=tickfnt)
+    fig, axs = plt.subplots(2, 2)
+    fig.tight_layout(pad=1)
+    axs[0, 0].bar(x, x_column_values, linewidth=0)
+    axs[0, 0].set_xlim([min(x) - int(difference_position_x) / 2 - margin, max(x) + int(difference_position_x) + margin])
+    axs[0, 0].set_ylim([1,1E3])
+    axs[0, 0].set_title('Energy values in x direction', fontsize=tickfnt)
+    axs[0, 0].set_yscale('log')
+    axs[0, 1].axis('off')
+    aa = axs[1, 0].matshow(np.flip(np.rot90(
+        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    axs[1, 0].xaxis.tick_bottom()
+    cbar = fig.colorbar(aa)
+    #axs[1, 0].set_clim(1, vmax)
+    #cbar = axs[1, 0].plt.colorbar(label='Energy [keV]', shrink=0.8, aspect=20*0.8)
+    #cbar.set_label(label='Energy [keV]', size=tickfnt, weight='regular')   # format="%.1E"
+    #cbar.ax.tick_params(labelsize=tickfnt)
+    axs[1, 0].set_xlim([min(x) - int(difference_position_x) / 2 - margin, max(x) + int(difference_position_x) / 2 + margin])
+    axs[1, 0].set_ylim([min(y) - int(difference_position_y) / 2 - margin, max(y) + int(difference_position_y) / 2 + margin])
+    #axs[1, 0].set_title('Axis [1, 0]', fontsize=tickfnt)
+    axs[1, 1].barh(y, y_row_values)
+    axs[1, 1].set_xlim([1,1E3])
+    axs[1, 1].set_ylim([min(y) - int(difference_position_y) / 2 - margin, max(y) + int(difference_position_y) / 2 + margin])
+    #axs[1, 1].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y + margin])
+    axs[1, 1].set_title('Energy values in x direction', fontsize=tickfnt)
+    axs[1, 1].set_xscale('log')
+    plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
+                dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    np.savetxt(OutputPath + OutputName + '_' +
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, OutputPath, OutputName):
@@ -1111,7 +1212,7 @@ def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, O
     plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix)
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_single_cluster_toa_tpx(clog_path, frame_number, vmax, title, OutputPath, OutputName):
@@ -1168,7 +1269,7 @@ def print_figure_single_cluster_toa_tpx(clog_path, frame_number, vmax, title, Ou
     plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix)
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def plot_single_cluster_toa_gaas(OutputPath, clog_path, frame_number, indicator, vmax):
@@ -1236,7 +1337,7 @@ def plot_single_cluster_toa_gaas(OutputPath, clog_path, frame_number, indicator,
     plt.savefig(OutputPath + '/ToA_cluster_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + '/ToA_cluster_' +
-               str(frame_number) + '.txt', matrix)
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def gaas_core_halo_study(FileInPath, FileInName, FileOutPath, FileOutName, angle, max_toa_diff, num_of_frames):
@@ -1400,14 +1501,16 @@ def create_matrix_tpx3(filename, frame_number):
     clog = read_clog(filename)[2]
     matrix_tot = np.zeros([256, 256])
     matrix_toa = np.zeros([256, 256])
+    matrix_counts = np.zeros([256, 256])
 
     for i in range(len(clog[frame_number][:])):
         x, y = int(clog[frame_number][i][0]), int(clog[frame_number][i][1])
     
         matrix_tot[x, y] += clog[frame_number][i][2]
         matrix_toa[x, y] = clog[frame_number][i][3]
+        matrix_counts[x, y] += 1
 
-    return matrix_tot, matrix_toa
+    return matrix_tot, matrix_toa, matrix_counts
 
 
 def create_matrix_tpx(filename, frame_number, what_type):
@@ -1440,24 +1543,117 @@ def create_matrix_tpx(filename, frame_number, what_type):
     clog = read_clog(filename)[2]
     matrix = np.zeros([256, 256])
 
-    for j in range(len(clog[frame_number][:])):
-        x, y = int(clog[frame_number][j][0]), int(clog[frame_number][j][1])
-
-        if what_type == 'ToT':
+    if what_type == 'ToT':
+        for j in range(len(clog[frame_number][:])):
+            x, y = int(clog[frame_number][j][0]), int(clog[frame_number][j][1])
             matrix[x, y] += clog[frame_number][j][2]
-        else:
-            matrix[x, y] = clog[frame_number][j][2]
+    else:
+        for j in range(len(clog[frame_number][:])):
+            x, y = int(clog[frame_number][j][0]), int(clog[frame_number][j][1])
+            matrix[x, y] += clog[frame_number][j][2]
 
     return matrix
 
 
+def scatter_histogram_for_function(clog_path, frame_number, x, y, ax, ax_histx, ax_histy):
+    # no labels
+    fig, axs = plt.subplots()
+    ax_histx.tick_params(axis="x", labelbottom=False)
+    ax_histy.tick_params(axis="y", labelleft=False)
+
+    clog = read_clog(clog_path)[2]
+    area = np.empty([0])
+
+    x = []
+    y = []
+
+    for i in range(len(clog[frame_number][:])):
+        x.append(clog[frame_number][i][0])
+        y.append(clog[frame_number][i][1])
+        area = np.append(area, clog[frame_number][i][2])
+
+    xbin_value = Counter(x)
+    ybin_value = Counter(y)
+
+    #colours = cm.hot_r(np.linspace(0, 1, len(area)))
+
+    # the scatter plot:
+    
+    image = ax.scatter(x, y, s=area, c=area, cmap='viridis', marker='s')
+    ax.set(xlabel='X position [pixel]', ylabel='Y position [pixel]')
+    #divider = make_axes_locatable(ax)
+    #cax = divider.new_vertical(size = '5%', pad = 0.5)
+    #fig.add_axes(cax)
+    fig.colorbar(image, norm=colors.LogNorm())
+    
+    #divider = make_axes_locatable(ax)
+    #cbar.ax.set_ylabel('z data', labelpad=5)
+    #cbar.ax.yaxis.set_ticks_position("right")
+    #cbar.set_clim(1, 1E3)
+
+    # now determine nice limits by hand:
+    binwidth = 0.25
+    xymax = max(np.max(np.abs(x)), np.max(np.abs(y)))
+    #lim = (int(xymax/binwidth) + 1) * binwidth
+
+    #bins = np.arange(-lim, lim + binwidth, binwidth)
+    ax_histx.hist(x, bins=len(xbin_value))
+    ax_histx.set(xlabel='X position [pixel]', ylabel='Count [-]')
+    ax_histy.hist(y, bins=len(ybin_value), orientation='horizontal')
+    ax_histy.set(xlabel='Count [-]', ylabel='Y position [pixel]')
+    #ax_histx = ax.inset_axes([0, 1.05, 1, 0.25], sharex=ax)
+    #ax_histy = ax.inset_axes([1.05, 0, 0.25, 1], sharey=ax)
+
+
+
+def print_figure_single_cluster_count_histograms(clog_path, frame_number, OutputPath, OutputName):
+    """
+    The same function as print_figure_single_cluster_energy but with histograms.
+    """
+    tickfnt = 14
+
+    clog = read_clog(clog_path)[2]
+    matrix = np.zeros([256, 256])
+
+    x = []
+    y = []
+
+    for i in range(len(clog[frame_number][:])):
+        x.append(clog[frame_number][i][0])
+        y.append(clog[frame_number][i][1])
+
+    x_column_values = np.empty([0])
+    y_row_values = np.empty([0])
+
+    for i in range(len(x)):
+        x_column_values = np.append(x_column_values, x[i])
+
+    for i in range(len(y)):
+        y_row_values = np.append(y_row_values, y[i])
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    plt.xlim([min(x_column_values), max(x_column_values)])
+    plt.ylim([min(y_row_values), max(y_row_values)])
+    fig = plt.figure(figsize=(6, 6))
+    # Add a gridspec with two rows and two columns and a ratio of 1 to 4 between
+    # the size of the marginal axes and the main axes in both directions.
+    # Also adjust the subplot parameters for a square plot.
+    gs = fig.add_gridspec(2, 2,  width_ratios=(4, 1), height_ratios=(1, 4),
+                        left=0.1, right=0.9, bottom=0.1, top=0.9,
+                        wspace=0.15, hspace=0.15)
+    # Create the Axes.
+    ax = fig.add_subplot(gs[1, 0])
+    ax_histx = fig.add_subplot(gs[0, 0], sharex=ax)
+    ax_histy = fig.add_subplot(gs[1, 1], sharey=ax)
+    # Draw the scatter plot and marginals.
+    scatter_histogram_for_function(clog_path, frame_number, x_column_values, y_row_values, ax, ax_histx, ax_histy)
+    plt.show()
+
+
 """
 FUNCTIONS TO IMPLEMENT
-
-1) single particle tracks with margin of given number of pixels to form a square
-
-2) single particle tracks with a given number of pixel size matrix
-
 3) single particle tracks with histograms on top and right side of the track to indicate the energy deposited in each row and column
 
 4) 3D particle track
@@ -1475,4 +1671,9 @@ FUNCTIONS TO IMPLEMENT
 9) Add calculation of a 
 
 10) Make a new figure for energy with two histograms on top and on the right.
+
+11) New figure that recalculates total deposited energy to dose that was deposited in the sensor material
+(depends on material density - Si, SiC, CdTe, GaAs)
+
+12) Make print figure energy for multiple clog files present in the directory.
 """
