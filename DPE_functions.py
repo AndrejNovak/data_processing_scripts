@@ -651,7 +651,7 @@ def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_
         print('No filter was used, there is nothing to be processed')
 
 
-def write_elist(filename_out, header, units, data):
+def write_elist(filename, header, units, data):
     """
     This function writes a file in a specific Elist format. The function takes in four parameters: filename_out, 
     header, units, and data. The filename_out is the name of the file to be written. The header and units are lists 
@@ -660,13 +660,32 @@ def write_elist(filename_out, header, units, data):
     data as a string, separated by semicolons, and ends each line with a newline character. The function uses the 
     python built-in open function to open the file in write mode.
     """
-    with open(filename_out, 'w') as f:
+    with open(filename, 'w') as f:
         f.write(' '.join(map(str, header))+'\n')
         f.write(' '.join(map(str, units))+'\n')
         
         for row in data:
             s = ';'.join(map(str, row))
             f.write(s+'\n')
+
+
+def write_coincidence_elist(filename, OutputPath, OutputName):
+    #def write_elist_add_coincidence(filename, header, units, data, OutputPath, OutputName):
+    print('Printing cluster coincidence')
+    #data = np.loadtxt(filename, skiprows=2, delimiter=';')
+    eventid = np.loadtxt(filename, skiprows=2, delimiter=';', usecols=1, dtype='int')
+    count = np.bincount(eventid)
+    events = np.arange(0, len(count), 1)
+
+    bool_value = np.array([])
+    for number in range(len(count)-1):
+        if count[number] > 1:
+            bool_value = np.append(bool_value, 1)
+        else:
+            bool_value = np.append(bool_value, 0)
+
+    out_values = np.column_stack((events[:-1], count[:-1], bool_value))
+    np.savetxt(OutputPath + OutputName, out_values, delimiter=',', header='Event, Count, Is_Coincidence', fmt="%i", comments='')
 
 
 def create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_frames):
@@ -1601,9 +1620,6 @@ def scatter_histogram_for_function(clog_path, frame_number, x, y, ax, ax_histx, 
     ax_histx.set(xlabel='X position [pixel]', ylabel='Count [-]')
     ax_histy.hist(y, bins=len(ybin_value), orientation='horizontal')
     ax_histy.set(xlabel='Count [-]', ylabel='Y position [pixel]')
-    #ax_histx = ax.inset_axes([0, 1.05, 1, 0.25], sharex=ax)
-    #ax_histy = ax.inset_axes([1.05, 0, 0.25, 1], sharey=ax)
-
 
 
 def print_figure_single_cluster_count_histograms(clog_path, frame_number, OutputPath, OutputName):
@@ -1649,31 +1665,4 @@ def print_figure_single_cluster_count_histograms(clog_path, frame_number, Output
     ax_histy = fig.add_subplot(gs[1, 1], sharey=ax)
     # Draw the scatter plot and marginals.
     scatter_histogram_for_function(clog_path, frame_number, x_column_values, y_row_values, ax, ax_histx, ax_histy)
-    plt.show()
-
-
-"""
-FUNCTIONS TO IMPLEMENT
-3) single particle tracks with histograms on top and right side of the track to indicate the energy deposited in each row and column
-
-4) 3D particle track
-
-5) next to single particle tracks draw 1D cuts along line
-
-6) frame printing with a given number of clusters and fixed colorbar, for this frame, add two histograms on top of it
-    - these histograms contain selected parameter, for example Cluster Height and the second Deposited Energy.
-    - each part of the image can be also saved individually
-
-7) create frame with counting data - similiar to deposited energy graph
-
-8) create frame with clusters that were registered within some time - Elist in nanoseconds
-
-9) Add calculation of a 
-
-10) Make a new figure for energy with two histograms on top and on the right.
-
-11) New figure that recalculates total deposited energy to dose that was deposited in the sensor material
-(depends on material density - Si, SiC, CdTe, GaAs)
-
-12) Make print figure energy for multiple clog files present in the directory.
-"""
+    
