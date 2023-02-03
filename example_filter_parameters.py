@@ -25,7 +25,8 @@ input_header_text_new_columns = ['E/A', 'BordPx/A']
 input_units_text_new_columns = ['keV/px', 'a.u.']
 
 # The number of column of the filter with passed/failed values of 1 or 0
-number_column_filter = 17
+total_number_columns = len(read_elist(folder_data + filename_elist)[0])
+number_column_filter = total_number_columns + 1
 
 filter_parameters = Cluster_filter_multiple_parameter([100, 10000, 100, 6000], [4, 8]) # Energy Height
 
