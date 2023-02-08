@@ -6,25 +6,21 @@ As of 2023-02-01 I began the process of coincidence analysis and improvement of 
 
 
 # Functions to implement:
-1) Single particle tracks with histograms on top and right side of the track to indicate the energy deposited in each row and column.
+1) Single particle tracks with histograms on top and right side of the track to indicate the energy deposited in each row and column. (In progress)
 
-2) 3D particle track imaging.
+2) Plot 3D particle tract. Define a function based on Bergmann's article and use it for plotting.
 
-3) In single particle tracs, draw a line along the track.
+3) In single particle tracks, draw a line along the track. This is just a first step for length determination. Not necessary, just for me as a practise.
 
-4) Frame printing with a given number of clusters and fixed colorbar, for this frame, add two histograms on top of it
+4) Frame printing with a given number of clusters and fixed colorbar. For this frame, add two histograms on top of it
     - these histograms contain selected parameter, for example Cluster Height and the second Deposited Energy.
-    - each part of the image can be also saved individually
+    - each part of the image can be also saved individually.
+    - this can be made such that the main image will always be the deposited energy. The other option is to draw each cluster with one specific value of the whole cluster - its height, roundness,...
 
-7) create frame with counting data - similiar to deposited energy graph
+7) Create a plot of single frames representing counts - similiar to plot of total deposited energy.
 
-8) create frame with clusters that were registered within some time - Elist in nanoseconds
+8) Create a plot with clusters that were registered by the detector within time set on input - Elist from DPE gives a time value in nanoseconds.
 
-9) Add calculation of a 
+9) Create a figure that shows recalculated total deposited energy to dose that was deposited in the sensor based on the sensor material (this value depends on material density - Si, SiC, CdTe, GaAs, Diamond).
 
-10) Make a new figure for energy with two histograms on top and on the right.
-
-11) New figure that recalculates total deposited energy to dose that was deposited in the sensor material
-(depends on material density - Si, SiC, CdTe, GaAs)
-
-12) Make print figure energy for multiple clog files present in the directory.
+10) Update read_clog function so that it is able to load multiple clog files in a given directory. This needs to be implemented since the number of clogs created by DPE is the same as the number of input clogs to DPE; however, the Elist gives only one list with all the processed events and therefore the event correlation has to be updated.
