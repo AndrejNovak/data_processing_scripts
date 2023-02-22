@@ -287,15 +287,14 @@ def read_clog(filename):
     To access third layer (selected value from selected 4-group of selected frame) use: data[0][0][0] 
     """
 
-    inputFile = open(filename)
-    lines = inputFile.readlines()
-    inputFile.close()
+    with open(filename) as inputFile:
+        lines = inputFile.readlines()
 
     frame_unix_time = np.empty([0])
     frame_times = np.empty([0])
 
-    current_cluster = list()
-    all_values = list()
+    current_cluster = []
+    all_values = []
 
     a = []
     pattern_b = r"\[[^][]*]"
@@ -321,6 +320,78 @@ def read_clog(filename):
 
     # to fix problem with first list being empty, needs solution without copying for better performance
     return frame_unix_time, frame_times, all_values[1:].copy()
+
+def read_clog_multiple(FileInPath, file_names):
+    """
+    The thought for this function was to look inside the given folder
+    and correlate all clogs with total Elist so that you can print out
+    a figures that would be created from all files.
+    
+    At this point I found out that the number of Elist rows does NOT
+    correlate the number of clusters in processed output clog file.
+    """
+    
+    # vytvor pre kazdy clog v zlozke zoznam jeho koincidencii
+    OutputPath = FileInPath
+    print(type(file_names))
+    measurement_duration = np.empty([0])
+    total_measurement_duration = 0
+
+    number_of_frames = 0
+    total_number_of_frames = 0
+
+    # clog_data_total = []
+
+    path_elist = FileInPath + 'ExtElist.txt'
+    elist_data = read_elist(path_elist)[2]
+    print(elist_data[1])
+    # nazov vystupu
+    OutputName = 'Coincidence_ExtElist'
+    # vytvor zoznam koincidencii
+    write_coincidence_elist(path_elist, OutputPath, OutputName)
+
+    num = []
+    
+    for name in file_names[0]:
+        # vytvor cestu
+        path_clog = FileInPath + name
+        #print(path_clog)
+        print(name)
+
+        # nacitaj data daneho suboru
+        clog_frame_unix_time, clog_frame_time, clog_data = read_clog(path_clog)
+
+        num.append(sum(len(clog_data[i][:]) for i in range(len(clog_data[:]))))
+
+        #print(f'Clog_data type v {name} je: {type(clog_data)}')
+        #print(f'Clog_frame_unix_time data type v {name} je: {type(clog_frame_unix_time)}')
+
+        # ulozi trvanie jednotlivych clog-ov a teda merani
+        print(f'Trvanie jedneho framu v {name} je {clog_frame_time[0]} ns')
+
+        measurement_duration = np.append(measurement_duration, (clog_frame_unix_time[-1] - clog_frame_unix_time[0])*1E-9)
+        total_measurement_duration += (clog_frame_unix_time[-1] - clog_frame_unix_time[0]) * 1E-9
+        print(f'Celkový čas merania je teraz {total_measurement_duration} sekúnd')
+
+        number_of_frames = len(clog_data[:])
+        total_number_of_frames += number_of_frames
+        print(f'Celkový počet framov v {name} je {number_of_frames} \n')
+
+            # Tu by bolo treba asi načítať na jedno miesto všetky tieto clog-y
+            # relatívne k danému clog-u upraviť počítanie framov a teda eventov, ktoré budú korelované s Elistom
+            # 
+            # clog_data_total += clog_data
+            # all_unix_times += clog_frame_unix_time
+            # all_frame_times += clog_frame_unix_time 
+            # out_values = np.column_stack((events[:-1], count[:-1], bool_value))
+            # np.savetxt(OutputPath + OutputName + '.txt', out_values, delimiter=',', header='Event, Count, Is_Coincidence', fmt="%i", comments='')
+
+            # 
+
+    print(total_number_of_frames)
+    print(num)
+
+    return 0
 
 
 def get_elist_column(filename, col_name):
@@ -685,7 +756,7 @@ def write_coincidence_elist(filename, OutputPath, OutputName):
             bool_value = np.append(bool_value, 0)
 
     out_values = np.column_stack((events[:-1], count[:-1], bool_value))
-    np.savetxt(OutputPath + OutputName, out_values, delimiter=',', header='Event, Count, Is_Coincidence', fmt="%i", comments='')
+    np.savetxt(OutputPath + OutputName + '.txt', out_values, delimiter=',', header='Event, Count, Is_Coincidence', fmt="%i", comments='')
 
 
 def create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_frames):
@@ -1666,3 +1737,5 @@ def print_figure_single_cluster_count_histograms(clog_path, frame_number, Output
     # Draw the scatter plot and marginals.
     scatter_histogram_for_function(clog_path, frame_number, x_column_values, y_row_values, ax, ax_histx, ax_histy)
     
+# test of my github setup
+# trying a new thing
