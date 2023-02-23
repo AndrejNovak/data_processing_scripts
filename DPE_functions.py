@@ -489,10 +489,8 @@ def read_elist_add_new_parameters(filename, column_number_pairs_for_ratios, head
     units_text_new_columns = ['keV/px', 'a.u.']
     """
 
-    inputFile = open(filename, "r")
-    lines = inputFile.readlines()
-    inputFile.close()
-
+    with open(filename, "r") as inputFile:
+        lines = inputFile.readlines()
     splitlines = []
 
     #cluster_count_all = 0  # counter of all clusters, innitiate if you want to
@@ -573,26 +571,21 @@ def read_elist_filter_parameters(filename, column_number_pairs_for_ratios, heade
     The output is the same elist, now with the added new column (column number = 16)
     """
 
-    inputFile = open(filename, "r")
-    lines = inputFile.readlines()
-    inputFile.close()
+    with open(filename, "r") as inputFile:
+        lines = inputFile.readlines()
 
-    splitlines = []
-
-    line_number = 0
-    
     # cluster_count_all = 0  # counter of all clusters
     # cluster_count_ok = 0  # counter of OK clu's
     # cluster_count_bad = 0  # counter of rejected clu's
-    
+
     if new_filter is not None:
-        for line in lines:
-            line_number += 1
+        splitlines = []
+
+        for line_number, line in enumerate(lines, start=1):
             cluster_variable = list(line.rstrip().split(";"))
 
             if line_number <= 2:
                 cluster_variable.append('Applied_filter')
-                splitlines.append(cluster_variable)
             else:
                 cluster_variable = [float(i)
                                for i in list(line.rstrip().split(";"))]
@@ -605,8 +598,7 @@ def read_elist_filter_parameters(filename, column_number_pairs_for_ratios, heade
                     #cluster_count_bad += 1
                     cluster_variable.append(0)
 
-                splitlines.append(cluster_variable)
-
+            splitlines.append(cluster_variable)
         # print('Number of all clusters = ', cluster_count_all)
         # print('Number of OK clusters = ', cluster_count_ok)
         # print('Number of bad clusters = ', cluster_count_bad)
@@ -656,49 +648,44 @@ def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_
     new_filter = [90, 5000, 4500, 5.E5, 0.9, 1.7, 4, 300, 30, 5000], [8, 4, 10, 7, 15]) # Height Energy Roundness Size, Energy/Size, 
     """
 
-    inputFile = open(filename, "r")
-    lines = inputFile.readlines()
-    inputFile.close()
-
-    splitlines = []
-
-    number_pairs_new_columns = int(len(column_number_pairs_for_ratios) / 2)
-
-    line_number = 0
+    with open(filename, "r") as inputFile:
+        lines = inputFile.readlines()
+        
+    number_pairs_new_columns = len(column_number_pairs_for_ratios) // 2
 
     # cluster_count_all = 0  # counter of all clusters
     # cluster_count_ok = 0  # counter of OK clu's
     # cluster_count_bad = 0  # counter of rejected clu's
 
     if new_filter is not None:
-        for line in lines:
-            line_number += 1
+        splitlines = []
+
+        for line_number, line in enumerate(lines, start=1):
             cluster_variable = list(line.rstrip().split(";"))
 
             if line_number <= 2:
                 if line_number == 1:
-                    for k in range(number_pairs_new_columns):
-                        cluster_variable.append(header_text_new_columns[k])
-
+                    cluster_variable.extend(
+                        header_text_new_columns[k]
+                        for k in range(number_pairs_new_columns)
+                    )
                     cluster_variable.append('Applied_filter')
-                    splitlines.append(cluster_variable)
                 else:
-                    for k in range(number_pairs_new_columns):
-                        cluster_variable.append(units_text_new_columns[k])
-
+                    cluster_variable.extend(
+                        units_text_new_columns[k]
+                        for k in range(number_pairs_new_columns)
+                    )
                     cluster_variable.append('1 = ok')
-                    splitlines.append(cluster_variable)
-
             else:
                 cluster_variable = [float(i)
                                for i in list(line.rstrip().split(";"))]
-                
+
                 # cluster_count_all += 1
 
                 for i in range(number_pairs_new_columns):
                     new_column_value = round(
                         cluster_variable[column_number_pairs_for_ratios[i * 2]] / cluster_variable[column_number_pairs_for_ratios[(i * 2) + 1]], 3)
-                    
+
                     cluster_variable.append(new_column_value)
 
                 if new_filter.pass_filter(cluster_variable):
@@ -708,8 +695,7 @@ def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_
                     # cluster_count_bad += 1
                     cluster_variable.append(0)
 
-                splitlines.append(cluster_variable)
-
+            splitlines.append(cluster_variable)
         # print('Number of all clusters = ', cluster_count_all)
         # print('Number of OK clusters = ', cluster_count_ok)
         # print('Number of bad clusters = ', cluster_count_bad)
