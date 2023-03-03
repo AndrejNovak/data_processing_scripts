@@ -66,7 +66,7 @@ plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
-plt.savefig(PathOut + 'X00_tpx2_total_counts.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+plt.savefig(PathOut + 'X00_tpx2_total_counts_200V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 
 
