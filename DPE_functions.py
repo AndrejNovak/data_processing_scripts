@@ -340,23 +340,14 @@ def get_elist_column(filename, col_name):
     selected_column = get_column('path/to/Elist.txt', 'E') 
     """
 
-    inputFile = open(filename, 'r')
-    lines = inputFile.readlines()
-    inputFile.close()
-
-    names = []
-    units = []
-
-    names.append(lines[0].rstrip().split(';'))
-    units.append(lines[1].rstrip().split(';'))
-
+    with open(filename, 'r') as inputFile:
+        lines = inputFile.readlines()
+    names = [lines[0].rstrip().split(';')]
+    units = [lines[1].rstrip().split(';')]
     lines = lines[2:]
     for idx, val in enumerate(names[0][:]):
         if names[0][idx] == col_name:
             col_num = idx
-        else:
-            pass
-
     # print(f'From get_column() you are printing parameter {str(names[0][col_num])} in units {str(units[0][col_num])}\n'.)
 
     column_data = np.empty([0])
