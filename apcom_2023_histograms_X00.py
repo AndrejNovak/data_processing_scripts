@@ -45,6 +45,8 @@ for i in range(len(subdirectories)):
 
     number_of_single_pixel_counts.append(len(filtered_data))
 
+np.savetxt(PathOut + 'number_of_single_pixel_counts_X00.txt', number_of_single_pixel_counts)
+
 
 plt.close()
 plt.clf()
