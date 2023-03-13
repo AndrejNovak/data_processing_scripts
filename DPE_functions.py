@@ -202,7 +202,7 @@ class Cluster_filter_multiple_parameter_ratios:
                 return False
 
         if ok == len(self.indices):
-            number_ratio_filters = int(len(self.indices_pair_ratio) / 2)
+            number_ratio_filters = len(self.indices_pair_ratio) // 2
 
             for k in range(number_ratio_filters):
                 down_edge_ratio = self.edges_ratio[k * 2]
@@ -289,7 +289,10 @@ def read_clog(filename):
 
     with open(filename) as inputFile:
         lines = inputFile.readlines()
+<<<<<<< HEAD
+=======
 
+>>>>>>> b3d279e6055a39cab3a978310ff140590a4d63c0
     frame_unix_time = np.empty([0])
     frame_times = np.empty([0])
 
@@ -411,23 +414,14 @@ def get_elist_column(filename, col_name):
     selected_column = get_column('path/to/Elist.txt', 'E') 
     """
 
-    inputFile = open(filename, 'r')
-    lines = inputFile.readlines()
-    inputFile.close()
-
-    names = []
-    units = []
-
-    names.append(lines[0].rstrip().split(';'))
-    units.append(lines[1].rstrip().split(';'))
-
+    with open(filename, 'r') as inputFile:
+        lines = inputFile.readlines()
+    names = [lines[0].rstrip().split(';')]
+    units = [lines[1].rstrip().split(';')]
     lines = lines[2:]
     for idx, val in enumerate(names[0][:]):
         if names[0][idx] == col_name:
             col_num = idx
-        else:
-            pass
-
     # print(f'From get_column() you are printing parameter {str(names[0][col_num])} in units {str(units[0][col_num])}\n'.)
 
     column_data = np.empty([0])
@@ -457,14 +451,11 @@ def read_elist(filename):
     data = read_elist('path/to/Elist.txt')[2]
     """
 
-    inputFile = open(filename, "r")
-    lines = inputFile.readlines()
+    with open(filename) as inputFile:
+        lines = inputFile.readlines()
     inputFile.close()
 
-    splitlines = []
-
-    for line in lines:
-        splitlines.append(list(line.rstrip().split(";")))
+    splitlines = [list(line.rstrip().split(";")) for line in lines]
     return splitlines[0], splitlines[1], splitlines[2:]
 
 
@@ -495,7 +486,7 @@ def read_elist_add_new_parameters(filename, column_number_pairs_for_ratios, head
 
     #cluster_count_all = 0  # counter of all clusters, innitiate if you want to
 
-    number_pairs_new_columns = int(len(column_number_pairs_for_ratios) / 2)
+    number_pairs_new_columns = len(column_number_pairs_for_ratios) // 2
     line_number = 0
 
     for line in lines:
