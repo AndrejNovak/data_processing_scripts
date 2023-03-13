@@ -1,8 +1,8 @@
 from DPE_functions import *
 
-PathIn = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\bias_scan\L06_tpx3'
-PathOut = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\Apcom_2023\bias_scan\L06_tpx3\\'
-tickfnt = 14
+PathIn = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\L06_tpx3_bias_scan'
+PathOut = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\L06_tpx3_bias_scan'
+tickfnt = 16
 
 subdirectories = get_subdirectory_names(PathIn)
 
@@ -13,10 +13,11 @@ x = np.linspace(0,200,201)
 
 for i in range(len(subdirectories)):
     print(subdirectories[i])
-    elist_path = PathIn + subdirectories[i] + '\\Files\\ExtElist.txt'
+    elist_path = PathIn + '\\' + subdirectories[i] + '\\Files\\ExtElist.txt'
+    print(elist_path)
 
-    if os.path.isfile(PathOut + 'histograms\\L06_tpx3_filtered_data'+str(i)+'V.txt'):
-        filtered_data = np.loadtxt(PathOut + 'histograms\\L06_tpx3_filtered_data'+str(i)+'V.txt')
+    if os.path.isfile(PathOut + '\\histograms\\L06_tpx3_filtered_data_'+str(i)+'V.txt'):
+        filtered_data = np.loadtxt(PathOut + '\\histograms\\L06_tpx3_filtered_data_'+str(i)+'V.txt')
     else:
         am_elist_data = np.loadtxt(elist_path, skiprows=2, delimiter=';')
         filtered_data.extend(
@@ -24,7 +25,7 @@ for i in range(len(subdirectories)):
             for j in range(len(am_elist_data[:, 4]))
             if am_elist_data[j, 7] == 1
         )
-        np.savetxt(PathOut + 'histograms\\L06_tpx3_filtered_data'+str(i)+'V.txt', filtered_data)
+        np.savetxt(PathOut + '\\histograms\\L06_tpx3_filtered_data_'+str(i)+'V.txt', filtered_data)
 
     plt.close()
     plt.clf()
@@ -40,8 +41,8 @@ for i in range(len(subdirectories)):
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
     plt.title(f'Am-241 spectrum single pixel, bias {i}V, L06 TPX3 Si 300$\mu$m')
-    plt.savefig(PathOut + 'histograms\\L06_tpx3_histogram_'+str(i)+'V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(PathOut + 'histograms\\L06_tpx3_histogram_data'+str(i)+'V.txt', np.c_[xs[1:], ys])
+    plt.savefig(PathOut + '\\histograms\\L06_tpx3_histogram_'+str(i)+'V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    np.savetxt(PathOut + '\\histograms\\L06_tpx3_histogram_data'+str(i)+'V.txt', np.c_[xs[1:], ys])
 
     number_of_single_pixel_counts.append(len(filtered_data))
 
