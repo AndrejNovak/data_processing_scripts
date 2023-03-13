@@ -289,6 +289,10 @@ def read_clog(filename):
 
     with open(filename) as inputFile:
         lines = inputFile.readlines()
+<<<<<<< HEAD
+=======
+
+>>>>>>> b3d279e6055a39cab3a978310ff140590a4d63c0
     frame_unix_time = np.empty([0])
     frame_times = np.empty([0])
 
@@ -319,6 +323,78 @@ def read_clog(filename):
 
     # to fix problem with first list being empty, needs solution without copying for better performance
     return frame_unix_time, frame_times, all_values[1:].copy()
+
+def read_clog_multiple(FileInPath, file_names):
+    """
+    The thought for this function was to look inside the given folder
+    and correlate all clogs with total Elist so that you can print out
+    a figures that would be created from all files.
+    
+    At this point I found out that the number of Elist rows does NOT
+    correlate the number of clusters in processed output clog file.
+    """
+    
+    # vytvor pre kazdy clog v zlozke zoznam jeho koincidencii
+    OutputPath = FileInPath
+    print(type(file_names))
+    measurement_duration = np.empty([0])
+    total_measurement_duration = 0
+
+    number_of_frames = 0
+    total_number_of_frames = 0
+
+    # clog_data_total = []
+
+    path_elist = FileInPath + 'ExtElist.txt'
+    elist_data = read_elist(path_elist)[2]
+    print(elist_data[1])
+    # nazov vystupu
+    OutputName = 'Coincidence_ExtElist'
+    # vytvor zoznam koincidencii
+    write_coincidence_elist(path_elist, OutputPath, OutputName)
+
+    num = []
+    
+    for name in file_names[0]:
+        # vytvor cestu
+        path_clog = FileInPath + name
+        #print(path_clog)
+        print(name)
+
+        # nacitaj data daneho suboru
+        clog_frame_unix_time, clog_frame_time, clog_data = read_clog(path_clog)
+
+        num.append(sum(len(clog_data[i][:]) for i in range(len(clog_data[:]))))
+
+        #print(f'Clog_data type v {name} je: {type(clog_data)}')
+        #print(f'Clog_frame_unix_time data type v {name} je: {type(clog_frame_unix_time)}')
+
+        # ulozi trvanie jednotlivych clog-ov a teda merani
+        print(f'Trvanie jedneho framu v {name} je {clog_frame_time[0]} ns')
+
+        measurement_duration = np.append(measurement_duration, (clog_frame_unix_time[-1] - clog_frame_unix_time[0])*1E-9)
+        total_measurement_duration += (clog_frame_unix_time[-1] - clog_frame_unix_time[0]) * 1E-9
+        print(f'Celkový čas merania je teraz {total_measurement_duration} sekúnd')
+
+        number_of_frames = len(clog_data[:])
+        total_number_of_frames += number_of_frames
+        print(f'Celkový počet framov v {name} je {number_of_frames} \n')
+
+            # Tu by bolo treba asi načítať na jedno miesto všetky tieto clog-y
+            # relatívne k danému clog-u upraviť počítanie framov a teda eventov, ktoré budú korelované s Elistom
+            # 
+            # clog_data_total += clog_data
+            # all_unix_times += clog_frame_unix_time
+            # all_frame_times += clog_frame_unix_time 
+            # out_values = np.column_stack((events[:-1], count[:-1], bool_value))
+            # np.savetxt(OutputPath + OutputName + '.txt', out_values, delimiter=',', header='Event, Count, Is_Coincidence', fmt="%i", comments='')
+
+            # 
+
+    print(total_number_of_frames)
+    print(num)
+
+    return 0
 
 
 def get_elist_column(filename, col_name):
@@ -486,26 +562,21 @@ def read_elist_filter_parameters(filename, column_number_pairs_for_ratios, heade
     The output is the same elist, now with the added new column (column number = 16)
     """
 
-    inputFile = open(filename, "r")
-    lines = inputFile.readlines()
-    inputFile.close()
+    with open(filename, "r") as inputFile:
+        lines = inputFile.readlines()
 
-    splitlines = []
-
-    line_number = 0
-    
     # cluster_count_all = 0  # counter of all clusters
     # cluster_count_ok = 0  # counter of OK clu's
     # cluster_count_bad = 0  # counter of rejected clu's
-    
+
     if new_filter is not None:
-        for line in lines:
-            line_number += 1
+        splitlines = []
+
+        for line_number, line in enumerate(lines, start=1):
             cluster_variable = list(line.rstrip().split(";"))
 
             if line_number <= 2:
                 cluster_variable.append('Applied_filter')
-                splitlines.append(cluster_variable)
             else:
                 cluster_variable = [float(i)
                                for i in list(line.rstrip().split(";"))]
@@ -518,8 +589,7 @@ def read_elist_filter_parameters(filename, column_number_pairs_for_ratios, heade
                     #cluster_count_bad += 1
                     cluster_variable.append(0)
 
-                splitlines.append(cluster_variable)
-
+            splitlines.append(cluster_variable)
         # print('Number of all clusters = ', cluster_count_all)
         # print('Number of OK clusters = ', cluster_count_ok)
         # print('Number of bad clusters = ', cluster_count_bad)
@@ -569,49 +639,44 @@ def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_
     new_filter = [90, 5000, 4500, 5.E5, 0.9, 1.7, 4, 300, 30, 5000], [8, 4, 10, 7, 15]) # Height Energy Roundness Size, Energy/Size, 
     """
 
-    inputFile = open(filename, "r")
-    lines = inputFile.readlines()
-    inputFile.close()
-
-    splitlines = []
-
-    number_pairs_new_columns = int(len(column_number_pairs_for_ratios) / 2)
-
-    line_number = 0
+    with open(filename, "r") as inputFile:
+        lines = inputFile.readlines()
+        
+    number_pairs_new_columns = len(column_number_pairs_for_ratios) // 2
 
     # cluster_count_all = 0  # counter of all clusters
     # cluster_count_ok = 0  # counter of OK clu's
     # cluster_count_bad = 0  # counter of rejected clu's
 
     if new_filter is not None:
-        for line in lines:
-            line_number += 1
+        splitlines = []
+
+        for line_number, line in enumerate(lines, start=1):
             cluster_variable = list(line.rstrip().split(";"))
 
             if line_number <= 2:
                 if line_number == 1:
-                    for k in range(number_pairs_new_columns):
-                        cluster_variable.append(header_text_new_columns[k])
-
+                    cluster_variable.extend(
+                        header_text_new_columns[k]
+                        for k in range(number_pairs_new_columns)
+                    )
                     cluster_variable.append('Applied_filter')
-                    splitlines.append(cluster_variable)
                 else:
-                    for k in range(number_pairs_new_columns):
-                        cluster_variable.append(units_text_new_columns[k])
-
+                    cluster_variable.extend(
+                        units_text_new_columns[k]
+                        for k in range(number_pairs_new_columns)
+                    )
                     cluster_variable.append('1 = ok')
-                    splitlines.append(cluster_variable)
-
             else:
                 cluster_variable = [float(i)
                                for i in list(line.rstrip().split(";"))]
-                
+
                 # cluster_count_all += 1
 
                 for i in range(number_pairs_new_columns):
                     new_column_value = round(
                         cluster_variable[column_number_pairs_for_ratios[i * 2]] / cluster_variable[column_number_pairs_for_ratios[(i * 2) + 1]], 3)
-                    
+
                     cluster_variable.append(new_column_value)
 
                 if new_filter.pass_filter(cluster_variable):
@@ -621,8 +686,7 @@ def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_
                     # cluster_count_bad += 1
                     cluster_variable.append(0)
 
-                splitlines.append(cluster_variable)
-
+            splitlines.append(cluster_variable)
         # print('Number of all clusters = ', cluster_count_all)
         # print('Number of OK clusters = ', cluster_count_ok)
         # print('Number of bad clusters = ', cluster_count_bad)
@@ -669,7 +733,7 @@ def write_coincidence_elist(filename, OutputPath, OutputName):
             bool_value = np.append(bool_value, 0)
 
     out_values = np.column_stack((events[:-1], count[:-1], bool_value))
-    np.savetxt(OutputPath + OutputName, out_values, delimiter=',', header='Event, Count, Is_Coincidence', fmt="%i", comments='')
+    np.savetxt(OutputPath + OutputName + '.txt', out_values, delimiter=',', header='Event, Count, Is_Coincidence', fmt="%i", comments='')
 
 
 def create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_frames):
@@ -1650,3 +1714,5 @@ def print_figure_single_cluster_count_histograms(clog_path, frame_number, Output
     # Draw the scatter plot and marginals.
     scatter_histogram_for_function(clog_path, frame_number, x_column_values, y_row_values, ax, ax_histx, ax_histy)
     
+# test of my github setup
+# trying a new thing
