@@ -4,6 +4,7 @@ import os.path
 import sys
 import glob
 import fnmatch
+import itertools
 import random
 import numpy as np
 import matplotlib
@@ -266,6 +267,19 @@ def print_out_elist(FileOutPath, filename, input_data):
         sys.stdout
 
 
+def print_out_mask(FilePath, filename):
+    """
+    You insert matrix mask for a given detector and this function creates mask that
+    can be used as a DPE input file mask.
+    """
+    mask = np.loadtxt(FilePath + filename)
+    with open(FilePath + '\\DPE_mask_converted.txt', 'w') as f:
+        for i, j in itertools.product(range(256), range(256)):
+            if mask[i,j] == 0:
+                f.write(f'[{str(j)},{str(i)}' + ']\n') 
+       
+
+
 def read_clog(filename):
     """ 
     This function takes in the full filename of a .clog file as an input and is used to read through the file.
@@ -289,10 +303,6 @@ def read_clog(filename):
 
     with open(filename) as inputFile:
         lines = inputFile.readlines()
-<<<<<<< HEAD
-=======
-
->>>>>>> b3d279e6055a39cab3a978310ff140590a4d63c0
     frame_unix_time = np.empty([0])
     frame_times = np.empty([0])
 
@@ -1713,6 +1723,24 @@ def print_figure_single_cluster_count_histograms(clog_path, frame_number, Output
     ax_histy = fig.add_subplot(gs[1, 1], sharey=ax)
     # Draw the scatter plot and marginals.
     scatter_histogram_for_function(clog_path, frame_number, x_column_values, y_row_values, ax, ax_histx, ax_histy)
-    
-# test of my github setup
-# trying a new thing
+
+
+def mm_to_px(value_in_mm):
+    """ This function is designed to simply convert mm values of cluster position X and Y
+    from old Elist format to px values. The output of the newest clusterer is already given
+    in px values so use this for DPE version 1.0.5 and lower."""
+    return (value_in_mm) / 0.055
+
+
+def check_if_position_is_in_mask(PathIn, mask_name, x_value, y_value):
+    """
+    This function checks whether the given X or Y position is in mask. It can be used only for 1 px clusters only.
+    Insert mask matrix with 256x256 dimension
+    """
+    mask = np.loadtxt(PathIn + mask_name)
+
+    if mask[int(mm_to_px(x_value)), int(mm_to_px(y_value))] == 0:
+        return True
+    else:
+        return False
+

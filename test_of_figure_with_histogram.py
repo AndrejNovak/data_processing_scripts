@@ -1,5 +1,10 @@
 from DPE_functions import *
 
+FilePath = r'Q:\timepix_config_calib_files\minipix_tpx2\X00-W1698 500 um Si\\'
+filename = 'X00_mask.txt'
+
+print(check_if_position_is_in_mask(FilePath, filename, 12, 12))
+
 """
 clog_path = r'Q:\DPE_carlos_data_output\2021_10_krakow\Si500um\06\10\Files\ClusterLog.clog'
 elist_path = r'Q:\DPE_carlos_data_output\2021_10_krakow\Si500um\06\10\Files\ExtElist.txt'
@@ -12,10 +17,9 @@ OutputNameElist = 'Elist_coincidence.txt'
 #print_figure_single_cluster_energy_histograms(clog_path, 1, vmax, title, OutputPath, OutputName)
 #print_figure_single_cluster_count_histograms(clog_path, 9, OutputPath, OutputName)
 
-<<<<<<< HEAD
 #write_elist_add_coincidence(elist_path, OutputPath, OutputNameElist)
 
-"""
+
 am_elist_data = np.loadtxt('E:\\DPE_andrej_data_output\\2023_02_24_Am241_time_spectra\\X00_tpx2\\000\\Files\\ExtElist.txt', skiprows=2, delimiter=';')
 
 filtered_data = np.empty([0])
@@ -40,12 +44,12 @@ plt.tick_params(axis='y', labelsize=tickfnt)
 plt.legend(loc='upper right')
 plt.show()
 #plt.savefig('X00_Am241_1ps_clusters.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-"""
 
 
 
 
-"""
+
+
 #---------------------------------
 #Input
 #---------------------------------
@@ -423,17 +427,5 @@ if __name__ == '__main__':
 
 	run_clusterer(clusterer, file_in_path_name, file_out_path, calib_dir, clog_name, elist2_name)
 
-	"""
-=======
-write_elist_add_coincidence(elist_path, OutputPath, OutputNameElist)
-
+	
 """
-
-"""
-Testing the read_clog_multiple() function 
-FileInPath = 'C:/Users/novka/Documents/GitHub/data_processing_scripts/data/L06_02_test/'
-file_names = get_number_of_files(FileInPath, 'clog')[1]
-
-#read_clog_multiple(FileInPath, file_names)
-"""
->>>>>>> b3d279e6055a39cab3a978310ff140590a4d63c0
