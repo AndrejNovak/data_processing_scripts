@@ -15,6 +15,9 @@ from matplotlib.colors import LinearSegmentedColormap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import json
 from scipy.optimize import curve_fit
+from scipy import stats
+from scipy.optimize import curve_fit
+from scipy import asarray as ar,exp
 import pandas as pd
 from collections import Counter
 
@@ -147,8 +150,11 @@ class Cluster_filter_multiple_parameter:
                 ok += 1
             else:
                 return False
+
         if ok == len(self.indices):
             return True
+        
+        
 
 
 class Cluster_filter_multiple_parameter_ratios:
@@ -531,7 +537,8 @@ def read_elist_add_new_parameters(filename, column_number_pairs_for_ratios, head
     return splitlines[0], splitlines[1], splitlines[2:]
 
 
-def read_elist_filter_parameters(filename, column_number_pairs_for_ratios, header_text_new_columns, units_text_new_columns, new_filter=None):
+def read_elist_filter_parameters(filename, new_filter=None):
+    #testing 2023_03_23 def read_elist_filter_parameters(filename, column_number_pairs_for_ratios, header_text_new_columns, units_text_new_columns, new_filter=None):
     """
     # New read_elist function to include option to filter events (Lukas 8 August 22)
 
@@ -586,14 +593,14 @@ def read_elist_filter_parameters(filename, column_number_pairs_for_ratios, heade
             cluster_variable = list(line.rstrip().split(";"))
 
             if line_number <= 2:
-                cluster_variable.append('Applied_filter')
+                cluster_variable.append('Filter')
             else:
                 cluster_variable = [float(i)
                                for i in list(line.rstrip().split(";"))]
                 #cluster_count_all += 1
 
                 if new_filter.pass_filter(cluster_variable):
-                    cluster_count_ok += 1
+                    #cluster_count_ok += 1
                     cluster_variable.append(1)
                 else:
                     #cluster_count_bad += 1
@@ -1732,15 +1739,16 @@ def mm_to_px(value_in_mm):
     return (value_in_mm) / 0.055
 
 
-def check_if_position_is_in_mask(PathIn, mask_name, x_value, y_value):
+def check_if_position_is_in_mask(mask, x_value, y_value):
     """
     This function checks whether the given X or Y position is in mask. It can be used only for 1 px clusters only.
     Insert mask matrix with 256x256 dimension
     """
-    mask = np.loadtxt(PathIn + mask_name)
-
     if mask[int(mm_to_px(x_value)), int(mm_to_px(y_value))] == 0:
         return True
     else:
         return False
 
+
+def gauss_fitting(X,C,X_mean,sigma):
+    return C*exp(-(X-X_mean)**2/(2*sigma**2))
