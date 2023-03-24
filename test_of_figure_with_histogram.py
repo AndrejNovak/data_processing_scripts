@@ -1,9 +1,31 @@
 from DPE_functions import *
 
-FilePath = r'Q:\timepix_config_calib_files\minipix_tpx2\X00-W1698 500 um Si\\'
-filename = 'X00_mask.txt'
+#FilePath = r'Q:\timepix_config_calib_files\minipix_tpx2\X00-W1698 500 um Si\\'
+#filename = 'X00_mask.txt'
 
-print(check_if_position_is_in_mask(FilePath, filename, 12, 12))
+#print(check_if_position_is_in_mask(FilePath, filename, 12, 12))
+
+#clog_path = r'C:\Users\andrej\Documents\FEI\ClusterLog_smooth_cluster.clog'
+clog_path = r'C:\Users\andrej\Documents\FEI\ClusterLog_test.clog'
+vmax = 1E3
+title = 'Test'
+OutputName = 'test_figure'
+OutputPath = r'C:/Users/andrej/Documents/FEI/'
+
+#print_figure_single_cluster_energy_smooth(clog_path, 0, vmax, title, OutputPath, OutputName)
+
+test_original = read_clog(clog_path)[2]
+#print(test_original[1])
+#print(len(test_original))
+#print(test_original)
+with open(OutputPath + "test_original.txt", "w") as my_file:
+    my_file.write(str(test_original))
+
+test_second = read_clog_testing(clog_path)[2]
+#print(test_second[1])
+#print(len(test_second))
+with open(OutputPath + "test_new.txt", "w") as my_file:
+    my_file.write(str(test_second))
 
 """
 clog_path = r'Q:\DPE_carlos_data_output\2021_10_krakow\Si500um\06\10\Files\ClusterLog.clog'

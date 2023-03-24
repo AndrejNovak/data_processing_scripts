@@ -12,7 +12,7 @@ filename_elist = 'Elist_test.txt'
 filename_out = 'Elist_filtered.txt'
 
 # Number of particles to process
-number_of_particles = 10
+number_of_particles = 99
 
 # Calculate new parameters from DPE elist output
 # ratios of Energy and Size, and the second pair is BorderPixel and Size:
@@ -29,7 +29,7 @@ total_number_columns = len(read_elist(folder_data + filename_elist)[0])
 number_column_filter = total_number_columns + 1
 
 #filter_parameters = Cluster_filter_multiple_parameter([10, 10000, 100, 6000], [4, 8]) # Energy Height
-filter_parameters = Cluster_filter_multiple_parameter([10, 500], [4]) # Energy
+filter_parameters = Cluster_filter_multiple_parameter([100, 200], [4]) # Energy Size 7
 
 # Input file
 clog = read_clog(folder_data + filename_clog)[2]
@@ -50,7 +50,8 @@ filtered_elist = read_elist_filter(folder_data + filename_elist, input_column_nu
 # square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, filename_clog, number_column_filter, number_of_particles)
 
 # For TPX frame ToT data
-square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_of_particles)
+#square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_of_particles)
+square_matrices = create_matrix_filter_tpx3_t3pa_testing(filtered_elist, clog, number_of_particles)
 
 # Finally, print matrices that satisfied the particle filter parameters and those that didn't
 energy_colorbar_max_value = 1E4
@@ -58,9 +59,9 @@ toa_colorbar_max_value = 5
 
 folder_figures = r'C:/Users/andrej/Documents/FEI/'
 
-print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Energy square matrix - particles all', folder_figures, 'energy_all')
+print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Energy square matrix - particles all', folder_figures, '1_all')
 #print_figure_toa(square_matrices[1], toa_colorbar_max_value, 'ToA square matrix - particles all', folder_figures, 'toa_all')
-print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Energy square matrix - particles passed', folder_figures, 'energy_passed')
+print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Energy square matrix - particles passed', folder_figures, '2_passed')
 #print_figure_toa(square_matrices[3], toa_colorbar_max_value, 'ToA square matrix - particles passed', folder_figures, 'toa_passed')
-# print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Energy square matrix - particles failed', folder_figures, 'energy_failed')
+#print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Energy square matrix - particles failed', folder_figures, 'failed')
 # print_figure_toa(square_matrices[5], toa_colorbar_max_value, 'ToA square matrix - particles failed', folder_figures, 'toa_failed')

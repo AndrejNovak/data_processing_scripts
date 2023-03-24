@@ -154,8 +154,6 @@ class Cluster_filter_multiple_parameter:
         if ok == len(self.indices):
             return True
         
-        
-
 
 class Cluster_filter_multiple_parameter_ratios:
     """
@@ -285,7 +283,6 @@ def print_out_mask(FilePath, filename):
                 f.write(f'[{str(j)},{str(i)}' + ']\n') 
        
 
-
 def read_clog(filename):
     """ 
     This function takes in the full filename of a .clog file as an input and is used to read through the file.
@@ -339,6 +336,69 @@ def read_clog(filename):
 
     # to fix problem with first list being empty, needs solution without copying for better performance
     return frame_unix_time, frame_times, all_values[1:].copy()
+
+
+def read_clog_testing(filename):
+    """ 
+    This function takes in the full filename of a .clog file as an input and is used to read through the file.
+    The function opens the .clog file and reads all the lines of the file. It then uses a for loop to iterate 
+    through each line in the file. The function looks for lines that begin with "Frame" and extracts the Unix 
+    time and Acquisition time of each frame. These values are stored in lists called frames_unix_time and 
+    frame_times, respectively. The function also looks for lines that contain a specific pattern (using regular 
+    expressions) and extracts the x, y, ToT, and ToA values of each event in the frame. These values are stored 
+    in a nested list called all_values. The function returns three values: a list of Unix times of all frames, 
+    a list of Acquisition times of all frames, and a nested list of all the cluster data in the .clog file.
+    You can access the Unix times of all frames by calling read_clog(filename)[0], the Acquisition times of all 
+    frames by calling read_clog(filename)[1], and the full cluster data by calling read_clog(filename)[2].
+
+    When using 'data = read_clog(FileInPath, filename)[2]', you can traverse the data on level of Frames, 
+    registered values (group of 4 values - [x, y, ToT, ToA]) and selected value from one of the 
+    four possible - x or y or ToT or ToA.
+    To access first layer (selected frame) use: data[0]
+    To access second layer (selected 4-group of selected frame) use: data[0][0]
+    To access third layer (selected value from selected 4-group of selected frame) use: data[0][0][0] 
+    """
+
+    with open(filename) as inputFile:
+        lines = inputFile.readlines()
+    frame_unix_time = np.empty([0])
+    frame_times = np.empty([0])
+
+    current_cluster = []
+    all_values = []
+
+    a = []
+    pattern_b = r"\[[^][]*]"
+
+    frame_counter = 0
+
+    for line in lines:
+        if line != "\n":
+            current_cluster = []
+            if (line.split()[0] == "Frame"):
+                frame_counter += 1
+                unixtime = float(line.split()[2].lstrip("(").rstrip(","))
+                frame_unix_time = np.append(frame_unix_time, unixtime)
+                measurement_time = float(line.split()[3].rstrip(","))
+                frame_times = np.append(frame_times, measurement_time)
+
+                continue
+
+            a = (re.findall(pattern_b, line))
+            #print(f'Frame {frame_counter} with {len(a)} events, specifically {a}')
+            
+            for element in a:
+                b = ("".join(element)).rstrip("]").lstrip("[").split(",")
+                b = [float(x) for x in b]
+                current_cluster.append(b)
+            all_values.append(current_cluster)
+
+            
+            #print(f'The current cluster is {current_cluster}\n')
+
+    # to fix problem with first list being empty, needs solution without copying for better performance
+    return frame_unix_time, frame_times, all_values
+
 
 def read_clog_multiple(FileInPath, file_names):
     """
@@ -826,6 +886,80 @@ def create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, n
     return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad
 
 
+def create_matrix_filter_tpx3_t3pa_testing(filtered_elist, clog, number_frames):
+    """
+    Carlos + Lukas + Andrej, 8 August 2022
+
+    This function creates a filter for a 2D plot of a detector pixel matrix, specifically for TPX3 t3pa data 
+    and its clog output with short time frames (e.g. 100 ns). The function takes in three parameters: 
+    filtered_elist, clog, and number_frames. The filtered_elist is the output of a DPE_CP elist with an added 
+    column from a cluster filter. The clog is the output of a DPE_CP calibration. The number_frames is the number 
+    of frames to integrate, which is either the cluster number (for TPX3 t3pa data) or the frame number (for raw 
+    clog frame data).
+
+    The function creates several matrices: matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, 
+    matrix_energy_bad, and matrix_toa_bad. The function iterates over a list of random numbers and for each 
+    iteration, it retrieves the size of the cluster from the clog, and for each element in the cluster, it 
+    increments the corresponding element (Energy and ToA value) in the matrices. The function also keeps track 
+    of multiplets, which are clusters that have more than one pixel. The function returns the six matrices created.
+
+    Description:
+
+    elist_filtered - the DPE output elist with the added COL from cluster_filter,
+
+    clog - clog output of DPE,
+
+    number_frames - number of frames to integrate, to add to merged plot from the beginning, from frame number zero in the 
+    clog file output of DPE for TPX3 data a frame is created every 100 ns. For TPX3 t3pa data - input number_frames 
+    is the cluster - event number. For raw clog frame data - number_frames is the frame number.
+    """
+
+    random_numbers = list(range(number_frames))
+
+    matrix_energy_all = np.zeros([256, 256])
+    matrix_toa_all = np.zeros([256, 256])
+
+    matrix_energy_ok = np.zeros([256, 256])
+    matrix_toa_ok = np.zeros([256, 256])
+
+    matrix_energy_bad = np.zeros([256, 256])
+    matrix_toa_bad = np.zeros([256, 256])
+
+    jump = 0
+    frame_jump = 0
+    multiplet_number = 0  # to keep record of multiplet occurrence
+
+    for idx, var in enumerate(random_numbers):
+        cluster_size_clog = len(clog[var][:])
+        print(f'The number of events in frame {var} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
+
+        for j in range(cluster_size_clog):
+            x, y = int(clog[var][j][0]), int(clog[var][j][1])
+
+            matrix_energy_all[x, y] += clog[var][j][2]
+            matrix_toa_all[x, y] = clog[var][j][3]
+
+        if filtered_elist[2][var][-1] == 1:
+            # to take into account multiplets, these can be resolved in elist, but not in clog
+
+            for j in range(cluster_size_clog):
+                x, y = int(clog[var][j][0]), int(clog[var][j][1])
+
+                matrix_energy_ok[x, y] += clog[var][j][2]
+                matrix_toa_ok[x, y] = clog[var][j][3]
+
+        else:
+            if jump == 1:
+                for j in range(cluster_size_clog):
+                    x, y = int(clog[var][j][0]), int(clog[var][j][1])
+
+                    matrix_energy_bad[x, y] += matrix_energy_bad[x, y]
+                    matrix_toa_bad[x, y] = clog[var][j][3]
+
+    return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad
+
+
+
 def create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
     """
     Carlos + Lukas + Andrej, 8 August 2022
@@ -943,12 +1077,10 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     """
 
     mydpi = 300
-    tickfnt = 14
+    tickfnt = 16
 
     if not os.path.exists(OutputPath):
         os.makedirs(OutputPath)
-    else:
-        pass
 
     plt.close()
     plt.cla()
@@ -1117,7 +1249,7 @@ def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, Out
     """
     Old name: plot_single_cluster_ToT   
     """
-    tickfnt = 14
+    tickfnt = 16
     margin = 5
 
     clog = read_clog(clog_path)[2]
@@ -1151,6 +1283,86 @@ def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, Out
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(
         matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    plt.gca().xaxis.tick_bottom()
+    plt.clim(1, vmax)
+    cbar = plt.colorbar(label='Energy [keV]', shrink=0.8, aspect=20*0.8)
+    cbar.set_label(label='Energy [keV]', size=tickfnt,
+                   weight='regular')   # format="%.1E"
+    cbar.ax.tick_params(labelsize=tickfnt)
+    plt.title(label=title, fontsize=tickfnt+4)
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
+                dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    np.savetxt(OutputPath + OutputName + '_' +
+               str(frame_number) + '.txt', matrix, fmt="%.3f")
+
+
+def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, title, OutputPath, OutputName):
+    """
+    The same function as print_figure_single_cluster_energy with smoothened scale
+    """
+    tickfnt = 14
+    margin = 5
+
+    clog = read_clog(clog_path)[2]
+    matrix = np.zeros([256, 256])
+
+    x = []
+    y = []
+    print(len(clog))
+    for i in range(len(clog[frame_number][:])):
+        x.append(clog[frame_number][i][0])
+        y.append(clog[frame_number][i][1])
+
+    for i in range(len(clog[frame_number][:])):
+        matrix[int(x[i]), int(y[i])] += clog[frame_number][i][2]
+
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+    else:
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+    else:
+        difference_position_y = 0
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    plt.subplot()
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
+    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # If the orientation of matrix doesnt fit, use this instead
+    plt.imshow(np.flip(np.rot90(
+        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm(), interpolation='gaussian')
+    plt.gca().xaxis.tick_bottom()
+    plt.clim(1, vmax)
+    cbar = plt.colorbar(label='Energy [keV]', shrink=0.8, aspect=20*0.8)
+    cbar.set_label(label='Energy [keV]', size=tickfnt,
+                   weight='regular')   # format="%.1E"
+    cbar.ax.tick_params(labelsize=tickfnt)
+    plt.title(label=title, fontsize=tickfnt+4)
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '_smooth.png',
+                dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    np.savetxt(OutputPath + OutputName + '_' +
+               str(frame_number) + '_smooth.txt', matrix, fmt="%.3f")
+    
+    plt.close()
+    plt.cla()
+    plt.clf()
+    plt.subplot()
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
+    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # If the orientation of matrix doesnt fit, use this instead
+    plt.imshow(np.flip(np.rot90(
+        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm(), interpolation='None')
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
     cbar = plt.colorbar(label='Energy [keV]', shrink=0.8, aspect=20*0.8)
@@ -1248,7 +1460,7 @@ def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, O
     
     For Timepix3 and Timepix2 detectors.
     """
-    tickfnt = 14
+    tickfnt = 16
     margin = 5
 
     clog = read_clog(clog_path)[2]
@@ -1305,7 +1517,7 @@ def print_figure_single_cluster_toa_tpx(clog_path, frame_number, vmax, title, Ou
     
     For Timepix detectors.
     """
-    tickfnt = 14
+    tickfnt = 16
     margin = 5
 
     clog = read_clog(clog_path)[2]
@@ -1360,7 +1572,7 @@ def plot_single_cluster_toa_gaas(OutputPath, clog_path, frame_number, indicator,
     """
     This is a plot function that I used for Elitech 2023 school article, it is not really published.
     """
-    tickfnt = 14
+    tickfnt = 16
     margin = 5
 
     clog = read_clog(clog_path)[2]
