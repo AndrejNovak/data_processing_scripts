@@ -35,6 +35,8 @@ x_mean_value = []
 x_mean_value_error = []
 sigma_value = []
 sigma_value_error = []
+fwhm_value = []
+fwhm_value_error = []
 
 for i in range(len(subdirectories)-1):
     filtered_data = []
@@ -87,6 +89,8 @@ for i in range(len(subdirectories)-1):
     x_mean_value_error.append(np.sqrt(param_covariance_matrix[1,1]))
     sigma_value.append(param_optimised[2])
     sigma_value_error.append(np.sqrt(param_covariance_matrix[2,2]))
+    fwhm_value.append(np.sqrt(8 * np.log(2)) * param_optimised[2])
+    fwhm_value_error.append(np.sqrt(8 * np.log(2)) * np.sqrt(param_covariance_matrix[2,2]))
 
 np.savetxt(PathOut + '\\number_of_single_pixel_counts_bias_scan_X00.txt', number_of_single_pixel_counts)
 

@@ -285,6 +285,13 @@ def print_out_mask(FilePath, filename):
 
 def read_clog(filename):
     """ 
+    *** WARNING *** Use this function only for printing figures of total deposited energy. This clog accesses
+    the data on a frame level and therefore is not suited for use in filtration results printing. The problem
+    in this case is that when one of the coincidence clusters in the frame passes the filter, the whole frame
+    is then passed to create_matrix function and disrupts the consecutive visual filter validation and verification.
+    This is a huge problem mainly in TPX2 data acquired at simultaneous ToT & ToA operation mode (every event
+    that is detected inherits the ToA value of the first registered event in the frame).
+
     This function takes in the full filename of a .clog file as an input and is used to read through the file.
     The function opens the .clog file and reads all the lines of the file. It then uses a for loop to iterate 
     through each line in the file. The function looks for lines that begin with "Frame" and extracts the Unix 
@@ -340,6 +347,11 @@ def read_clog(filename):
 
 def read_clog_testing(filename):
     """ 
+    *** INFO *** If you want to access data on a frame level and print total deposited energy, 
+    use read_clog() function. read_clog_testning function is designed for correlation with Elist
+    and for correct printing of clusters that passed filtration parameters. Here, clusters are not
+    divided into their respective frames but each individual cluster is separated.
+
     This function takes in the full filename of a .clog file as an input and is used to read through the file.
     The function opens the .clog file and reads all the lines of the file. It then uses a for loop to iterate 
     through each line in the file. The function looks for lines that begin with "Frame" and extracts the Unix 
@@ -959,7 +971,6 @@ def create_matrix_filter_tpx3_t3pa_testing(filtered_elist, clog, number_frames):
     return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad
 
 
-
 def create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
     """
     Carlos + Lukas + Andrej, 8 August 2022
@@ -1340,7 +1351,7 @@ def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, tit
         matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm(), interpolation='gaussian')
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
-    cbar = plt.colorbar(label='Energy [keV]', shrink=0.8, aspect=20*0.8)
+    cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) #shrink=0.8
     cbar.set_label(label='Energy [keV]', size=tickfnt,
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
