@@ -37,6 +37,8 @@ x_mean_value = []
 x_mean_value_error = []
 sigma_value = []
 sigma_value_error = []
+fwhm_value = []
+fwhm_value_error = []
 
 for i in range(len(subdirectories)-1):
     filtered_data = []
@@ -89,6 +91,8 @@ for i in range(len(subdirectories)-1):
     x_mean_value_error.append(np.sqrt(param_covariance_matrix[1,1]))
     sigma_value.append(param_optimised[2])
     sigma_value_error.append(np.sqrt(param_covariance_matrix[2,2]))
+    fwhm_value.append(np.sqrt(8 * np.log(2)) * param_optimised[2])
+    fwhm_value_error.append(np.sqrt(8 * np.log(2)) * np.sqrt(param_covariance_matrix[2,2]))
 
 np.savetxt(PathOut + '\\number_of_single_pixel_counts_X00.txt', number_of_single_pixel_counts)
 
@@ -116,7 +120,7 @@ plt.cla()
 plt.plot(x, counts, linewidth=2)
 plt.xlim(left=0, right=150)
 plt.ylim(bottom=1E5, top=1.2E5)
-plt.xlabel('Bias voltage [V]', fontsize=tickfnt)
+plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)

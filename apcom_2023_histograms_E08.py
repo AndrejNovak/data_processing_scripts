@@ -1,7 +1,7 @@
 from DPE_functions import *
 
-PathIn = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\X00_Am241'
-PathOut = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\X00_Am241'
+PathIn = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\E08_Am241'
+PathOut = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\E08_Am241'
 #MaskPath = r'Q:\timepix_config_calib_files\minipix_tpx2\X00-W1698 500 um Si\\'
 #MaskName = 'X00_mask.txt'
 #mask = np.loadtxt(MaskPath + MaskName)
@@ -37,6 +37,8 @@ x_mean_value = []
 x_mean_value_error = []
 sigma_value = []
 sigma_value_error = []
+fwhm_value = []
+fwhm_value_error = []
 
 for i in range(len(subdirectories)-1):
     filtered_data = []
@@ -89,13 +91,13 @@ for i in range(len(subdirectories)-1):
     x_mean_value_error.append(np.sqrt(param_covariance_matrix[1,1]))
     sigma_value.append(param_optimised[2])
     sigma_value_error.append(np.sqrt(param_covariance_matrix[2,2]))
+    fwhm_value.append(np.sqrt(8 * np.log(2)) * param_optimised[2])
+    fwhm_value_error.append(np.sqrt(8 * np.log(2)) * np.sqrt(param_covariance_matrix[2,2]))
 
 np.savetxt(PathOut + '\\number_of_single_pixel_counts_E08.txt', number_of_single_pixel_counts)
 
 out_values = np.column_stack((counts, counts_error, c_value, c_value_error, x_mean_value, x_mean_value_error, sigma_value, sigma_value_error))
 np.savetxt(PathOut + '\\gauss_fit_results.txt', out_values, delimiter=';', header='Counts, Counts_error, c, c_error, x_mean, x_mean_error, sigma, sigma_error')
-
-
 plt.close()
 plt.clf()
 plt.cla()
@@ -116,7 +118,7 @@ plt.cla()
 plt.plot(x, counts, linewidth=2)
 plt.xlim(left=0, right=327)
 #plt.ylim(bottom=1E5, top=1.2E5)
-plt.xlabel('Bias voltage [V]', fontsize=tickfnt)
+plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)

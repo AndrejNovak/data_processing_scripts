@@ -5,28 +5,36 @@ from DPE_functions import *
 
 #print(check_if_position_is_in_mask(FilePath, filename, 12, 12))
 
-#clog_path = r'C:\Users\andrej\Documents\FEI\ClusterLog_smooth_cluster.clog'
+vmax = 1E3
+title = 'Test'
+OutputName = 'test_figure'
+OutputPath = r'C:/Users/andrej/Documents/FEI/'
+
+clog_path = r'C:\Users\andrej\Documents\FEI\ClusterLog_smooth_cluster.clog'
+print_figure_single_cluster_energy_smooth(clog_path, 0, vmax, title, OutputPath, OutputName)
+
 clog_path = r'C:\Users\andrej\Documents\FEI\ClusterLog_test.clog'
 vmax = 1E3
 title = 'Test'
 OutputName = 'test_figure'
 OutputPath = r'C:/Users/andrej/Documents/FEI/'
 
-#print_figure_single_cluster_energy_smooth(clog_path, 0, vmax, title, OutputPath, OutputName)
-
 test_original = read_clog(clog_path)[2]
 #print(test_original[1])
 #print(len(test_original))
 #print(test_original)
-with open(OutputPath + "test_original.txt", "w") as my_file:
+with open(OutputPath + "test_clog_original_function.txt", "w") as my_file:
     my_file.write(str(test_original))
 
 test_second = read_clog_testing(clog_path)[2]
 #print(test_second[1])
 #print(len(test_second))
-with open(OutputPath + "test_new.txt", "w") as my_file:
+with open(OutputPath + "test_clog_new_function.txt", "w") as my_file:
     my_file.write(str(test_second))
 
+
+print(f'Length of original clog is {len(test_original)}, while new length is {len(test_second)}.')
+print('This means that the first clog function goes through frames and the second goes cluster by cluster')
 """
 clog_path = r'Q:\DPE_carlos_data_output\2021_10_krakow\Si500um\06\10\Files\ClusterLog.clog'
 elist_path = r'Q:\DPE_carlos_data_output\2021_10_krakow\Si500um\06\10\Files\ExtElist.txt'
