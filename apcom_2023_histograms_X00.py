@@ -21,7 +21,7 @@ if os.path.isfile(PathOut + '\\number_of_single_pixel_counts_X00.txt'):
     plt.ylabel('Number of counts [-]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Number of counts in all measurements at 200V bias, X00 TPX2 Si 500 $\mu$m')
+    plt.title('TPX2 X00 Si 500 $\mu$m, 200V bias')
     plt.savefig(PathOut + '\\X00_tpx2_total_counts_200V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)   
 
 subdirectories = get_subdirectory_names(PathIn)
@@ -70,7 +70,7 @@ for i in range(len(subdirectories)-1):
     plt.ylabel('Number of counts [-]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title(f'Am-241 spectrum single pixel, measurement #{i}, X00 TPX2 Si 500 $\mu$m')
+    plt.title(f'TPX2 X00 Si 500 $\mu$m, 200V bias, measurement #{i}')
     plt.savefig(PathOut + '\\histograms\\X00_tpx2_histogram_'+str(i)+'.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(PathOut + '\\histograms\\X00_tpx2_histogram_data_'+str(i)+'.txt', np.c_[xs[1:], ys])
 
@@ -110,7 +110,7 @@ plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
-plt.title('Number of counts in all measurements at 200V bias, X00 TPX2 Si 500 $\mu$m')
+plt.title('TPX2 X00 Si 500 $\mu$m, 200V bias')
 plt.savefig(PathOut + '\\X00_tpx2_total_counts_200V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 
@@ -124,5 +124,5 @@ plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
-plt.title('Number of counts in Am-241 peak at different bias, X00 TPX2 Si 500 $\mu$m')
+plt.title('Am-241 59.6 keV peak 200V bias, TPX2 X00 Si 500$\mu$m')
 plt.savefig(PathOut + '\\X00_tpx2_Am241_counts_Am241_200V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)

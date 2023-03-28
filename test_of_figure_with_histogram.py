@@ -1,10 +1,15 @@
 from DPE_functions import *
 
+FileInPath = r'Q:\DPE_carlos_data_output\2022_06_krakow\B3\H09_TPX3_Si500\07\Files\\'
+
+read_clog_multiple(FileInPath)
+
 #FilePath = r'Q:\timepix_config_calib_files\minipix_tpx2\X00-W1698 500 um Si\\'
 #filename = 'X00_mask.txt'
 
 #print(check_if_position_is_in_mask(FilePath, filename, 12, 12))
 
+####### TEST OF NEW CLOG READING #########
 vmax = 1E3
 title = 'Test'
 OutputName = 'test_figure'
@@ -19,22 +24,8 @@ title = 'Test'
 OutputName = 'test_figure'
 OutputPath = r'C:/Users/andrej/Documents/FEI/'
 
-test_original = read_clog(clog_path)[2]
-#print(test_original[1])
-#print(len(test_original))
-#print(test_original)
-with open(OutputPath + "test_clog_original_function.txt", "w") as my_file:
-    my_file.write(str(test_original))
+####### TEST OF NEW CLOG READING #########
 
-test_second = read_clog_testing(clog_path)[2]
-#print(test_second[1])
-#print(len(test_second))
-with open(OutputPath + "test_clog_new_function.txt", "w") as my_file:
-    my_file.write(str(test_second))
-
-
-print(f'Length of original clog is {len(test_original)}, while new length is {len(test_second)}.')
-print('This means that the first clog function goes through frames and the second goes cluster by cluster')
 """
 clog_path = r'Q:\DPE_carlos_data_output\2021_10_krakow\Si500um\06\10\Files\ClusterLog.clog'
 elist_path = r'Q:\DPE_carlos_data_output\2021_10_krakow\Si500um\06\10\Files\ExtElist.txt'
