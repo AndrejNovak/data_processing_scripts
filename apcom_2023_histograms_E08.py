@@ -7,7 +7,7 @@ PathOut = r'Q:\DPE_andrej_data_output\2023_02_24_Am241_time_spectra\E08_Am241'
 #mask = np.loadtxt(MaskPath + MaskName)
 
 tickfnt = 16
-x = np.linspace(0,327,328)
+x = np.linspace(0,326,327)
 
 if os.path.isfile(PathOut + '\\number_of_single_pixel_counts_E08.txt'):
     number_of_single_pixel_counts = np.loadtxt(PathOut + '\\number_of_single_pixel_counts_E08.txt')
@@ -15,13 +15,13 @@ if os.path.isfile(PathOut + '\\number_of_single_pixel_counts_E08.txt'):
     plt.clf()
     plt.cla()
     plt.plot(x, number_of_single_pixel_counts, linewidth=2)
-    plt.xlim(left=0, right=327)
+    plt.xlim(left=0, right=326)
     #plt.ylim(bottom=4.8E6, top=5.2E6)
     plt.xlabel('Measurement number [-]', fontsize=tickfnt)
     plt.ylabel('Number of counts [-]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Number of counts in all measurements at 100V bias, E08 TPX Si 300 $\mu$m')
+    plt.title('TPX E08 Si 300 $\mu$m, 100V bias')
     plt.savefig(PathOut + '\\E08_tpx_total_counts_100V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)   
 
 subdirectories = get_subdirectory_names(PathIn)
@@ -56,7 +56,8 @@ for i in range(len(subdirectories)-1):
             if am_elist_data[j, 7] == 1 and am_elist_data[j,4] < 65 #and check_if_position_is_in_mask(mask, am_elist_data[j,2], am_elist_data[j,3]) == False
         )
         np.savetxt(PathOut + '\\histograms\\E08_tpx_filtered_data_'+str(i)+'.txt', filtered_data)
-
+    
+ 
     plt.close()
     plt.clf()
     plt.cla()
@@ -70,7 +71,7 @@ for i in range(len(subdirectories)-1):
     plt.ylabel('Number of counts [-]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title(f'Am-241 spectrum single pixel, measurement #{i}, E08 TPX Si 300 $\mu$m')
+    plt.title(f'TPX E08 Si 300$\mu$m, measurement #{i}')
     plt.savefig(PathOut + '\\histograms\\E08_tpx_histogram_'+str(i)+'.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(PathOut + '\\histograms\\E08_tpx_histogram_data_'+str(i)+'.txt', np.c_[xs[1:], ys])
 
@@ -98,17 +99,19 @@ np.savetxt(PathOut + '\\number_of_single_pixel_counts_E08.txt', number_of_single
 
 out_values = np.column_stack((counts, counts_error, c_value, c_value_error, x_mean_value, x_mean_value_error, sigma_value, sigma_value_error))
 np.savetxt(PathOut + '\\gauss_fit_results.txt', out_values, delimiter=';', header='Counts, Counts_error, c, c_error, x_mean, x_mean_error, sigma, sigma_error')
+
+
 plt.close()
 plt.clf()
 plt.cla()
 plt.plot(x, number_of_single_pixel_counts, linewidth=2)
-plt.xlim(left=0, right=327)
+plt.xlim(left=0, right=326)
 #plt.ylim(bottom=4.8E6, top=5E6)
 plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
-plt.title('Number of counts in all measurements at 100V bias, E08 TPX Si 300 $\mu$m')
+plt.title('TPX E08 Si 300$\mu$m, 100V')
 plt.savefig(PathOut + '\\E08_tpx_total_counts_100V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 
@@ -116,11 +119,11 @@ plt.close()
 plt.clf()
 plt.cla()
 plt.plot(x, counts, linewidth=2)
-plt.xlim(left=0, right=327)
+plt.xlim(left=0, right=326)
 #plt.ylim(bottom=1E5, top=1.2E5)
 plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
-plt.title('Number of counts in Am-241 peak at 100V bias, E08 TPX Si 300 $\mu$m')
+plt.title('Am-241 59.6 keV peak 100V bias, TPX E08 Si 300$\mu$m')
 plt.savefig(PathOut + '\\E08_tpx_Am241_counts_100V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)

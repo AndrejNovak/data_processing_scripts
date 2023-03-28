@@ -9,8 +9,6 @@ mask = np.loadtxt(MaskPath + MaskName)
 tickfnt = 16
 x = np.linspace(0,149,150)
 
-subdirectories = get_subdirectory_names(PathIn)
-
 if os.path.isfile(PathOut + '\\number_of_single_pixel_counts_L06.txt'):
     number_of_single_pixel_counts = np.loadtxt(PathOut + '\\number_of_single_pixel_counts_L06.txt')
     plt.close()
@@ -19,13 +17,14 @@ if os.path.isfile(PathOut + '\\number_of_single_pixel_counts_L06.txt'):
     plt.plot(x, number_of_single_pixel_counts, linewidth=1.75)
     plt.xlim(left=0, right=160)
     #plt.ylim(bottom=1, top=1E6)
-    #plt.yscale('log')
     plt.xlabel('Measurement number [-]', fontsize=tickfnt)
     plt.ylabel('Number of counts [-]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Number of counts in all measurements at 200V bias, L06 TPX3 SiC 300$\mu$m')
+    plt.title('TPX3 L06 SiC 300 $\mu$m, 200V bias')
     plt.savefig(PathOut + '\\L06_tpx3_total_counts_200V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)  
+
+subdirectories = get_subdirectory_names(PathIn)
 
 number_of_single_pixel_counts = []
 
@@ -71,7 +70,7 @@ for i in range(len(subdirectories)-1):
     plt.ylabel('Number of counts [-]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title(f'Am-241 spectrum single pixel, measurement #{i}, L06 TPX3 SiC 300$\mu$m')
+    plt.title(f'TPX3 L06 SiC 300 $\mu$m, 200V bias, measurement #{i}')
     plt.savefig(PathOut + '\\histograms\\L06_tpx3_histogram_'+str(i)+'.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(PathOut + '\\histograms\\L06_tpx3_histogram_data_'+str(i)+'.txt', np.c_[xs[1:], ys])
 
@@ -112,7 +111,7 @@ plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
-plt.title('Number of counts in all measurements at 200V bias, L06 TPX3 SiC 300$\mu$m')
+plt.title('TPX3 L06 SiC 300 $\mu$m, 200V bias')
 plt.savefig(PathOut + '\\L06_tpx3_total_counts_200V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 plt.close()
@@ -126,5 +125,5 @@ plt.xlabel('Measurement number [-]', fontsize=tickfnt)
 plt.ylabel('Number of counts [-]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
-plt.title('Number of counts in Am-241 peak at 200V bias, L06 TPX3 SiC 300$\mu$m')
+plt.title('Am-241 59.6 keV peak 200V bias, TPX3 L06 SiC 300$\mu$m')
 plt.savefig(PathOut + '\\L06_tpx3_Am241_counts_200V.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
