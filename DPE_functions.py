@@ -1804,6 +1804,7 @@ def create_matrix_tpx(filename, frame_number, what_type):
 
     clog = read_clog(filename)[2]
     matrix = np.zeros([256, 256])
+    matrix_counts = np.zeros([256, 256])
 
     if what_type == 'ToT':
         for j in range(len(clog[frame_number][:])):
@@ -1813,8 +1814,9 @@ def create_matrix_tpx(filename, frame_number, what_type):
         for j in range(len(clog[frame_number][:])):
             x, y = int(clog[frame_number][j][0]), int(clog[frame_number][j][1])
             matrix[x, y] += clog[frame_number][j][2]
+            matrix_counts[x, y] += 1
 
-    return matrix
+    return matrix, matrix_counts
 
 
 def scatter_histogram_for_function(clog_path, frame_number, x, y, ax, ax_histx, ax_histy):
