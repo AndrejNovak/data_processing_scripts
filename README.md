@@ -1,9 +1,8 @@
 # Data Processing Scripts
 
-These scripts are developed for post-processing of Timepix/3 detectors with different sensors and their data outputs from the Data Processing Engine (DPE). Some functions were developed in cooperation with Carlos Granja and Lukas Marek. Before utilising these scripts for your results, please contact authors or use co-author citation. Thank you!
+This library of scripts/functions is developed for post-processing of Timepix/Timepix3/Timepix4 detectors with different sensors and their data outputs acquired from the Data Processing Engine (DPE) in development at Advacam s.r.o. Some functions were developed in cooperation with Carlos Granja and Lukas Marek. Before using these scripts for your need, please contact authors. Please don't forget to mention or use co-author citation in your publication. Thank you!
 
-As of 2023-02-01 I began the process of coincidence analysis and improvement of coindicende event filtration for displaying in figures.
-
+The library contains functions that are capable of reading both Elist and clog files from DPE, add new cluster calculated parameters, write new elist, output coincidence clusters info, create matrices from clogs, print energy and ToA of individual clusters, print energy and ToA of multiple clusters, combination of particle filtration and printing into matrix.
 
 # Functions to implement:
 1) Single particle tracks with histograms on top and right side of the track to indicate the energy deposited in each row and column. (In progress)
@@ -17,10 +16,4 @@ As of 2023-02-01 I began the process of coincidence analysis and improvement of 
     - each part of the image can be also saved individually.
     - this can be made such that the main image will always be the deposited energy. The other option is to draw each cluster with one specific value of the whole cluster - its height, roundness,...
 
-7) Create a plot of single frames representing counts - similiar to plot of total deposited energy.
-
-8) Create a plot with clusters that were registered by the detector within time set on input - Elist from DPE gives a time value in nanoseconds.
-
-9) Create a figure that shows recalculated total deposited energy to dose that was deposited in the sensor based on the sensor material (this value depends on material density - Si, SiC, CdTe, GaAs, Diamond).
-
-10) Update read_clog function so that it is able to load multiple clog files in a given directory. This needs to be implemented since the number of clogs created by DPE is the same as the number of input clogs to DPE; however, the Elist gives only one list with all the processed events and therefore the event correlation has to be updated.
+5) Create a figure that shows recalculated total deposited energy to dose that was deposited in the sensor based on the sensor material (this value depends on material density - Si, SiC, CdTe, GaAs, Diamond).

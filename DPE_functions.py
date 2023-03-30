@@ -421,38 +421,19 @@ def read_clog_multiple(FileInPath):
     """
     
     OutputPath = FileInPath
-    elist_path = FileInPath + 'ExtElist.txt'
-
-    elist_data = read_elist(elist_path)[2]
+    
+    #elist_path = FileInPath + 'ExtElist.txt'
+    #elist_data = read_elist(elist_path)[2]
+    #OutputName = 'Coincidence_ExtElist'
+    #write_coincidence_elist(elist_path, OutputPath, OutputName)
 
     full_clog_data = []
 
     for file in os.listdir(FileInPath):
         if file.endswith('.clog') and not file.startswith('MASK'):
-            #print(os.path.join(FileInPath, file))
-            #print(len(read_clog_clusters(os.path.join(FileInPath, file))[2]))
-            #clog_length.append(len(read_clog_clusters(os.path.join(FileInPath, file))[2]))
             full_clog_data.extend(read_clog_clusters(os.path.join(FileInPath, file))[2])
 
-    #print(f'Length of joined full data: {len(full_clog_data)}')
-    #print(f'Length of individual clogs: {clog_length[:]}')
-
-    #print(full_clog_data[0][:])
-    #print(full_clog_data[-1][:])
-
-    OutputName = 'Coincidence_ExtElist'
-    write_coincidence_elist(elist_path, OutputPath, OutputName)
-
-    #numbering = np.linspace(0, len(full_clog_data), len(full_clog_data) + 1, dtype=int)
-    #numbering_column = numbering[:, None].copy()
-    #print(numbering_column)
-
-    #write_elist(elist_path, 'Cluster_ID', '-', numbering_column)
-
-    # Úlohy:
-    # 2) Vytvorenie Elistu, do ktorého sa zapíše postupné číslovanie jednotlivých riadkov / clusterov
-
-    return 0
+    return full_clog_data
 
 
 def get_elist_column(filename, col_name):
@@ -793,6 +774,28 @@ def write_coincidence_elist(filename, OutputPath, OutputName):
 
     out_values = np.column_stack((events[:-1], count[:-1], bool_value))
     np.savetxt(OutputPath + OutputName + '.txt', out_values, delimiter=',', header='Event, Count, Is_Coincidence', fmt="%i", comments='')
+
+
+def create_matrix_tpx3_t3pa(clog, number_of_clusters):
+    """
+    Only matrix creation without selection of filtration pass filter
+    """
+    matrix_energy = np.zeros([256, 256])
+
+    counter = 0
+
+    for i in range(len(clog)):
+        cluster_size_clog = len(clog[i][:])
+        
+        # TOTO PO IWORID ABSTRAKTE VYMAZAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if cluster_size_clog > 4 and counter < number_of_clusters:
+            counter += 1
+            for j in range(cluster_size_clog):
+                x, y = int(clog[i][j][0]), int(clog[i][j][1])
+                matrix_energy[x, y] += clog[i][j][2]
+
+    print(f'VYMAZAT!!! - pocet eventov ktore presli v experimente je: {counter}')
+    return matrix_energy
 
 
 def create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_frames):
@@ -1804,6 +1807,7 @@ def create_matrix_tpx(filename, frame_number, what_type):
 
     clog = read_clog(filename)[2]
     matrix = np.zeros([256, 256])
+    matrix_counts = np.zeros([256, 256])
 
     if what_type == 'ToT':
         for j in range(len(clog[frame_number][:])):
@@ -1813,8 +1817,9 @@ def create_matrix_tpx(filename, frame_number, what_type):
         for j in range(len(clog[frame_number][:])):
             x, y = int(clog[frame_number][j][0]), int(clog[frame_number][j][1])
             matrix[x, y] += clog[frame_number][j][2]
+            matrix_counts[x, y] += 1
 
-    return matrix
+    return matrix, matrix_counts
 
 
 def scatter_histogram_for_function(clog_path, frame_number, x, y, ax, ax_histx, ax_histy):
