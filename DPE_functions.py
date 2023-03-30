@@ -1074,7 +1074,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title(label=title, fontsize=tickfnt+4)
+    plt.title(label=title, fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
