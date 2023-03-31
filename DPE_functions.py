@@ -1080,6 +1080,48 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
+def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName):
+    """
+    Old name: print_fig_E
+
+    Function to print a figure of deposited energy in logarithmic colorbar scale.
+    """
+
+    mydpi = 300
+    tickfnt = 16
+
+    if not os.path.exists(OutputPath):
+        os.makedirs(OutputPath)
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
+    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # If the orientation of matrix doesnt fit, use this instead
+    plt.matshow(np.flip(np.rot90(
+        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    plt.gca().xaxis.tick_bottom()
+    cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+    cbar.set_label(label='Energy [keV]', size=tickfnt,
+                   weight='regular')   # format="%.1E"
+    cbar.ax.tick_params(labelsize=tickfnt)
+    # plt.clim(vmin,vmax) - set your own range using vmin, vmax
+    plt.clim(1, vmax)
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.xlim([0,100])
+    plt.ylim([0,100])
+    #plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+    #plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title(label=title, fontsize=tickfnt)
+    plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
+                transparent=True, bbox_inches="tight", pad_inches=0.01)
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+
+
 def print_figure_toa(matrix, vmax, title, OutputPath, OutputName):
     """
     Old name: print_fig_ToA

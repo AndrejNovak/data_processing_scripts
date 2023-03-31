@@ -25,7 +25,7 @@ elist_L06_rez = np.loadtxt(path_L06_rez + 'ExtElist.txt', skiprows=2, delimiter=
 elist_L06_n_low = np.loadtxt(path_L06_n_low + 'ExtElist.txt', skiprows=2, delimiter=';')
 elist_L06_n_high = np.loadtxt(path_L06_n_high + 'ExtElist.txt', skiprows=2, delimiter=';')
 
-energy_colorbar_max_value = 1E4
+energy_colorbar_max_value = 2E3
 name_L07 = ['L07 PTC - 226 MeV 75 deg', 'L07 Rez - 31 MeV 75 deg', 'L07 VdG - 770 keV', 'L07 VdG - 15.5 MeV']
 name_L06 = ['L06 Rez - 31 MeV 75 deg', 'L06 VdG - 770 keV', 'L06 VdG - 15.5 MeV']
 folder_figures = r'C:\Users\andrej\Documents\FEI\2023_iworid_prispevok\abstrakt_figures\\'
@@ -85,7 +85,7 @@ plt.tick_params(axis='y', labelsize=tickfnt)
 plt.title('Cluster height distribution')
 plt.legend(loc='upper right')
 plt.savefig(folder_figures + 'histogram_2_height.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
-"""
+
 plt.close()
 plt.clf()
 plt.cla()
@@ -107,7 +107,7 @@ plt.tick_params(axis='y', labelsize=tickfnt)
 plt.title('Cluster size distribution')
 plt.legend(loc='upper right')
 plt.savefig(folder_figures + 'histogram_3_size.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
-"""
+
 L07_ptc_LET = elist_L07_ptc[:,4] / (np.sqrt((elist_L07_ptc[:,13] * 55) ** 2 + 65**2))
 L07_rez_LET = elist_L07_rez[:,4] / (np.sqrt((elist_L07_rez[:,13] * 55) ** 2 + 65**2))
 L07_n_low_LET = elist_L07_n_low[:,4] / (np.sqrt((elist_L07_n_low[:,13] * 55) ** 2 + 65**2))
@@ -195,16 +195,30 @@ print_figure_energy(matrix_protony_rez_L06, energy_colorbar_max_value, 'Deposite
 print_figure_energy(matrix_neutrony_low_L06, energy_colorbar_max_value, 'Deposited energy by ' + str(number_of_events) + ' events', folder_figures, str(name_L06[1]))
 print_figure_energy(matrix_neutrony_high_L06, energy_colorbar_max_value, 'Deposited energy by ' + str(number_of_events) + ' events', folder_figures, str(name_L06[2]))
 
-matrix_total_L07 = np.zeros([256,256])
-matrix_total_L06 = np.zeros([256,256])
+#matrix_total_L07 = np.zeros([256,256])
+#matrix_total_L06 = np.zeros([256,256])
 
-matrix_total_L07[0:128,128:256] = matrix_protony_ptc_L07[64:192,64:192]
-matrix_total_L07[128:256,128:256] = matrix_protony_rez_L07[64:192,64:192]
-matrix_total_L07[0:128,0:128] = matrix_neutrony_low_L07[64:192,64:192]
-matrix_total_L07[128:256,0:128] = matrix_neutrony_high_L07[64:192,64:192]
-print_figure_energy(matrix_total_L07, energy_colorbar_max_value, 'Deposited energy in TPX3 L07 by ' + str(number_of_events) + ' events', folder_figures, '4_segment_L07')
+#matrix_total_L07[0:128,128:256] = matrix_protony_ptc_L07[64:192,64:192]
+#matrix_total_L07[128:256,128:256] = matrix_protony_rez_L07[64:192,64:192]
+#xmatrix_total_L07[0:128,0:128] = matrix_neutrony_low_L07[64:192,64:192]
+#matrix_total_L07[128:256,0:128] = matrix_neutrony_high_L07[64:192,64:192]
+#print_figure_energy(matrix_total_L07, energy_colorbar_max_value, 'Deposited energy in TPX3 L07 by ' + str(number_of_events) + ' events', folder_figures, '4_segment_L07')
 
-matrix_total_L06[128:256,128:256] = matrix_protony_rez_L06[64:192,64:192]
-matrix_total_L06[0:128,0:128] = matrix_neutrony_low_L06[64:192,64:192]
-matrix_total_L06[128:256,0:128] = matrix_neutrony_high_L06[64:192,64:192]
-print_figure_energy(matrix_total_L06, energy_colorbar_max_value, 'Deposited energy in TPX3 L06 by ' + str(number_of_events) + ' events', folder_figures, '4_segment_L06')
+#matrix_total_L06[128:256,128:256] = matrix_protony_rez_L06[64:192,64:192]
+#matrix_total_L06[0:128,0:128] = matrix_neutrony_low_L06[64:192,64:192]
+#matrix_total_L06[128:256,0:128] = matrix_neutrony_high_L06[64:192,64:192]
+#print_figure_energy(matrix_total_L06, energy_colorbar_max_value, 'Deposited energy in TPX3 L06 by ' + str(number_of_events) + ' events', folder_figures, '4_segment_L06')
+
+matrix_total_L07 = np.zeros([100,100])
+matrix_total_L06 = np.zeros([100,100])
+
+matrix_total_L07[0:50,50:100] = matrix_protony_ptc_L07[100:150,100:150]
+matrix_total_L07[50:100,50:100] = matrix_protony_rez_L07[100:150,100:150]
+matrix_total_L07[0:50,0:50] = matrix_neutrony_low_L07[100:150,100:150]
+matrix_total_L07[50:100,0:50] = matrix_neutrony_high_L07[100:150,100:150]
+print_figure_energy_iworid_2023(matrix_total_L07, energy_colorbar_max_value, 'Deposited energy in TPX3 L07 by ' + str(number_of_events) + ' events', folder_figures, '4_segment_L07_50px')
+
+matrix_total_L06[50:100,50:100] = matrix_protony_rez_L06[100:150,100:150]
+matrix_total_L06[0:50,0:50] = matrix_neutrony_low_L06[100:150,100:150]
+matrix_total_L06[50:100,0:50] = matrix_neutrony_high_L06[100:150,100:150]
+print_figure_energy_iworid_2023(matrix_total_L06, energy_colorbar_max_value, 'Deposited energy in TPX3 L06 by ' + str(number_of_events) + ' events', folder_figures, '4_segment_L06_50px')
