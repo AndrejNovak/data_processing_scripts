@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import LogNorm
+from matplotlib.ticker import MultipleLocator
 import json
 from scipy.optimize import curve_fit
 from scipy import stats
@@ -20,6 +22,7 @@ from scipy.optimize import curve_fit
 from scipy import asarray as ar,exp
 import pandas as pd
 from collections import Counter
+
 
 # matplotlib.use('Agg')   # To solve issue: Fail to create pixmap with Tk_GetPixmap
 
@@ -1102,8 +1105,8 @@ def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName)
     plt.matshow(np.flip(np.rot90(
         matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
-    cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
-    cbar.set_label(label='Energy [keV]', size=tickfnt,
+    cbar = plt.colorbar(label='Deposited energy per-pixel [keV/px]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+    cbar.set_label(label='Deposited energy per-pixel [keV/px]', size=tickfnt,
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
     # plt.clim(vmin,vmax) - set your own range using vmin, vmax
@@ -1318,7 +1321,7 @@ def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, tit
     tickfnt = 14
     margin = 5
 
-    clog = read_clog(clog_path)[2]
+    clog = read_clog_clusters(clog_path)[2]
     matrix = np.zeros([256, 256])
 
     x = []
@@ -1364,7 +1367,7 @@ def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, tit
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     np.savetxt(OutputPath + OutputName + '_' +
                str(frame_number) + '_smooth.txt', matrix, fmt="%.3f")
-    
+
     plt.close()
     plt.cla()
     plt.clf()
@@ -1485,7 +1488,7 @@ def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, O
         y.append(clog[frame_number][i][1])
 
     for i in range(len(clog[frame_number][:])):
-        matrix[int(x[i]), int(y[i])] = clog[frame_number][i][3]
+        matrix[int(x[i]), int(y[i])] += clog[frame_number][i][3]
 
     if (max(x) - min(x)) < (max(y) - min(y)):
         difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
@@ -1977,3 +1980,161 @@ def check_if_position_is_in_mask(mask, x_value, y_value):
 
 def gauss_fitting(X,C,X_mean,sigma):
     return C*exp(-(X-X_mean)**2/(2*sigma**2))
+
+
+def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, centroid_y, line_max, vmax, OutputPath, OutputName):
+    #elist_cluster = np.loadtxt(elist_path, skiprows=2, delimiter=';')
+
+    #centroid_x = mm_to_px(elist_cluster[cluster_number, 2])
+    #centroid_y = mm_to_px(elist_cluster[cluster_number, 3])
+
+    matrix = np.zeros([256, 256])
+
+    x = []
+    y = []
+    energy = []
+
+    for i in range(len(cluster_data[:])):
+        x.append(cluster_data[i][0])
+        y.append(cluster_data[i][1])
+        energy.append(cluster_data[i][2])
+
+    new_x = x.copy()
+    new_y = y.copy()
+
+    row_centroid = []
+    count = 0
+
+    total_energy_row_values = []
+
+    if (int(max(y)) - int(min(y))) > 35:
+        print(f'Y max min difference is: {int(max(y)) - int(min(y))}')
+        for i in range(int(min(y)), int(max(y))+1):
+            indices = []
+            x_row_values = []
+            energy_row_values = []
+            energy_position_nasobok_values = []
+
+            indices.extend(idx for idx, value in enumerate(y) if int(value) == i)
+
+            for indice in indices:
+                x_row_values.append(x[indice])
+                energy_row_values.append(energy[indice])
+                energy_position_nasobok_values.append(x[indice] * energy[indice])
+
+            row_centroid.append(sum(energy_position_nasobok_values) / sum(energy_row_values))
+
+            for indice in indices:
+                new_value = np.round_(new_x[indice] - (row_centroid[count] - centroid_x), decimals=0)
+                if new_value < 0:
+                    new_x[indice] = 0
+                if new_value > 255:
+                    new_x[indice] = 255
+                else:
+                    new_x[indice] = new_value
+                #print(x[indice], new_x[indice], centroid_x, row_centroid[count], row_centroid[count] - centroid_x, np.round_(row_centroid[count] - centroid_x, decimals=0))
+            count += 1
+
+            total_energy_row_values.append(sum(energy_row_values))
+    
+        energy_sample = []
+        sampling_length = 5
+
+        for i in range(int(sampling_length)):
+            total_energy_row_values.append(0)
+            total_energy_row_values.insert(0, 0)
+
+        for i in range(len(total_energy_row_values) - sampling_length):
+            energy_sample.append(sum(total_energy_row_values[i:i+sampling_length])/sampling_length)
+
+        plot_x_data = np.linspace(0, int((len(total_energy_row_values) - sampling_length +1)), int(len(total_energy_row_values) - sampling_length), endpoint=True)
+
+        for i in range(len(cluster_data[:])):
+            matrix[int(new_x[i]), int(y[i])] += cluster_data[i][2]
+
+        if (max(new_x) - min(new_x)) < (max(y) - min(y)):
+            difference_position_x = np.abs((max(new_x) - min(new_x)) - (max(y) - min(y)))
+        else:
+            difference_position_x = 0
+        if (max(y) - min(y)) < (max(new_x) - min(new_x)):
+            difference_position_y = np.abs((max(y) - min(y)) - (max(new_x) - min(new_x)))
+        else:
+            difference_position_y = 0
+
+        tickfnt = 16
+        margin = 5
+
+        """
+        plt.close()
+        plt.cla()
+        plt.clf()
+        plt.subplot()
+        plt.rcParams["figure.figsize"] = (11.7, 8.3)
+        # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        # If the orientation of matrix doesnt fit, use this instead
+        plt.matshow(np.flip(np.rot90(
+            matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        plt.gca().xaxis.tick_bottom()
+        plt.clim(1, vmax)
+        cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) # shrink=0.8
+        cbar.set_label(label='Energy [keV]', size=tickfnt,
+                       weight='regular')   # format="%.1E"
+        cbar.ax.tick_params(labelsize=tickfnt)
+        plt.title(label='Straightening test', fontsize=tickfnt+4)
+        plt.xlim([min(new_x) - difference_position_x / 2 - margin, max(new_x) + difference_position_x / 2 + margin])
+        plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        plt.xlabel('X position [pixel]', fontsize=tickfnt)
+        plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+        plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
+                    dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        np.savetxt(OutputPath + OutputName + '_' +
+                   str(cluster_number) + '.txt', matrix, fmt="%.3f")
+
+
+
+        plt.close()
+        plt.cla()
+        plt.clf()
+        plt.plot(plot_x_data, energy_sample)
+        plt.title(label='Sampling test', fontsize=tickfnt+4)
+        plt.xlabel('Sample number [-]', fontsize=tickfnt)
+        plt.ylabel('Mean energy in sample [keV]', fontsize=tickfnt)
+        plt.savefig(OutputPath + 'line_graph_' + str(cluster_number) + '.png',
+                    dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        """
+
+        plt.close()
+        plt.cla()
+        plt.clf()
+        fig, (ax1, ax2) = plt.subplots(1,2)
+        fig.suptitle('Cluster ' + str(cluster_number), fontsize=20)
+        # Line plots
+        ax1.set_title(f'Averaged over {sampling_length * 55} $\mu$m, total E: {int(sum(total_energy_row_values))} keV')
+        ax1.plot(plot_x_data, energy_sample[::-1])
+        ax1.set_xlabel('Sample number [-]')
+        ax1.set_ylabel('Mean energy in sample [keV]')
+        ax1.set_ylim([0,vmax])
+
+        ax2.set_title('Straightening test')
+        ax2.set_xlabel('X position [pixel]')
+        ax2.set_ylabel('Y position [pixel]')
+        ax2.set_xlim([min(new_x) - difference_position_x / 2 - margin, max(new_x) + difference_position_x / 2 + margin])
+        ax2.set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        # Display image, `aspect='auto'` makes it fill the whole `axes` (ax3)
+        im2 = ax2.imshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix.flatten())))
+        # Create divider for existing axes instance
+        divider2 = make_axes_locatable(ax2)
+        # Append axes to the right of ax3, with 20% width of ax3
+        cax2 = divider2.append_axes("right", size="20%", pad=0.05)
+        # Create colorbar in the appended axes
+        # Tick locations can be set with the kwarg `ticks`
+        # and the format of the ticklabels with kwarg `format`
+        cbar2 = plt.colorbar(im2, cax=cax2, format="%.2f") #ticks=MultipleLocator(0.2)
+        # Remove xticks from ax3
+        #ax2.xaxis.set_visible(False)
+        # Manually set ticklocations
+        #ax2.set_yticks([0.0, 2.5, 3.14, 4.0, 5.2, 7.0])
+        plt.savefig(OutputPath + 'all_in_one_' + str(cluster_number) + '.png',
+                    dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+    return 1
