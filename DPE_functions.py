@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import tensorflow as tf
 from matplotlib import colors
 from matplotlib.colors import LinearSegmentedColormap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -22,6 +23,10 @@ from scipy.optimize import curve_fit
 from scipy import asarray as ar,exp
 import pandas as pd
 from collections import Counter
+
+from skimage.morphology import skeletonize
+import matplotlib.pyplot as plt
+from skimage.util import invert
 
 
 # matplotlib.use('Agg')   # To solve issue: Fail to create pixmap with Tk_GetPixmap
@@ -1982,6 +1987,63 @@ def gauss_fitting(X,C,X_mean,sigma):
     return C*exp(-(X-X_mean)**2/(2*sigma**2))
 
 
+def smooth(x,window_len,window):
+    """
+    This function was made using a cookbook available here:
+    https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html
+
+    Smooth the data using a window with requested size
+    
+    This method is based on the convolution of a scaled window with the signal.
+    The signal is prepared by introducing reflected copies of the signal 
+    (with the window size) in both ends so that transient parts are minimized
+    in the begining and end part of the output signal.
+    
+    input:
+        x: the input signal 
+        window_len: the dimension of the smoothing window; should be an odd integer
+        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
+            flat window will produce a moving average smoothing.
+
+    output:
+        the smoothed signal
+        
+    example:
+
+    t=linspace(-2,2,0.1)
+    x=sin(t)+randn(len(t))*0.1
+    y=smooth(x)
+ 
+    TODO: the window parameter could be the window itself if an array instead of a string
+    NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1):-(window_len/2)] instead of just y.
+    """
+
+    #if x.ndim != 1:
+    #    raise ValueError, print("smooth only accepts 1 dimension arrays.")
+
+    #if x.size < window_len:
+    #    raise ValueError, print("Input vector needs to be bigger than window size.")
+
+    #if window_len<3:
+    #    return x
+
+
+    #if window not in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
+    #    raise ValueError, print("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
+
+
+    s=np.r_[x[window_len-1:0:-1],x,x[-2:-window_len-1:-1]]
+
+    if window == 'flat': #moving average
+        w=np.ones(window_len,'d')
+    else:
+        w=eval('np.'+window+'(window_len)')
+
+    y = np.convolve(w/w.sum(),s,mode='valid')
+
+    return y[(int(window_len/2)+1):-(int(window_len/2)-1)]
+
+
 def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, centroid_y, line_max, vmax, OutputPath, OutputName):
     #elist_cluster = np.loadtxt(elist_path, skiprows=2, delimiter=';')
 
@@ -1990,14 +2052,9 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
 
     matrix = np.zeros([256, 256])
 
-    x = []
-    y = []
-    energy = []
-
-    for i in range(len(cluster_data[:])):
-        x.append(cluster_data[i][0])
-        y.append(cluster_data[i][1])
-        energy.append(cluster_data[i][2])
+    x = [item[0] for item in cluster_data[:]]
+    y = [item[1] for item in cluster_data[:]]
+    energy = [item[2] for item in cluster_data[:]]
 
     new_x = x.copy()
     new_y = y.copy()
@@ -2007,7 +2064,7 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
 
     total_energy_row_values = []
 
-    if (int(max(y)) - int(min(y))) > 35:
+    if (int(max(y)) - int(min(y))) > 20:
         print(f'Y max min difference is: {int(max(y)) - int(min(y))}')
         for i in range(int(min(y)), int(max(y))+1):
             indices = []
@@ -2021,7 +2078,7 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
                 x_row_values.append(x[indice])
                 energy_row_values.append(energy[indice])
                 energy_position_nasobok_values.append(x[indice] * energy[indice])
-
+            
             row_centroid.append(sum(energy_position_nasobok_values) / sum(energy_row_values))
 
             for indice in indices:
@@ -2040,9 +2097,9 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         energy_sample = []
         sampling_length = 5
 
-        for i in range(int(sampling_length)):
-            total_energy_row_values.append(0)
-            total_energy_row_values.insert(0, 0)
+        #for i in range(int(sampling_length/2)):
+        #    total_energy_row_values.append(0)
+        #    total_energy_row_values.insert(0, 0)
 
         for i in range(len(total_energy_row_values) - sampling_length):
             energy_sample.append(sum(total_energy_row_values[i:i+sampling_length])/sampling_length)
@@ -2064,66 +2121,22 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         tickfnt = 16
         margin = 5
 
-        """
         plt.close()
         plt.cla()
         plt.clf()
-        plt.subplot()
-        plt.rcParams["figure.figsize"] = (11.7, 8.3)
-        # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
-        # If the orientation of matrix doesnt fit, use this instead
-        plt.matshow(np.flip(np.rot90(
-            matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
-        plt.gca().xaxis.tick_bottom()
-        plt.clim(1, vmax)
-        cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) # shrink=0.8
-        cbar.set_label(label='Energy [keV]', size=tickfnt,
-                       weight='regular')   # format="%.1E"
-        cbar.ax.tick_params(labelsize=tickfnt)
-        plt.title(label='Straightening test', fontsize=tickfnt+4)
-        plt.xlim([min(new_x) - difference_position_x / 2 - margin, max(new_x) + difference_position_x / 2 + margin])
-        plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
-        plt.xlabel('X position [pixel]', fontsize=tickfnt)
-        plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-        plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
-                    dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-        np.savetxt(OutputPath + OutputName + '_' +
-                   str(cluster_number) + '.txt', matrix, fmt="%.3f")
-
-
-
-        plt.close()
-        plt.cla()
-        plt.clf()
-        plt.plot(plot_x_data, energy_sample)
-        plt.title(label='Sampling test', fontsize=tickfnt+4)
-        plt.xlabel('Sample number [-]', fontsize=tickfnt)
-        plt.ylabel('Mean energy in sample [keV]', fontsize=tickfnt)
-        plt.savefig(OutputPath + 'line_graph_' + str(cluster_number) + '.png',
-                    dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-        """
-
-        plt.close()
-        plt.cla()
-        plt.clf()
-        fig, (ax1, ax2) = plt.subplots(1,2)
+        fig = plt.figure(constrained_layout=True, figsize=(10, 10))
         fig.suptitle('Cluster ' + str(cluster_number), fontsize=20)
-        # Line plots
-        ax1.set_title(f'Averaged over {sampling_length * 55} $\mu$m, total E: {int(sum(total_energy_row_values))} keV')
-        ax1.plot(plot_x_data, energy_sample[::-1])
-        ax1.set_xlabel('Sample number [-]')
-        ax1.set_ylabel('Mean energy in sample [keV]')
-        ax1.set_ylim([0,vmax])
-
-        ax2.set_title('Straightening test')
-        ax2.set_xlabel('X position [pixel]')
-        ax2.set_ylabel('Y position [pixel]')
-        ax2.set_xlim([min(new_x) - difference_position_x / 2 - margin, max(new_x) + difference_position_x / 2 + margin])
-        ax2.set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        gs = fig.add_gridspec(2, 2)
+        fig_ax1 = fig.add_subplot(gs[0,0])
+        fig_ax1.set_title('Straightening test')
+        fig_ax1.set_xlabel('X position [pixel]')
+        fig_ax1.set_ylabel('Y position [pixel]')
+        fig_ax1.set_xlim([min(new_x) - difference_position_x / 2 - margin, max(new_x) + difference_position_x / 2 + margin])
+        fig_ax1.set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
         # Display image, `aspect='auto'` makes it fill the whole `axes` (ax3)
-        im2 = ax2.imshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix.flatten())))
+        im2 = fig_ax1.imshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix.flatten())))
         # Create divider for existing axes instance
-        divider2 = make_axes_locatable(ax2)
+        divider2 = make_axes_locatable(fig_ax1)
         # Append axes to the right of ax3, with 20% width of ax3
         cax2 = divider2.append_axes("right", size="20%", pad=0.05)
         # Create colorbar in the appended axes
@@ -2134,7 +2147,153 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         #ax2.xaxis.set_visible(False)
         # Manually set ticklocations
         #ax2.set_yticks([0.0, 2.5, 3.14, 4.0, 5.2, 7.0])
+
+        matrix = np.zeros([256, 256])
+
+        for i in range(len(cluster_data[:])):
+            matrix[int(x[i]), int(y[i])] += cluster_data[i][2]
+
+        if (max(x) - min(x)) < (max(y) - min(y)):
+            difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+        else:
+            difference_position_x = 0
+        if (max(y) - min(y)) < (max(x) - min(x)):
+            difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+        else:
+            difference_position_y = 0
+
+        fig_ax2 = fig.add_subplot(gs[0,1])
+        fig_ax2.set_title('Before straightening')
+        fig_ax2.set_xlabel('X position [pixel]')
+        fig_ax2.set_ylabel('Y position [pixel]')
+        fig_ax2.set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+        fig_ax2.set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        # Display image, `aspect='auto'` makes it fill the whole `axes` (ax3)
+        im3 = fig_ax2.imshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix.flatten())))
+        # Create divider for existing axes instance
+        divider3 = make_axes_locatable(fig_ax2)
+        # Append axes to the right of ax3, with 20% width of ax3
+        cax3 = divider3.append_axes("right", size="20%", pad=0.05)
+        # Create colorbar in the appended axes
+        # Tick locations can be set with the kwarg `ticks`
+        # and the format of the ticklabels with kwarg `format`
+        cbar3 = plt.colorbar(im3, cax=cax3, format="%.2f") #ticks=MultipleLocator(0.2)
+        # Remove xticks from ax3
+        #ax2.xaxis.set_visible(False)
+        # Manually set ticklocations
+        #ax2.set_yticks([0.0, 2.5, 3.14, 4.0, 5.2, 7.0])
+
+        #fig_ax3 = fig.add_subplot(gs[1, :])
+        #fig_ax3.set_title(f'Averaged over {sampling_length * 55} $\mu$m, total E: {int(sum(total_energy_row_values))} keV')
+        #fig_ax3.plot(plot_x_data, energy_sample[::-1])
+        #fig_ax3.set_xlabel('Sample number [-]')
+        #fig_ax3.set_ylabel('Mean energy in sample [keV]')
+        #fig_ax3.set_ylim([0,vmax])
+
+        windows=['flat', 'hanning', 'hamming', 'bartlett', 'blackman']
+        legend=['original signal']
+        legend.extend(windows)
+
+        fig_ax4 = fig.add_subplot(gs[1, :])
+        fig_ax4.set_title(f'Averaged over {sampling_length * 55} $\mu$m, total E: {int(sum(total_energy_row_values))} keV')
+        fig_ax4.plot(plot_x_data, energy_sample[::-1])
+        fig_ax4.set_xlabel('Sample number [-]')
+        fig_ax4.set_ylabel('Mean energy in sample [keV]')
+        fig_ax4.set_ylim([0,max(energy_sample[::-1]) + 100])
+        fig_ax4.legend(legend)
+
+        for w in windows:
+            smooth_value = smooth(total_energy_row_values[::-1],sampling_length,w)
+            plot_x_data_smooth = np.linspace(0, len(smooth_value), len(smooth_value), endpoint=True)
+            fig_ax4.plot(plot_x_data_smooth, smooth_value)
+
         plt.savefig(OutputPath + 'all_in_one_' + str(cluster_number) + '.png',
                     dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
     return 1
+
+
+def cluster_skeleton(cluster_data, cluster_number, OutputPath, OutputName):
+    """
+    Zhang’s method vs Lee’s method
+
+    skeletonize [Zha84] works by making successive passes of the image, removing pixels on object borders. 
+    This continues until no more pixels can be removed. The image is correlated with a mask that assigns each 
+    pixel a number in the range [0…255] corresponding to each possible pattern of its 8 neighboring pixels. 
+    A look up table is then used to assign the pixels a value of 0, 1, 2 or 3, which are selectively removed 
+    during the iterations.
+
+    skeletonize(..., method='lee') [Lee94] uses an octree data structure to examine a 3x3x3 neighborhood of a pixel. 
+    The algorithm proceeds by iteratively sweeping over the image, and removing pixels at each iteration until 
+    the image stops changing. Each iteration consists of two steps: first, a list of candidates for removal is assembled; 
+    then pixels from this list are rechecked sequentially, to better preserve connectivity of the image.
+
+    Note that Lee’s method [Lee94] is designed to be used on 3-D images, and is selected automatically for those. 
+    For illustrative purposes, we apply this algorithm to a 2-D image.
+
+    [Zha84] A fast parallel algorithm for thinning digital patterns, T. Y. Zhang and C. Y. Suen, Communications of the ACM, 
+    March 1984, Volume 27, Number 3.
+    [Lee94] (1,2) T.-C. Lee, R.L. Kashyap and C.-N. Chu, Building skeleton models via 3-D medial surface/axis thinning algorithms. 
+    Computer Vision, Graphics, and Image Processing, 56(6):462-478, 1994.
+    """
+    matrix = np.zeros([256, 256])
+
+    x = [item[0] for item in cluster_data[:]]
+    y = [item[1] for item in cluster_data[:]]
+    energy = [item[2] for item in cluster_data[:]]
+
+    for i in range(len(cluster_data[:])):
+        matrix[int(x[i]), int(y[i])] += cluster_data[i][2]
+
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+    else:
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+    else:
+        difference_position_y = 0
+
+    margin = 5
+
+    matrix = np.flip(np.rot90(matrix[::-1, :]))
+    matrix = matrix.copy(order='C')
+
+    skeleton = skeletonize(matrix)
+
+    matrix_lee = np.where(matrix > 0, 1, matrix)
+    print(matrix_lee.flatten())
+    skeleton_lee = skeletonize(matrix_lee, method='lee')
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(14, 10),
+                         sharex=True, sharey=True)
+
+    ax = axes.ravel()
+    ax[0].imshow(matrix, origin='lower', cmap='modified_hot')
+    ax[0].set_xlabel('X position [pixel]')
+    ax[0].set_ylabel('Y position [pixel]')
+    ax[0].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    ax[0].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    ax[0].set_title('original', fontsize=20)
+
+    ax[1].imshow(skeleton, origin='lower', cmap='modified_hot')
+    ax[1].set_xlabel('X position [pixel]')
+    ax[1].set_ylabel('Y position [pixel]')
+    ax[1].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    ax[1].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    ax[1].set_title('skeleton', fontsize=20)
+
+    ax[2].imshow(skeleton_lee, origin='lower', cmap='modified_hot')
+    ax[2].set_xlabel('X position [pixel]')
+    ax[2].set_ylabel('Y position [pixel]')
+    ax[2].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    ax[2].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    ax[2].set_title('skeleton Lee', fontsize=20)
+
+    fig.tight_layout()
+
+    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
+                    dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
