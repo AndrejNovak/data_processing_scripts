@@ -28,11 +28,14 @@ print_figure_single_cluster_energy_smooth(clog_path, cluster_number, vmax, title
 
 ########### Test of new function for proton track straightening
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\'
-OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 16 70MeV 75deg 20s tot toa\\'
+OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 14 225MeV 75deg 20s tot toa\\'
+#OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 15 150MeV 75deg 20s tot toa\\'
+#OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 16 70MeV 75deg 20s tot toa\\'
 OutputName2 = 'test_straightening'
+OutputName_skeleton = 'skeleton_test'
 
-clog_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\16\\Files\\'
-elist_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\16\\Files\\Elist.txt'
+clog_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\14\\Files\\'
+elist_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\14\\Files\\Elist.txt'
 
 elist_data = np.loadtxt(elist_path, skiprows=2, delimiter=';')
 
@@ -41,31 +44,26 @@ energy_data = []
 length_data = []
 angle_data = []
 ID_cislo = []
-vmax = 0.5E3
 
 clog = read_clog_multiple(clog_path)
+print(f'The total number of clusters is {len(clog[:])}')
 
+#for i in range(1):
 for i in range(len(elist_data[:,0])):
-    if elist_data[i,7] > 100 and elist_data[i,4] > 3500:
+    if elist_data[i,7] > 80 and elist_data[i,4] > 3000:
         print(f'Cluster size is: {elist_data[i,7]} and energy {elist_data[i,4]}')
         #ID_cislo.append(elist_data[i,1])
         #size_data.append(elist_data[i,7])
         #energy_data.append(elist_data[i,4])
         #length_data.append(elist_data[i,12])
         #angle_data.append(elist_data[i,11])
-        straighten_single_cluster_rows(clog[i], i, mm_to_px(elist_data[i, 2]), mm_to_px(elist_data[i, 3]), elist_data[i,8], vmax, OutputPath_straightening, OutputName2)
+        straighten_single_cluster_rows(clog[i], i, mm_to_px(elist_data[i, 2]), mm_to_px(elist_data[i, 3]), elist_data[i,8], elist_data[i,8]+100, OutputPath_straightening, OutputName2)
+        cluster_skeleton(clog[i], i, OutputPath_straightening, OutputName_skeleton)
         
 		
 #OutputNameTxt = 'info_txt'
 #out_values = np.column_stack((ID_cislo, energy_data, size_data, length_data, angle_data))
 #np.savetxt(OutputPath + OutputNameTxt + '.txt', out_values, delimiter=',', header='Event, Energy, Size, Length, Angle', comments='')
-
-
-clog_path = 'C:\\Users\\andrej\\Documents\\FEI\\ClusterLog_test.clog'
-vmax = 1E3
-title = 'Test'
-OutputName = 'test_figure'
-OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\'
 
 ####### TEST OF NEW CLOG READING #########
 
