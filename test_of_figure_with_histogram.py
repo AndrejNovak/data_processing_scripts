@@ -28,9 +28,9 @@ print_figure_single_cluster_energy_smooth(clog_path, cluster_number, vmax, title
 
 ########### Test of new function for proton track straightening
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\'
-#OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 14 225MeV 75deg 20s tot toa\\'
+OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 14 225MeV 75deg 20s tot toa\\'
 #OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 15 150MeV 75deg 20s tot toa\\'
-OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 16 70MeV 75deg 20s tot toa\\'
+#OutputPath_straightening = 'Q:\\straightening_test_script\\B3 TPX3 H09 16 70MeV 75deg 20s tot toa\\'
 OutputName2 = 'test_straightening'
 OutputName_skeleton = 'skeleton_test'
 
@@ -44,7 +44,6 @@ energy_data = []
 length_data = []
 angle_data = []
 ID_cislo = []
-vmax = 3E3
 
 clog = read_clog_multiple(clog_path)
 print(f'The total number of clusters is {len(clog[:])}')
