@@ -2262,7 +2262,6 @@ def cluster_skeleton(cluster_data, cluster_number, OutputPath, OutputName):
     skeleton = skeletonize(matrix)
 
     matrix_lee = np.where(matrix > 0, 1, matrix)
-    print(matrix_lee.flatten())
     skeleton_lee = skeletonize(matrix_lee, method='lee')
 
     plt.close()
