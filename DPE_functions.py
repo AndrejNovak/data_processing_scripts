@@ -2064,8 +2064,8 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
 
     total_energy_row_values = []
 
-    if (int(max(y)) - int(min(y))) > 20:
-        print(f'Y max min difference is: {int(max(y)) - int(min(y))}')
+    if (int(max(y)) - int(min(y))) > 30:
+        print(f'{cluster_number} Y max min difference is: {int(max(y)) - int(min(y))}')
         for i in range(int(min(y)), int(max(y))+1):
             indices = []
             x_row_values = []
@@ -2242,58 +2242,185 @@ def cluster_skeleton(cluster_data, cluster_number, OutputPath, OutputName):
     y = [item[1] for item in cluster_data[:]]
     energy = [item[2] for item in cluster_data[:]]
 
-    for i in range(len(cluster_data[:])):
-        matrix[int(x[i]), int(y[i])] += cluster_data[i][2]
+    if (int(max(y)) - int(min(y))) > 30:
 
-    if (max(x) - min(x)) < (max(y) - min(y)):
-        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
-    else:
-        difference_position_x = 0
-    if (max(y) - min(y)) < (max(x) - min(x)):
-        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
-    else:
-        difference_position_y = 0
+        for i in range(len(cluster_data[:])):
+            matrix[int(x[i]), int(y[i])] += cluster_data[i][2]
+
+        if (max(x) - min(x)) < (max(y) - min(y)):
+            difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+        else:
+            difference_position_x = 0
+        if (max(y) - min(y)) < (max(x) - min(x)):
+            difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+        else:
+            difference_position_y = 0
+
+        margin = 5
+
+        matrix = np.flip(np.rot90(matrix[::-1, :]))
+        matrix = matrix.copy(order='C')
+
+        skeleton = skeletonize(matrix)
+
+        matrix_lee = np.where(matrix > 0, 1, matrix)
+        skeleton_lee = skeletonize(matrix_lee, method='lee')
+
+        np.savetxt(OutputPath + OutputName + '_' + str(cluster_number) + '.txt', skeleton, fmt="%i")
+        np.savetxt(OutputPath + OutputName + '_lee_' + str(cluster_number) + '.txt', skeleton_lee, fmt="%i")    
+
+        plt.close()
+        plt.cla()
+        plt.clf()
+        fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(14, 10),
+                             sharex=True, sharey=True)
+
+        ax = axes.ravel()
+        ax[0].imshow(matrix, origin='lower', cmap='modified_hot')
+        ax[0].set_xlabel('X position [pixel]')
+        ax[0].set_ylabel('Y position [pixel]')
+        ax[0].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+        ax[0].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        ax[0].set_title('original', fontsize=20)
+
+        ax[1].imshow(skeleton, origin='lower', cmap='modified_hot')
+        ax[1].set_xlabel('X position [pixel]')
+        ax[1].set_ylabel('Y position [pixel]')
+        ax[1].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+        ax[1].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        ax[1].set_title('skeleton', fontsize=20)
+
+        ax[2].imshow(skeleton_lee, origin='lower', cmap='modified_hot')
+        ax[2].set_xlabel('X position [pixel]')
+        ax[2].set_ylabel('Y position [pixel]')
+        ax[2].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+        ax[2].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        ax[2].set_title('skeleton Lee', fontsize=20)
+
+        fig.tight_layout()
+
+        plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
+                        dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+        
+
+def get_neighbors_of_matrix_element(cluster_matrix, radius, row_number, column_number):
+    """
+    Given matrix coordinate X Y, the function returns its neighbour values.
+    The distance from point is given by the radius (cuboid mask).
+    """
+    column_number = int(column_number)
+    row_number = int(row_number)
+
+    return [[cluster_matrix[i][j] if  i >= 0 and i < len(cluster_matrix) and j >= 0 and j < len(cluster_matrix[0]) else 0
+                for j in range(column_number-radius, column_number+radius+1)]
+                    for i in range(row_number-radius, row_number+radius+1)]
+
+
+def cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, OutputName):
+    matrix = np.zeros([256, 256])
+    matrix_energy = np.zeros([256, 256])
+
+    x = [item[0] for item in cluster_data[:]]
+    y = [item[1] for item in cluster_data[:]]
+    energy = [item[2] for item in cluster_data[:]]
+
+    for i in range(len(cluster_data[:])):
+        matrix[int(x[i]), int(y[i])] = 1
+        matrix_energy[int(x[i]), int(y[i])] += energy[i]
 
     margin = 5
 
-    matrix = np.flip(np.rot90(matrix[::-1, :]))
     matrix = matrix.copy(order='C')
+    skeleton = skeletonize(matrix).astype(int)
 
-    skeleton = skeletonize(matrix)
+    skeleton_x_coordinate = []
+    skeleton_y_coordinate = []
 
-    matrix_lee = np.where(matrix > 0, 1, matrix)
-    print(matrix_lee.flatten())
-    skeleton_lee = skeletonize(matrix_lee, method='lee')
+    for i in range(256):
+        for j in range(256):
+            if skeleton[i,j] > 0:
+                skeleton_x_coordinate.append(i)
+                skeleton_y_coordinate.append(j)
+
+    end_x = []
+    end_y = []
+
+    joint_x = []
+    joint_y = []
+
+    if (max(skeleton_x_coordinate) - min(skeleton_x_coordinate)) < (max(skeleton_y_coordinate) - min(skeleton_y_coordinate)):
+        difference_position_x = np.abs((max(skeleton_x_coordinate) - min(skeleton_x_coordinate)) - (max(skeleton_y_coordinate) - min(skeleton_y_coordinate)))
+    else:
+        difference_position_x = 0
+    if (max(skeleton_y_coordinate) - min(skeleton_y_coordinate)) < (max(skeleton_x_coordinate) - min(x)):
+        difference_position_y = np.abs((max(skeleton_y_coordinate) - min(skeleton_y_coordinate)) - (max(skeleton_x_coordinate) - min(skeleton_x_coordinate)))
+    else:
+        difference_position_y = 0
+
+    saved_number_of_neighbours = []
+    for i in range(len(skeleton_x_coordinate)):
+        test_output_neighbours = np.asarray(get_neighbors_of_matrix_element(skeleton, 1, skeleton_x_coordinate[i], skeleton_y_coordinate[i]))
+        temp_skeleton = skeleton.copy()
+        temp_skeleton[skeleton_x_coordinate[i],skeleton_y_coordinate[i]] = 0
+        output_neighbours = np.asarray(get_neighbors_of_matrix_element(temp_skeleton, 1, skeleton_x_coordinate[i], skeleton_y_coordinate[i]))
+        number_of_neighbours = np.count_nonzero(output_neighbours)
+        saved_number_of_neighbours.append(number_of_neighbours)
+        if number_of_neighbours == 1:
+            #print('this is the end-point')
+            #print(f'X{int(skeleton_x_coordinate[i])} Y{int(skeleton_y_coordinate[i])} neighbours are \n{output_neighbours}, non-zero {number_of_neighbours}\n original neighbours are \n{test_output_neighbours}, original non-zero {np.count_nonzero(test_output_neighbours)}')
+            end_x.append(skeleton_x_coordinate[i])
+            end_y.append(skeleton_y_coordinate[i])
+        if number_of_neighbours >= 3:
+            #print('this is probably joint point')
+            joint_x.append(skeleton_x_coordinate[i])
+            joint_y.append(skeleton_y_coordinate[i])
+
+    #print(f'ends are: {end_x} {end_y}')
+    #print(f'joints are: {joint_x} {joint_y}, mean XY: {np.mean(joint_x)},{np.mean(joint_y)}')
+
+    matrix_number_of_neighbours = np.zeros([256,256])
+
+    for i in range(len(skeleton_x_coordinate)):
+        matrix_number_of_neighbours[skeleton_x_coordinate[i], skeleton_y_coordinate[i]] = saved_number_of_neighbours[i]
 
     plt.close()
     plt.cla()
     plt.clf()
-    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(14, 10),
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15, 5),
                          sharex=True, sharey=True)
-
     ax = axes.ravel()
-    ax[0].imshow(matrix, origin='lower', cmap='modified_hot')
+    fig.suptitle('Cluster ' + str(cluster_number) + ', '+ str(len(end_x)) + 'ends', fontsize=20)
+    im0 = ax[0].imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
+    divider0 = make_axes_locatable(ax[0])
+    cax0 = divider0.append_axes("right", size="20%", pad=0.05)
+    cbar0 = plt.colorbar(im0, cax=cax0, format="%.2f")
     ax[0].set_xlabel('X position [pixel]')
     ax[0].set_ylabel('Y position [pixel]')
     ax[0].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
     ax[0].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
     ax[0].set_title('original', fontsize=20)
-
-    ax[1].imshow(skeleton, origin='lower', cmap='modified_hot')
+    
+    skeleton_copy_rotated = np.flip(np.rot90(skeleton[::-1, :].copy()))
+    ax[1].imshow(skeleton_copy_rotated, origin='lower', cmap='modified_hot')
+    ax[1].scatter(end_x, end_y, c='blue', s=1.5)
+    ax[1].scatter(joint_x, joint_y, c='red', s=1.5)
+    ax[1].scatter(np.mean(joint_x), np.mean(joint_y), c='green', s=1.25)
     ax[1].set_xlabel('X position [pixel]')
     ax[1].set_ylabel('Y position [pixel]')
-    ax[1].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
-    ax[1].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
-    ax[1].set_title('skeleton', fontsize=20)
+    ax[1].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
+    ax[1].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
+    ax[1].set_title('Skeleton with end/joint points', fontsize=20)
 
-    ax[2].imshow(skeleton_lee, origin='lower', cmap='modified_hot')
+    im2 = ax[2].imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='modified_hot', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
+    divider2 = make_axes_locatable(ax[2])
+    cax2 = divider2.append_axes("right", size="20%", pad=0.05)
+    cbar2 = plt.colorbar(im2, cax=cax2, format="%i")
     ax[2].set_xlabel('X position [pixel]')
     ax[2].set_ylabel('Y position [pixel]')
-    ax[2].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
-    ax[2].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
-    ax[2].set_title('skeleton Lee', fontsize=20)
+    ax[2].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
+    ax[2].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
+    ax[2].set_title('Number of neighbours', fontsize=20)
 
-    fig.tight_layout()
-
-    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
-                    dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+    plt.savefig(OutputPath + OutputName + '_points_' + str(cluster_number) + '.png',
+                        dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+    #plt.show()
