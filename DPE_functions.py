@@ -794,15 +794,12 @@ def create_matrix_tpx3_t3pa(clog, number_of_clusters):
 
     for i in range(len(clog)):
         cluster_size_clog = len(clog[i][:])
-        
-        # TOTO PO IWORID ABSTRAKTE VYMAZAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if cluster_size_clog > 4 and counter < number_of_clusters:
+        if counter < number_of_clusters:
             counter += 1
             for j in range(cluster_size_clog):
                 x, y = int(clog[i][j][0]), int(clog[i][j][1])
                 matrix_energy[x, y] += clog[i][j][2]
 
-    print(f'VYMAZAT!!! - pocet eventov ktore presli v experimente je: {counter}')
     return matrix_energy
 
 
@@ -1120,6 +1117,48 @@ def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
     plt.xlim([0,100])
     plt.ylim([0,100])
+    #plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+    #plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title(label=title, fontsize=tickfnt)
+    plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
+                transparent=True, bbox_inches="tight", pad_inches=0.01)
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+
+
+def print_figure_energy_apcom_2023(matrix, vmax, title, OutputPath, OutputName):
+    """
+    Old name: print_fig_E
+
+    Function to print a figure of deposited energy in logarithmic colorbar scale.
+    """
+
+    mydpi = 300
+    tickfnt = 18
+
+    if not os.path.exists(OutputPath):
+        os.makedirs(OutputPath)
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
+    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # If the orientation of matrix doesnt fit, use this instead
+    plt.matshow(np.flip(np.rot90(
+        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    plt.gca().xaxis.tick_bottom()
+    cbar = plt.colorbar(label='Deposited energy per-pixel [keV/px]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+    cbar.set_label(label='Deposited energy per-pixel [keV/px]', size=tickfnt,
+                   weight='regular')   # format="%.1E"
+    cbar.ax.tick_params(labelsize=tickfnt)
+    # plt.clim(vmin,vmax) - set your own range using vmin, vmax
+    plt.clim(1, vmax)
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.xlim([0,240])
+    plt.ylim([0,160])
     #plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     #plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.tick_params(axis='x', labelsize=tickfnt)
@@ -2207,6 +2246,9 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
             plot_x_data_smooth = np.linspace(0, len(smooth_value), len(smooth_value), endpoint=True)
             fig_ax4.plot(plot_x_data_smooth, smooth_value)
 
+        if not os.path.exists(OutputPath):
+            os.makedirs(OutputPath)
+
         plt.savefig(OutputPath + 'all_in_one_' + str(cluster_number) + '.png',
                     dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -2266,8 +2308,8 @@ def cluster_skeleton(cluster_data, cluster_number, OutputPath, OutputName):
         matrix_lee = np.where(matrix > 0, 1, matrix)
         skeleton_lee = skeletonize(matrix_lee, method='lee')
 
-        np.savetxt(OutputPath + OutputName + '_' + str(cluster_number) + '.txt', skeleton, fmt="%i")
-        np.savetxt(OutputPath + OutputName + '_lee_' + str(cluster_number) + '.txt', skeleton_lee, fmt="%i")    
+        #np.savetxt(OutputPath + OutputName + '_' + str(cluster_number) + '.txt', skeleton, fmt="%i")
+        #np.savetxt(OutputPath + OutputName + '_lee_' + str(cluster_number) + '.txt', skeleton_lee, fmt="%i")    
 
         plt.close()
         plt.cla()
@@ -2316,7 +2358,11 @@ def get_neighbors_of_matrix_element(cluster_matrix, radius, row_number, column_n
                     for i in range(row_number-radius, row_number+radius+1)]
 
 
-def cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, OutputName):
+def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy, OutputPath, OutputName):
+    """
+    Fix this function after it is used for the APCOM article
+    """
+    
     matrix = np.zeros([256, 256])
     matrix_energy = np.zeros([256, 256])
 
@@ -2325,6 +2371,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, Outpu
     energy = [item[2] for item in cluster_data[:]]
 
     for i in range(len(cluster_data[:])):
+        #if energy[i] > min_pixel_energy:
         matrix[int(x[i]), int(y[i])] = 1
         matrix_energy[int(x[i]), int(y[i])] += energy[i]
 
@@ -2382,45 +2429,195 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, Outpu
 
     for i in range(len(skeleton_x_coordinate)):
         matrix_number_of_neighbours[skeleton_x_coordinate[i], skeleton_y_coordinate[i]] = saved_number_of_neighbours[i]
-
-    plt.close()
-    plt.cla()
-    plt.clf()
-    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15, 5),
-                         sharex=True, sharey=True)
-    ax = axes.ravel()
-    fig.suptitle('Cluster ' + str(cluster_number) + ', '+ str(len(end_x)) + 'ends', fontsize=20)
-    im0 = ax[0].imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
-    divider0 = make_axes_locatable(ax[0])
-    cax0 = divider0.append_axes("right", size="20%", pad=0.05)
-    cbar0 = plt.colorbar(im0, cax=cax0, format="%.2f")
-    ax[0].set_xlabel('X position [pixel]')
-    ax[0].set_ylabel('Y position [pixel]')
-    ax[0].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
-    ax[0].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
-    ax[0].set_title('original', fontsize=20)
     
-    skeleton_copy_rotated = np.flip(np.rot90(skeleton[::-1, :].copy()))
-    ax[1].imshow(skeleton_copy_rotated, origin='lower', cmap='modified_hot')
-    ax[1].scatter(end_x, end_y, c='blue', s=1.5)
-    ax[1].scatter(joint_x, joint_y, c='red', s=1.5)
-    ax[1].scatter(np.mean(joint_x), np.mean(joint_y), c='green', s=1.25)
-    ax[1].set_xlabel('X position [pixel]')
-    ax[1].set_ylabel('Y position [pixel]')
-    ax[1].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
-    ax[1].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
-    ax[1].set_title('Skeleton with end/joint points', fontsize=20)
+    # pridane kvoli APCOMU
+    # DELETE THIS CONSTRAINT
+    if len(end_x) == 2:
+        try:
+            tickfnt = 22
+            plt.close()
+            plt.cla()
+            plt.clf()
+            fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(24, 6),
+                                 sharex=True, sharey=True)
+            fig.tight_layout()
+            ax = axes.ravel()
+            #fig.suptitle('Cluster ' + str(cluster_number) + ', '+ str(len(end_x)) + ' ends\n', fontsize=20, y=0.98)
+            im0 = ax[0].imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
+            divider0 = make_axes_locatable(ax[0])
+            cax0 = divider0.append_axes("right", size="20%", pad=0.05)
+            cbar0 = plt.colorbar(im0, cax=cax0, format="%.0f")
+            cbar0.ax.set_ylabel('Energy [keV]', fontsize=tickfnt)
+            cbar0.ax.tick_params(labelsize=tickfnt)
+            ax[0].set_xlabel('X position [pixel]', fontsize=tickfnt)
+            ax[0].set_ylabel('Y position [pixel]', fontsize=tickfnt)
+            ax[0].tick_params(axis='both', which='major', labelsize=tickfnt)
+            ax[0].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+            ax[0].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+            ax[0].set_title('Deposited energy', fontsize=tickfnt)
 
-    im2 = ax[2].imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='modified_hot', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
-    divider2 = make_axes_locatable(ax[2])
-    cax2 = divider2.append_axes("right", size="20%", pad=0.05)
-    cbar2 = plt.colorbar(im2, cax=cax2, format="%i")
-    ax[2].set_xlabel('X position [pixel]')
-    ax[2].set_ylabel('Y position [pixel]')
-    ax[2].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
-    ax[2].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
-    ax[2].set_title('Number of neighbours', fontsize=20)
+            skeleton_copy_rotated = np.flip(np.rot90(skeleton[::-1, :].copy()))
+            ax[1].imshow(skeleton_copy_rotated, origin='lower', cmap='modified_hot')
+            ax[1].scatter(end_x, end_y, c='royalblue', s=8)
+            #ax[1].scatter(joint_x, joint_y, c='red', s=2)
+            ax[1].scatter(np.mean(joint_x), np.mean(joint_y), c='green', s=1.25)
+            ax[1].set_xlabel('X position [pixel]', fontsize=tickfnt)
+            ax[1].set_ylabel('Y position [pixel]', fontsize=tickfnt)
+            ax[1].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
+            ax[1].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
+            ax[1].set_title('Skeleton with end points', fontsize=tickfnt)
 
-    plt.savefig(OutputPath + OutputName + '_points_' + str(cluster_number) + '.png',
-                        dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
-    #plt.show()
+            im2 = ax[2].imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='modified_hot', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
+            divider2 = make_axes_locatable(ax[2])
+            cax2 = divider2.append_axes("right", size="20%", pad=0.05)
+            cbar2 = plt.colorbar(im2, cax=cax2, format="%i")
+            cbar2.ax.set_ylabel('Number of neighbours [-]', fontsize=tickfnt)
+            cbar2.ax.tick_params(labelsize=tickfnt)
+            ax[2].set_xlabel('X position [pixel]', fontsize=tickfnt)
+            ax[2].set_ylabel('Y position [pixel]', fontsize=tickfnt)
+            ax[2].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
+            ax[2].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
+            ax[2].set_title('Number of neighbours', fontsize=tickfnt)
+
+        except Exception:
+            pass
+
+        if not os.path.exists(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\'):
+            os.makedirs(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\')
+
+        plt.savefig(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\' + OutputName + '_points_' + str(cluster_number) + '_num_ends_' + str(len(end_x)) + '.png',
+                            dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+        """
+        tickfnt = 20
+        plt.close()
+        plt.cla()
+        plt.clf()
+        plt.figure(figsize=(6, 6))
+        plot1 = plt.imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
+        plt.gca().xaxis.tick_bottom()
+        plt.clim(1, max(matrix_energy.flatten()))
+        cbar = plt.colorbar(plot1, label='Energy [keV]', aspect=20*0.8, format="%i") # shrink=0.8
+        cbar.set_label(label='Energy [keV]', size=tickfnt,
+                       weight='regular')   # format="%.1E"
+        cbar.ax.tick_params(labelsize=tickfnt)
+        plt.title('Deposited energy', fontsize=20)
+        plt.xlabel('X position [pixel]', fontsize=tickfnt)
+        plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+        plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+        plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        #plt.colorbar(im0, cax=cax2, format="%.2f") #ticks=MultipleLocator(0.2)
+        plt.savefig(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\' + OutputName + '_points_' + str(cluster_number) + '_num_ends_' + str(len(end_x)) + '_deposited_energy.png',
+                            dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+        
+        plt.close()
+        plt.cla()
+        plt.clf()
+        plt.figure(figsize=(6, 6))
+        plot2 = plt.imshow(skeleton_copy_rotated, origin='lower', cmap='modified_hot')
+        plt.clim(1, max(skeleton_copy_rotated.flatten()))
+        cbar = plt.colorbar(plot2, label='[-]', aspect=20*0.8, format="%.1f") # shrink=0.8
+        cbar.set_label(label='[-]', size=tickfnt,
+                       weight='regular')   # format="%.1E"
+        cbar.ax.tick_params(labelsize=tickfnt)
+        #plt.plot(end_x, end_y, c='blue', markersize=4)
+        plt.title('Skeleton with end points', fontsize=20)
+        plt.xlabel('X position [pixel]', fontsize=tickfnt)
+        plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+        plt.xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
+        plt.ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
+        plt.savefig(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\' + OutputName + '_points_' + str(cluster_number) + '_num_ends_' + str(len(end_x)) + '_skeleton.png',
+                            dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+
+        plt.close()
+        plt.cla()
+        plt.clf()
+        plt.figure(figsize=(6, 6))
+        plot3 = plt.imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='modified_hot', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
+        plt.clim(1, max(matrix_number_of_neighbours.flatten()))
+        cbar = plt.colorbar(plot3, label='Neighbours [-]', aspect=20*0.8, format="%.1f") # shrink=0.8
+        cbar.set_label(label='Neighbours [-]', size=tickfnt,
+                       weight='regular')   # format="%.1E"
+        cbar.ax.tick_params(labelsize=tickfnt)
+        plt.xlabel('X position [pixel]', fontsize=tickfnt)
+        plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+        plt.xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
+        plt.ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
+        plt.title('Number of neighbours', fontsize=20)
+        plt.savefig(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\' + OutputName + '_points_' + str(cluster_number) + '_num_ends_' + str(len(end_x)) + '_neighbours.png',
+                            dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+        """
+        """
+        if not os.path.exists(OutputPath):
+            os.makedirs(OutputPath)
+        try:
+            tickfnt = 16
+            plt.close()
+            plt.cla()
+            plt.clf()
+            plt.subplot()
+            plt.rcParams["figure.figsize"] = (11.7, 8.3)
+            plt.matshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+            plt.gca().xaxis.tick_bottom()
+            plt.clim(1, max(matrix_energy.flatten()))
+            cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) # shrink=0.8
+            cbar.set_label(label='Energy [keV]', size=tickfnt,
+                           weight='regular')   # format="%.1E"
+            cbar.ax.tick_params(labelsize=tickfnt)
+            plt.title(label='Per-pixel deposited energy', fontsize=tickfnt+4)
+            plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+            plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+            plt.xlabel('X position [pixel]', fontsize=tickfnt)
+            plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+            plt.savefig(OutputPath + 'cluster_energy_'+ str(len(end_x))+ '_' + str(cluster_number) + '.png',
+                        dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+            np.savetxt(OutputPath + 'cluster_energy_'+ str(len(end_x))+ '_' + str(cluster_number) + '.txt', matrix_energy, fmt="%.3f")
+
+            plt.close()
+            plt.cla()
+            plt.clf()
+            plt.subplot()
+            plt.rcParams["figure.figsize"] = (11.7, 8.3)
+            plt.matshow(skeleton_copy_rotated, origin='lower', cmap='modified_hot')
+            plt.gca().xaxis.tick_bottom()
+            plt.clim(1, max(skeleton_copy_rotated.flatten()))
+            plt.scatter(end_x, end_y, c='blue', s=1.75)
+            cbar = plt.colorbar(label='Value [-]', aspect=20*0.8) # shrink=0.8
+            cbar.set_label(label='Value [-]', size=tickfnt,
+                           weight='regular')   # format="%.1E"
+            cbar.ax.tick_params(labelsize=tickfnt)
+            plt.title(label='Cluster skeleton', fontsize=tickfnt+4)
+            plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+            plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+            plt.xlabel('X position [pixel]', fontsize=tickfnt)
+            plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+            plt.savefig(OutputPath + 'cluster_skeleton_'+ str(len(end_x))+ '_' + str(cluster_number) + '.png',
+                        dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+            np.savetxt(OutputPath + 'cluster_skeleton_'+ str(len(end_x))+ '_' + str(cluster_number) + '.txt', skeleton_copy_rotated, fmt="%.3f")
+
+            plt.close()
+            plt.cla()
+            plt.clf()
+            plt.subplot()
+            plt.rcParams["figure.figsize"] = (11.7, 8.3)
+            plt.matshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='modified_hot')
+            plt.gca().xaxis.tick_bottom()
+            plt.clim(1, max(matrix_number_of_neighbours.flatten()))
+            plt.scatter(end_x, end_y, c='blue', s=1.75)
+            cbar = plt.colorbar(label='Count [-]', aspect=20*0.8) # shrink=0.8
+            cbar.set_label(label='Count [-]', size=tickfnt,
+                           weight='regular')   # format="%.1E"
+            cbar.ax.tick_params(labelsize=tickfnt)
+            plt.title(label='Neighbours', fontsize=tickfnt+4)
+            plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+            plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+            plt.xlabel('X position [pixel]', fontsize=tickfnt)
+            plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+            plt.savefig(OutputPath + 'cluster_neighbours_'+ str(len(end_x))+ '_' + str(cluster_number) + '.png',
+                        dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
+            np.savetxt(OutputPath + 'cluster_neighbours_'+ str(len(end_x))+ '_' + str(cluster_number) + '.txt', matrix_number_of_neighbours, fmt="%.3f")
+        
+        except Exception:
+            pass
+        """
+ 
+    return end_x, end_y
