@@ -2358,7 +2358,7 @@ def get_neighbors_of_matrix_element(cluster_matrix, radius, row_number, column_n
                     for i in range(row_number-radius, row_number+radius+1)]
 
 
-def cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, OutputName):
+def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy, OutputPath, OutputName):
     """
     Fix this function after it is used for the APCOM article
     """
@@ -2371,6 +2371,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, Outpu
     energy = [item[2] for item in cluster_data[:]]
 
     for i in range(len(cluster_data[:])):
+        #if energy[i] > min_pixel_energy:
         matrix[int(x[i]), int(y[i])] = 1
         matrix_energy[int(x[i]), int(y[i])] += energy[i]
 
@@ -2486,7 +2487,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, Outpu
 
         plt.savefig(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\' + OutputName + '_points_' + str(cluster_number) + '_num_ends_' + str(len(end_x)) + '.png',
                             dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
-        
+        """
         tickfnt = 20
         plt.close()
         plt.cla()
@@ -2544,7 +2545,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, Outpu
         plt.title('Number of neighbours', fontsize=20)
         plt.savefig(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\' + OutputName + '_points_' + str(cluster_number) + '_num_ends_' + str(len(end_x)) + '_neighbours.png',
                             dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
-
+        """
         """
         if not os.path.exists(OutputPath):
             os.makedirs(OutputPath)
