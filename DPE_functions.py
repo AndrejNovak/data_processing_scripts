@@ -789,6 +789,7 @@ def create_matrix_tpx3_t3pa(clog, number_of_clusters):
     Only matrix creation without selection of filtration pass filter
     """
     matrix_energy = np.zeros([256, 256])
+    matrix_toa = np.zeros([256, 256])
 
     counter = 0
 
@@ -799,8 +800,9 @@ def create_matrix_tpx3_t3pa(clog, number_of_clusters):
             for j in range(cluster_size_clog):
                 x, y = int(clog[i][j][0]), int(clog[i][j][1])
                 matrix_energy[x, y] += clog[i][j][2]
+                matrix_toa[x, y] += clog[i][j][3]
 
-    return matrix_energy
+    return matrix_energy, matrix_toa
 
 
 def create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_frames):
@@ -1169,14 +1171,32 @@ def print_figure_energy_apcom_2023(matrix, vmax, title, OutputPath, OutputName):
     np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
-def print_figure_toa(matrix, vmax, title, OutputPath, OutputName):
+def print_figure_toa(cluster_data, vmax, title, OutputPath, OutputName):
     """
     Old name: print_fig_ToA
 
     Function to print a figure of ToA values in linear scale.
     """
+    matrix = np.zeros([256, 256])
+
+    x = [item[0] for item in cluster_data[:]]
+    y = [item[1] for item in cluster_data[:]]
+    toa = [item[3] for item in cluster_data[:]]
+
+    for i in range(len(cluster_data[:])):
+        matrix[int(x[i]), int(y[i])] += toa[i]
+
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+    else:
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+    else:
+        difference_position_y = 0
     
-    tickfnt = 14
+    margin = 5
+    tickfnt = 16
     mydpi = 300
 
     if not os.path.exists(OutputPath):
@@ -1198,8 +1218,10 @@ def print_figure_toa(matrix, vmax, title, OutputPath, OutputName):
     plt.clim(0, vmax)
     plt.xlabel('X position [pixel]', fontsize=tickfnt)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-    plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
-    plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    #plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+    #plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
     plt.title(label=title, fontsize=tickfnt+4)
