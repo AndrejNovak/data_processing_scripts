@@ -26,6 +26,7 @@ cluster_number = 2
 print_figure_single_cluster_energy_smooth(clog_path, cluster_number, vmax, title, OutputPath, OutputName)
 """
 
+"""
 ######## TEST OF SKELETON JOINTS AND ENDS MAPPING #############
 ########### Test of new function for proton track straightening
 
@@ -77,3 +78,17 @@ for i in range(len(elist_data[:,0])):
         #cluster_skeleton(clog[i], i, OutputPath_straightening, OutputName_skeleton)
         cluster_skeleton_ends_joints(clog[i], i, min_pixel_energy, OutputPath_straightening, OutputName_skeleton)
         k += 1
+"""
+
+### ELITECH 2023 presentation figures
+
+clog_path = 'Q:\\data_carlos\\cyclotron_krakow_CCB\\Krakow_June2022\\data zip\\data minipc bratislava sat + sun\\sat\\B4 D03 TPX3 GaAs\\07 225MeV 75deg 50ms\\'
+clog = read_clog_multiple(clog_path)
+
+FileOutPath = 'Q:\\ELITECH_ToA\\CCB_GaAs\\'
+FileOutName = 'GaAs_ToA'
+
+for i in range(len(clog[:])):
+    cluster_data = clog[i]
+    if len(cluster_data) > 20:
+        print_figure_toa(cluster_data, 50, 'GaAs 500 $\mu$m ToA, cluster #'+str(i), FileOutPath, FileOutName + '_frame_'+str(i))
