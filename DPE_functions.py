@@ -912,29 +912,32 @@ def create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of
 
     matrix_energy_bad = np.zeros([256, 256])
     matrix_toa_bad = np.zeros([256, 256])
-
-    for i in range(number_of_particles):
-        cluster_size_clog = len(clog[i][:])
-        #print(f'The number of events in frame {i} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
-        for j in range(cluster_size_clog):
-            x, y = int(clog[i][j][0]), int(clog[i][j][1])
-
-            matrix_energy_all[x, y] += clog[i][j][2]
-            matrix_toa_all[x, y] = clog[i][j][3]
-
-        if filtered_elist[2][i][-1] == 1:
+    
+    try:
+        for i in range(number_of_particles):
+            cluster_size_clog = len(clog[i][:])
+            #print(f'The number of events in frame {i} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
             for j in range(cluster_size_clog):
                 x, y = int(clog[i][j][0]), int(clog[i][j][1])
 
-                matrix_energy_ok[x, y] += clog[i][j][2]
-                matrix_toa_ok[x, y] = clog[i][j][3]
-        else:
-            for j in range(cluster_size_clog):
-                x, y = int(clog[i][j][0]), int(clog[i][j][1])
-                
-                matrix_energy_bad[x, y] += clog[i][j][2]
-                matrix_toa_bad[x, y] = clog[i][j][3]
+                matrix_energy_all[x, y] += clog[i][j][2]
+                matrix_toa_all[x, y] = clog[i][j][3]
 
+            if filtered_elist[2][i][-1] == 1:
+                for j in range(cluster_size_clog):
+                    x, y = int(clog[i][j][0]), int(clog[i][j][1])
+
+                    matrix_energy_ok[x, y] += clog[i][j][2]
+                    matrix_toa_ok[x, y] = clog[i][j][3]
+            else:
+                for j in range(cluster_size_clog):
+                    x, y = int(clog[i][j][0]), int(clog[i][j][1])
+
+                    matrix_energy_bad[x, y] += clog[i][j][2]
+                    matrix_toa_bad[x, y] = clog[i][j][3]
+    except Exception:
+        pass
+    
     return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad
 
 
