@@ -295,8 +295,8 @@ Method that is used to print single frame/cluster (depending on the read_clog me
 
 ## print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, title, OutputPath, OutputName)
 Method that takes single cluster and returns a figure of deposited energy that is smoothened by the Gaussian interpolation method.
-![test_figure_0](https://github.com/AndrejNovak/data_processing_scripts/assets/20739208/6055887a-1af3-4f33-9922-20a3e1dbc6ed)
-![test_figure_0_smooth](https://github.com/AndrejNovak/data_processing_scripts/assets/20739208/ea0447b3-6831-42cb-8b91-cf8b880300d5)
+![test_figure_0](https://github.com/AndrejNovak/data_processing_scripts/assets/20739208/6055887a-1af3-4f33-9922-20a3e1dbc6ed =250x250)
+![test_figure_0_smooth](https://github.com/AndrejNovak/data_processing_scripts/assets/20739208/ea0447b3-6831-42cb-8b91-cf8b880300d5 =250x250)
 
 ## print_figure_single_cluster_energy_histograms(clog_path, frame_number, vmax, title, OutputPath, OutputName)
 **WARNING** Uses read_clog method that returns coincidences or frames in case of TPX2 data processing. **WARNING**
