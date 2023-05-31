@@ -18,6 +18,10 @@ The library contains methods that are capable of reading both Elist and clog fil
 
 5) Create a figure that shows recalculated total deposited energy to dose that was deposited in the sensor based on the sensor material (this value depends on material density - Si, SiC, CdTe, GaAs, Diamond).
 
+6) Update method **read_elist_filter** so that it does not require printed elist (write_elist() method), read file and load it into the memory. Usually this information is already present in the memory. Also compare the classic append method with numpy append method.
+
+7) Update method **read_elist_filter_parameters**, so that it does not require a loaded and printed elist (write_elist() method). The results it uses are already loaded in the memory. 
+
 
 # Description of classes and methods that are included
 
