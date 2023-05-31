@@ -16,16 +16,14 @@ from DPE_functions import *
 #'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06'
 #'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07'
 
-all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06',
-             'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07',
+all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07',
              'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV',
              'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV',
              'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06',
              'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07',
              'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05']
 
-all_out_folders = ['Q:\\2023_iworid_data_processing\\L06\\VdG\\',
-                   'Q:\\2023_iworid_data_processing\\L07\\VdG\\',
+all_out_folders = ['Q:\\2023_iworid_data_processing\\L07\\VdG\\',
                    'Q:\\2023_iworid_data_processing\\L07\\ptc_100MeV\\',
                    'Q:\\2023_iworid_data_processing\\L07\\ptc_225MeV\\',
                    'Q:\\2023_iworid_data_processing\\L06\\rez\\',
@@ -47,10 +45,12 @@ for idx2, var2 in enumerate(all_paths):
     filename_out = 'Elist_filtered.txt'
 
     for idx, var in enumerate(folder_data):
-        FolderInPath = FileInPath + '\\' + folder_data[idx] + '\\Files\\'
+        var = folder_data[idx+8]
+        FolderInPath = FileInPath + '\\' + var + '\\Files\\'
         number_of_particles = 200000
         print(idx2, FileInPath)
         print(idx, FolderInPath)
+        print(idx, var)
 
         elist_path = FolderInPath + filename_elist
         #clog_path = FolderInPath + filename_clog
@@ -91,22 +91,23 @@ for idx2, var2 in enumerate(all_paths):
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
             # First takes the original and writes a second one, then the next one grabs the new one and writes there
-            elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
-            write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
+            #elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
+            #write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
 
-            elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
-            write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
+            #elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
+            #write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
 
             # Make a filtered Elist
-            filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
-
+            #filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
+            filtered_elist = read_elist_filter_numpy(elist_data, filter_parameters)
             # For TPX3 t3pa data
             # square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, filename_clog, number_column_filter, number_of_particles)
 
             # For TPX frame ToT data
             #square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_of_particles)
 
-            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of_particles)
+            #square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of_particles)
+            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clog, number_of_particles)
 
             # Finally, print matrices that satisfied the particle filter parameters and those that didn't
             energy_colorbar_max_value = 3000
@@ -118,6 +119,8 @@ for idx2, var2 in enumerate(all_paths):
 
             if not os.path.exists(FolderOut + var + '\\' + SubfolderPath + '\\'):
                 os.makedirs(FolderOut + var + '\\' + SubfolderPath + '\\')
+                #print(FolderOut + var + '\\' + SubfolderPath + '\\')
+
 
             try:
                 print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Deposited energy - particles all', FolderOutPath, FileOutName + '1_all')
@@ -147,14 +150,15 @@ for idx2, var2 in enumerate(all_paths):
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
             # First takes the original and writes a second one, then the next one grabs the new one and writes there
-            elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
-            write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
+            #elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
+            #write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
 
-            elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
-            write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
+            #elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
+            #write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
 
             # Make a filtered Elist
-            filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
+            #filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
+            filtered_elist = read_elist_filter_numpy(elist_data, filter_parameters)
 
             # For TPX3 t3pa data
             # square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, filename_clog, number_column_filter, number_of_particles)
@@ -162,7 +166,7 @@ for idx2, var2 in enumerate(all_paths):
             # For TPX frame ToT data
             #square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_of_particles)
 
-            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of_particles)
+            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clog, number_of_particles)
 
             # Finally, print matrices that satisfied the particle filter parameters and those that didn't
             energy_colorbar_max_value = 3000
@@ -203,14 +207,15 @@ for idx2, var2 in enumerate(all_paths):
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
             # First takes the original and writes a second one, then the next one grabs the new one and writes there
-            elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
-            write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
+            #elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
+            #write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
 
-            elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
-            write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
+            #elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
+            #write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
 
             # Make a filtered Elist
-            filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
+            #filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
+            filtered_elist = read_elist_filter_numpy(elist_data, filter_parameters)
 
             # For TPX3 t3pa data
             # square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, filename_clog, number_column_filter, number_of_particles)
@@ -218,7 +223,7 @@ for idx2, var2 in enumerate(all_paths):
             # For TPX frame ToT data
             #square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_of_particles)
 
-            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of_particles)
+            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clog, number_of_particles)
 
             # Finally, print matrices that satisfied the particle filter parameters and those that didn't
             energy_colorbar_max_value = 3000
@@ -259,14 +264,15 @@ for idx2, var2 in enumerate(all_paths):
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
             # First takes the original and writes a second one, then the next one grabs the new one and writes there
-            elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
-            write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
+            #elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
+            #write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
 
-            elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
-            write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
+            #elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
+            #write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
 
             # Make a filtered Elist
-            filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
+            #filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
+            filtered_elist = read_elist_filter_numpy(elist_data, filter_parameters)
 
             # For TPX3 t3pa data
             # square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, filename_clog, number_column_filter, number_of_particles)
@@ -274,7 +280,7 @@ for idx2, var2 in enumerate(all_paths):
             # For TPX frame ToT data
             #square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_of_particles)
 
-            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of_particles)
+            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clog, number_of_particles)
 
             # Finally, print matrices that satisfied the particle filter parameters and those that didn't
             energy_colorbar_max_value = 4000
@@ -316,22 +322,23 @@ for idx2, var2 in enumerate(all_paths):
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
             # First takes the original and writes a second one, then the next one grabs the new one and writes there
-            elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
-            write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
+            #elist_extended = read_elist_add_new_parameters(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns)
+            #write_elist(FolderInPath + filename_out, elist_extended[0], elist_extended[1], elist_extended[2])
 
-            elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
-            write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
+            #elist_filter_result = read_elist_filter_parameters(FolderInPath + filename_out,filter_parameters)
+            #write_elist(FolderInPath + filename_out, elist_filter_result[0], elist_filter_result[1], elist_filter_result[2])
 
             # Make a filtered Elist
-            filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
-
+            #filtered_elist = read_elist_filter(FolderInPath + filename_elist, input_column_number_pairs_for_ratios, input_header_text_new_columns, input_units_text_new_columns, filter_parameters)
+            filtered_elist = read_elist_filter_numpy(elist_data, filter_parameters)
+            
             # For TPX3 t3pa data
             # square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, filename_clog, number_column_filter, number_of_particles)
 
             # For TPX frame ToT data
             #square_matrices = create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, number_of_particles)
 
-            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of_particles)
+            square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clog, number_of_particles)
 
             # Finally, print matrices that satisfied the particle filter parameters and those that didn't
             energy_colorbar_max_value = 3000
