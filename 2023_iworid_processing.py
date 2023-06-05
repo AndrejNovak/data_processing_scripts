@@ -16,14 +16,27 @@ from DPE_functions import *
 #'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06'
 #'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07'
 
-all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07',
+# OUT FOLDERS
+"""
+'Q:\\2023_iworid_data_processing\\L06\\VdG\\',
+'Q:\\2023_iworid_data_processing\\L07\\VdG\\',
+'Q:\\2023_iworid_data_processing\\L07\\ptc_100MeV\\',
+'Q:\\2023_iworid_data_processing\\L07\\ptc_225MeV\\',
+'Q:\\2023_iworid_data_processing\\L06\\rez\\',
+'Q:\\2023_iworid_data_processing\\L07\\rez\\',
+'Q:\\2023_iworid_data_processing\\D05\\VdG\\'
+"""
+
+all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06',
+             'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07',
              'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV',
              'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV',
              'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06',
              'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07',
              'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05']
 
-all_out_folders = ['Q:\\2023_iworid_data_processing\\L07\\VdG\\',
+all_out_folders = ['Q:\\2023_iworid_data_processing\\L06\\VdG\\',
+                   'Q:\\2023_iworid_data_processing\\L07\\VdG\\',
                    'Q:\\2023_iworid_data_processing\\L07\\ptc_100MeV\\',
                    'Q:\\2023_iworid_data_processing\\L07\\ptc_225MeV\\',
                    'Q:\\2023_iworid_data_processing\\L06\\rez\\',
@@ -45,9 +58,9 @@ for idx2, var2 in enumerate(all_paths):
     filename_out = 'Elist_filtered.txt'
 
     for idx, var in enumerate(folder_data):
-        var = folder_data[idx+8]
+        var = folder_data[idx] # +8 zlozky
         FolderInPath = FileInPath + '\\' + var + '\\Files\\'
-        number_of_particles = 200000
+        number_of_particles = 2000
         print(idx2, FileInPath)
         print(idx, FolderInPath)
         print(idx, var)
@@ -84,9 +97,11 @@ for idx2, var2 in enumerate(all_paths):
         linearity_parameter = 0
         length_parameter = 0
 
+        maximum = 100000000
+        
         for iter_energy in range(0, int(range_energy_max), range_energy_step):
             # Iterate over parameters with a given step
-            filter_parameters = Cluster_filter_multiple_parameter([energy_parameter, range_energy_max], [4]) # Energy
+            filter_parameters = Cluster_filter_multiple_parameter([energy_parameter, maximum], [4]) # Energy
 
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
@@ -123,19 +138,19 @@ for idx2, var2 in enumerate(all_paths):
 
 
             try:
-                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Deposited energy - particles all', FolderOutPath, FileOutName + '1_all')
+                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Dep E - all, energy min ' + str(energy_parameter) + ' keV\n Number of all particles is ' + str(square_matrices[6] + square_matrices[7]), FolderOutPath, FileOutName + '1_all')
             except Exception:
                 pass
                 #print('There is a problem in Energy All figure - probably no particles passed')
             #print_figure_toa(square_matrices[1], toa_colorbar_max_value, 'ToA square matrix - particles all', FolderOutPath, 'toa_all')
             try:
-                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Deposited energy - particles passed', FolderOutPath, FileOutName + '2_passed')
+                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Dep E - passed, energy min ' + str(energy_parameter) + ' keV\n Passed ' +str(square_matrices[6]) + ', Failed ' + str(square_matrices[7]), FolderOutPath, FileOutName + '2_passed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Passed figure')
             #print_figure_toa(square_matrices[3], toa_colorbar_max_value, 'ToA square matrix - particles passed', FolderOutPath, 'toa_passed')
             try:
-                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Deposited energy - particles failed', FolderOutPath, FileOutName + '3_failed')
+                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Dep E - failed, energy min ' + str(energy_parameter) + ' keV\n Passed ' +str(square_matrices[6]) + ', Failed ' + str(square_matrices[7]), FolderOutPath, FileOutName + '3_failed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Failed figure')
@@ -145,7 +160,7 @@ for idx2, var2 in enumerate(all_paths):
 
         for iter_height in range(0, int(range_height_max), range_height_step):
             # Iterate over parameters with a given step
-            filter_parameters = Cluster_filter_multiple_parameter([height_parameter, range_height_max], [8]) # Energy Height Size Linearity Length
+            filter_parameters = Cluster_filter_multiple_parameter([height_parameter, maximum], [8]) # Energy Height Size Linearity Length
 
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
@@ -180,29 +195,29 @@ for idx2, var2 in enumerate(all_paths):
                 os.makedirs(FolderOut + var + '\\' + SubfolderPath + '\\')
 
             try:
-                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Deposited energy - particles all', FolderOutPath, FileOutName + '1_all')
+                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Dep E - all, height min ' + str(height_parameter) + ' keV\n Number of all particles is ' + str(square_matrices[6] + square_matrices[7]), FolderOutPath, FileOutName + '1_all')
             except Exception:
                 pass
                 #print('There is a problem in Energy All figure - probably no particles passed')
             #print_figure_toa(square_matrices[1], toa_colorbar_max_value, 'ToA square matrix - particles all', FolderOutPath, 'toa_all')
             try:
-                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Deposited energy - particles passed', FolderOutPath, FileOutName + '2_passed')
+                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Dep E - passed, height min ' + str(height_parameter) + ' keV\n Passed ' +str(square_matrices[6]) + ', Failed ' + str(square_matrices[7]), FolderOutPath, FileOutName + '2_passed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Passed figure')
             #print_figure_toa(square_matrices[3], toa_colorbar_max_value, 'ToA square matrix - particles passed', FolderOutPath, 'toa_passed')
             try:
-                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Deposited energy - particles failed', FolderOutPath, FileOutName + '3_failed')
+                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Dep E - failed, height min ' + str(height_parameter) + ' keV\n Passed ' +str(square_matrices[6]) + ', Failed ' + str(square_matrices[7]), FolderOutPath, FileOutName + '3_failed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Failed figure')
             # print_figure_toa(square_matrices[5], toa_colorbar_max_value, 'ToA square matrix - particles failed', FolderOutPath, 'toa_failed')
             height_parameter += range_height_step
-
+        
 
         for iter_size in range(0, int(range_size_max), range_size_step):
             # Iterate over parameters with a given step
-            filter_parameters = Cluster_filter_multiple_parameter([size_parameter, range_size_max], [7]) # Size
+            filter_parameters = Cluster_filter_multiple_parameter([size_parameter, maximum], [7]) # Size
 
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
@@ -237,29 +252,29 @@ for idx2, var2 in enumerate(all_paths):
                 os.makedirs(FolderOut + var + '\\' + SubfolderPath + '\\')
 
             try:
-                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Deposited energy - particles all', FolderOutPath, FileOutName + '1_all')
+                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Dep E - all, size min ' + str(size_parameter) + ' px\n Number of all particles is ' + str(square_matrices[6] + square_matrices[7]), FolderOutPath, FileOutName + '1_all')
             except Exception:
                 pass
                 #print('There is a problem in Energy All figure - probably no particles passed')
             #print_figure_toa(square_matrices[1], toa_colorbar_max_value, 'ToA square matrix - particles all', FolderOutPath, 'toa_all')
             try:
-                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Deposited energy - particles passed', FolderOutPath, FileOutName + '2_passed')
+                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Dep E - passed, size min ' + str(size_parameter) + ' px\n Passed ' +str(square_matrices[6]) + ', Failed ' + str(square_matrices[7]), FolderOutPath, FileOutName + '2_passed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Passed figure')
             #print_figure_toa(square_matrices[3], toa_colorbar_max_value, 'ToA square matrix - particles passed', FolderOutPath, 'toa_passed')
             try:
-                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Deposited energy - particles failed', FolderOutPath, FileOutName + '3_failed')
+                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Dep E - failed, size min ' + str(size_parameter) + ' px\n Passed ' +str(square_matrices[6]) + ', Failed ' + str(square_matrices[7]), FolderOutPath, FileOutName + '3_failed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Failed figure')
             # print_figure_toa(square_matrices[5], toa_colorbar_max_value, 'ToA square matrix - particles failed', FolderOutPath, 'toa_failed')
             size_parameter += range_size_step
-
+        
 
         for iter_length in range(0, int(range_length_max), range_length_step):
             # Iterate over parameters with a given step
-            filter_parameters = Cluster_filter_multiple_parameter([length_parameter, range_length_max], [13]) # Energy Height Size Linearity Length
+            filter_parameters = Cluster_filter_multiple_parameter([length_parameter, maximum], [13]) # Energy Height Size Linearity Length
 
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
@@ -294,19 +309,19 @@ for idx2, var2 in enumerate(all_paths):
                 os.makedirs(FolderOut + var + '\\' + SubfolderPath + '\\')
 
             try:
-                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Deposited energy - particles all', FolderOutPath, FileOutName + '1_all')
+                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Dep E - all, length min ' + str(length_parameter) + ' px\n Number of all particles is ' + str(square_matrices[6] + square_matrices[7]), FolderOutPath, FileOutName + '1_all')
             except Exception:
                 pass
                 #print('There is a problem in Energy All figure - probably no particles passed')
             #print_figure_toa(square_matrices[1], toa_colorbar_max_value, 'ToA square matrix - particles all', FolderOutPath, 'toa_all')
             try:
-                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Deposited energy - particles passed', FolderOutPath, FileOutName + '2_passed')
+                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Dep E - passed, length min ' + str(length_parameter) + ' px\n Passed ' +str(square_matrices[6]) + ', Failed ' + str(square_matrices[7]), FolderOutPath, FileOutName + '2_passed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Passed figure')
             #print_figure_toa(square_matrices[3], toa_colorbar_max_value, 'ToA square matrix - particles passed', FolderOutPath, 'toa_passed')
             try:
-                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Deposited energy - particles failed', FolderOutPath, FileOutName + '3_failed')
+                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Dep E - failed, length min ' + str(length_parameter) + ' px\n Passed ' +str(square_matrices[6]) + ', Failed ' + str(square_matrices[7]), FolderOutPath, FileOutName + '3_failed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Failed figure')
@@ -317,7 +332,7 @@ for idx2, var2 in enumerate(all_paths):
 """
         for iter_linearity in range(0, int(range_linearity_max) * 10, range_linearity_step):
             # Iterate over parameters with a given step
-            filter_parameters = Cluster_filter_multiple_parameter([linearity_parameter, range_linearity_max], [12]) #Linearity
+            filter_parameters = Cluster_filter_multiple_parameter([linearity_parameter, maximum], [12]) #Linearity
 
             # Read the input elist and make a new columns
             # Print out new Elist file - name, header, units, data
@@ -352,19 +367,19 @@ for idx2, var2 in enumerate(all_paths):
                 os.makedirs(FolderOut + var + '\\' + SubfolderPath + '\\')
 
             try:
-                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Deposited energy - particles all', FolderOutPath, FileOutName + '1_all')
+                print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Dep E - all, linearity min ' + str(linearity_parameter), FolderOutPath, FileOutName + '1_all')
             except Exception:
                 pass
                 #print('There is a problem in Energy All figure - probably no particles passed')
-            #print_figure_toa(square_matrices[1], toa_colorbar_max_value, 'ToA square matrix - particles all', FolderOutPath, 'toa_all')
+            #print_figure_toa(square_matrices[1], toa_colorbar_max_value, 'ToA square matrix - particles all, linearity min ' + str(linearity_parameter), FolderOutPath, 'toa_all')
             try:
-                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Deposited energy - particles passed', FolderOutPath, FileOutName + '2_passed')
+                print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Dep E - passed', FolderOutPath, FileOutName + '2_passed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Passed figure')
             #print_figure_toa(square_matrices[3], toa_colorbar_max_value, 'ToA square matrix - particles passed', FolderOutPath, 'toa_passed')
             try:
-                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Deposited energy - particles failed', FolderOutPath, FileOutName + '3_failed')
+                print_figure_energy(square_matrices[4], energy_colorbar_max_value, 'Dep E - failed, linearity min ' + str(linearity_parameter), FolderOutPath, FileOutName + '3_failed')
             except Exception:
                 pass
                 #print('There is a problem in Energy Failed figure')
