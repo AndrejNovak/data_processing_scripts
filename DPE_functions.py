@@ -647,9 +647,16 @@ def read_elist_filter_parameters(filename, new_filter=None):
     else:
         print('No filter was used, there is nothing to be processed')
 
+def read_elist_filter_parameters_numpy(filename, new_filter=None):
+    # optimise the read_elist_filter_parameters() function 
+    return 0
+
 
 def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_columns, units_text_new_columns, new_filter=None):
     """
+    OUTDATED TO SOME EXTENT (2023_05_31)
+    *** if you want to filter only, use read_elist_filter_numpy(), it is much faster ***
+
     Carlos Granja, 23 August 2022
     old name "read_elist_make_ext_filter"
     *** this is probably updated version of read_elist_add_new_parameters, delete the old one if it is the case ***
@@ -742,6 +749,33 @@ def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_
         # print('--- read elist ext filt done ---')
 
         return splitlines[0], splitlines[1], splitlines[2:]
+
+    else:
+        print('No filter was used, there is nothing to be processed')
+
+
+def read_elist_filter_numpy(elist_data, new_filter=None):
+    """ 
+    Optimise the read_elist_filter() function
+
+    if elist length is == some number at the beggining, add column
+    otherwise just change the values of the last column used for Filter
+    In ExtElist, before any addition of columns, the number of columns is 15 
+    """
+
+    filter_values = np.zeros([len(elist_data[:,0])])
+
+    if new_filter is not None:
+        if len(elist_data[0,:]) == 16:
+            for i in range(len(elist_data[:,0])):
+                cluster_variable = elist_data[i,:]
+
+                if new_filter.pass_filter(cluster_variable):
+                    filter_values[i] = 1
+
+            elist_data = np.column_stack((elist_data,filter_values))
+
+        return elist_data
 
     else:
         print('No filter was used, there is nothing to be processed')
@@ -912,30 +946,95 @@ def create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of
 
     matrix_energy_bad = np.zeros([256, 256])
     matrix_toa_bad = np.zeros([256, 256])
-
-    for i in range(number_of_particles):
-        cluster_size_clog = len(clog[i][:])
-        #print(f'The number of events in frame {i} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
-        for j in range(cluster_size_clog):
-            x, y = int(clog[i][j][0]), int(clog[i][j][1])
-
-            matrix_energy_all[x, y] += clog[i][j][2]
-            matrix_toa_all[x, y] = clog[i][j][3]
-
-        if filtered_elist[2][i][-1] == 1:
+    
+    try:
+        for i in range(number_of_particles):
+            cluster_size_clog = len(clog[i][:])
+            #print(f'The number of events in frame {i} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
             for j in range(cluster_size_clog):
                 x, y = int(clog[i][j][0]), int(clog[i][j][1])
 
-                matrix_energy_ok[x, y] += clog[i][j][2]
-                matrix_toa_ok[x, y] = clog[i][j][3]
-        else:
-            for j in range(cluster_size_clog):
-                x, y = int(clog[i][j][0]), int(clog[i][j][1])
-                
-                matrix_energy_bad[x, y] += clog[i][j][2]
-                matrix_toa_bad[x, y] = clog[i][j][3]
+                matrix_energy_all[x, y] += clog[i][j][2]
+                matrix_toa_all[x, y] = clog[i][j][3]
 
+            if filtered_elist[2][i][-1] == 1:
+                for j in range(cluster_size_clog):
+                    x, y = int(clog[i][j][0]), int(clog[i][j][1])
+
+                    matrix_energy_ok[x, y] += clog[i][j][2]
+                    matrix_toa_ok[x, y] = clog[i][j][3]
+            else:
+                for j in range(cluster_size_clog):
+                    x, y = int(clog[i][j][0]), int(clog[i][j][1])
+
+                    matrix_energy_bad[x, y] += clog[i][j][2]
+                    matrix_toa_bad[x, y] = clog[i][j][3]
+    except Exception:
+        pass
+    
     return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad
+
+
+def create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clog, number_of_particles):
+    """
+    2023_05_31 - 
+    This method is an update of create_matrix_filter_tpx3_t3pa_for_filtering() that operates together with
+    the read_elist_filter_numpy() method.
+
+    TO DO: Update further so that number of particles is a number that defines the number that will be displayed
+    in the Passed matrix. Currently the for cycle runs only for the given number of iterations and you do not have the
+    idea about how many particles are actually displayed.
+
+    It was required to better optimise the old method as it used too much read/write expressions and worked
+    very slowly. Since the data needed was always in the memory, I rewrote it to numpy version so that no
+    writing to disk space is needed. Therefore ExtElist file is intact and if needed, the elist with filter
+    results can be saved if needed (use numpy.savetxt() method). 
+    """
+
+    matrix_energy_all = np.zeros([256, 256])
+    matrix_toa_all = np.zeros([256, 256])
+
+    matrix_energy_ok = np.zeros([256, 256])
+    matrix_toa_ok = np.zeros([256, 256])
+
+    matrix_energy_bad = np.zeros([256, 256])
+    matrix_toa_bad = np.zeros([256, 256])
+
+    number_of_passed_particles = 0
+    number_of_failed_particles = 0
+    
+    try:
+        for i in range(len(filtered_elist[:,0])):
+            if number_of_passed_particles < number_of_particles:
+                cluster_size_clog = len(clog[i][:])
+                #print(f'The number of events in frame {i} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
+                for j in range(cluster_size_clog):
+                    x, y = int(clog[i][j][0]), int(clog[i][j][1])
+
+                    matrix_energy_all[x, y] += clog[i][j][2]
+                    matrix_toa_all[x, y] = clog[i][j][3]
+
+                if filtered_elist[i,-1] == 1 :
+                    number_of_passed_particles += 1
+                    for j in range(cluster_size_clog):
+                        x, y = int(clog[i][j][0]), int(clog[i][j][1])
+
+                        matrix_energy_ok[x, y] += clog[i][j][2]
+                        matrix_toa_ok[x, y] = clog[i][j][3]
+                else:
+                    number_of_failed_particles += 1
+                    for j in range(cluster_size_clog):
+                        x, y = int(clog[i][j][0]), int(clog[i][j][1])
+
+                        matrix_energy_bad[x, y] += clog[i][j][2]
+                        matrix_toa_bad[x, y] = clog[i][j][3]
+            else:
+                break
+    except Exception:
+        pass
+    
+    #print(f'The number of particles that are displayed in Passed matrix is {number_of_passed_particles}')
+    return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad, number_of_passed_particles, number_of_failed_particles
 
 
 def create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
@@ -1084,7 +1183,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+    #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName):

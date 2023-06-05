@@ -22,7 +22,6 @@ The library contains methods that are capable of reading both Elist and clog fil
 
 7) Update method **read_elist_filter_parameters**, so that it does not require a loaded and printed elist (write_elist() method). The results it uses are already loaded in the memory. 
 
-
 # Description of classes and methods that are included
 
 At the beginning of the library, new *cmap* is registered called *modified_hot*. This color map is used in most of the figures where deposited energy is displayed and maps displayed colors from 0 (transparent) to maximum value (black).
