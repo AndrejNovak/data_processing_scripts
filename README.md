@@ -22,8 +22,6 @@ The library contains methods that are capable of reading both Elist and clog fil
 
 7) Update method **read_elist_filter_parameters**, so that it does not require a loaded and printed elist (write_elist() method). The results it uses are already loaded in the memory. 
 
-
-
 # Description of classes and methods that are included
 
 At the beginning of the library, new *cmap* is registered called *modified_hot*. This color map is used in most of the figures where deposited energy is displayed and maps displayed colors from 0 (transparent) to maximum value (black).
@@ -296,6 +294,9 @@ Method that is used to print single frame/cluster (depending on the read_clog me
 
 ## print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, title, OutputPath, OutputName)
 Method that takes single cluster and returns a figure of deposited energy that is smoothened by the Gaussian interpolation method.
+
+![test_figure_0|320x271,50%](https://github.com/AndrejNovak/data_processing_scripts/assets/20739208/6055887a-1af3-4f33-9922-20a3e1dbc6ed)
+![test_figure_0_smooth|320x271,50%](https://github.com/AndrejNovak/data_processing_scripts/assets/20739208/ea0447b3-6831-42cb-8b91-cf8b880300d5)
 
 ## print_figure_single_cluster_energy_histograms(clog_path, frame_number, vmax, title, OutputPath, OutputName)
 **WARNING** Uses read_clog method that returns coincidences or frames in case of TPX2 data processing. **WARNING**
