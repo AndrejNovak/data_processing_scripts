@@ -773,9 +773,9 @@ def read_elist_filter_numpy(elist_data, new_filter=None):
                 if new_filter.pass_filter(cluster_variable):
                     filter_values[i] = 1
 
-            elist_data = np.column_stack((elist_data,filter_values))
+            #elist_data = np.column_stack((elist_data,filter_values))
 
-        return elist_data
+        return np.column_stack((elist_data,filter_values))
 
     else:
         print('No filter was used, there is nothing to be processed')

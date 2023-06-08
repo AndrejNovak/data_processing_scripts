@@ -27,21 +27,9 @@ from DPE_functions import *
 'Q:\\2023_iworid_data_processing\\D05\\VdG\\'
 """
 
-all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06',
-             'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07',
-             'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV',
-             'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV',
-             'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06',
-             'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07',
-             'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05']
+all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05']
 
-all_out_folders = ['Q:\\2023_iworid_data_processing\\L06\\VdG\\',
-                   'Q:\\2023_iworid_data_processing\\L07\\VdG\\',
-                   'Q:\\2023_iworid_data_processing\\L07\\ptc_100MeV\\',
-                   'Q:\\2023_iworid_data_processing\\L07\\ptc_225MeV\\',
-                   'Q:\\2023_iworid_data_processing\\L06\\rez\\',
-                   'Q:\\2023_iworid_data_processing\\L07\\rez\\',
-                   'Q:\\2023_iworid_data_processing\\D05\\VdG\\']
+all_out_folders = ['Q:\\2023_iworid_data_processing\\D05\\VdG\\']
 
 for idx2, var2 in enumerate(all_paths):
     FileInPath = var2
@@ -58,7 +46,7 @@ for idx2, var2 in enumerate(all_paths):
     filename_out = 'Elist_filtered.txt'
 
     for idx, var in enumerate(folder_data):
-        var = folder_data[idx] # +8 zlozky
+        var = folder_data[idx+8] # +8 zlozky
         FolderInPath = FileInPath + '\\' + var + '\\Files\\'
         number_of_particles = 2000
         print(idx2, FileInPath)
@@ -271,7 +259,7 @@ for idx2, var2 in enumerate(all_paths):
             # print_figure_toa(square_matrices[5], toa_colorbar_max_value, 'ToA square matrix - particles failed', FolderOutPath, 'toa_failed')
             size_parameter += range_size_step
         
-
+        """
         for iter_length in range(0, int(range_length_max), range_length_step):
             # Iterate over parameters with a given step
             filter_parameters = Cluster_filter_multiple_parameter([length_parameter, maximum], [13]) # Energy Height Size Linearity Length
@@ -329,7 +317,7 @@ for idx2, var2 in enumerate(all_paths):
     
             length_parameter += range_length_step
 
-"""
+
         for iter_linearity in range(0, int(range_linearity_max) * 10, range_linearity_step):
             # Iterate over parameters with a given step
             filter_parameters = Cluster_filter_multiple_parameter([linearity_parameter, maximum], [12]) #Linearity
