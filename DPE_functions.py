@@ -977,6 +977,7 @@ def create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of
 
 def create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clog, number_of_particles):
     """
+    *** WARNING *** TOA matrices are commented, if you want to use them, uncomment respective sections *** WARNING ***
     2023_05_31 - 
     This method is an update of create_matrix_filter_tpx3_t3pa_for_filtering() that operates together with
     the read_elist_filter_numpy() method.
@@ -991,51 +992,56 @@ def create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clo
     results can be saved if needed (use numpy.savetxt() method). 
     """
 
-    matrix_energy_all = np.zeros([256, 256])
-    matrix_toa_all = np.zeros([256, 256])
+    #matrix_energy_all = np.zeros([256, 256])
+    #matrix_toa_all = np.zeros([256, 256])
 
     matrix_energy_ok = np.zeros([256, 256])
-    matrix_toa_ok = np.zeros([256, 256])
+    #matrix_toa_ok = np.zeros([256, 256])
 
     matrix_energy_bad = np.zeros([256, 256])
-    matrix_toa_bad = np.zeros([256, 256])
+    #matrix_toa_bad = np.zeros([256, 256])
 
     number_of_passed_particles = 0
     number_of_failed_particles = 0
     
     try:
-        for i in range(len(filtered_elist[:,0])):
+        #for i in range(len(filtered_elist[:,0])):
+        for i in range(len(filtered_elist[:])):
             if number_of_passed_particles < number_of_particles:
                 cluster_size_clog = len(clog[i][:])
                 #print(f'The number of events in frame {i} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
-                for j in range(cluster_size_clog):
-                    x, y = int(clog[i][j][0]), int(clog[i][j][1])
+                #for j in range(cluster_size_clog):
+                #    x, y = int(clog[i][j][0]), int(clog[i][j][1])
 
-                    matrix_energy_all[x, y] += clog[i][j][2]
-                    matrix_toa_all[x, y] = clog[i][j][3]
+                    #matrix_energy_all[x, y] += clog[i][j][2]
+                    #matrix_toa_all[x, y] = clog[i][j][3]
 
-                if filtered_elist[i,-1] == 1 :
+                #if filtered_elist[i,-1] == 1 :
+                if filtered_elist[i] == 1 :
                     number_of_passed_particles += 1
                     for j in range(cluster_size_clog):
                         x, y = int(clog[i][j][0]), int(clog[i][j][1])
 
                         matrix_energy_ok[x, y] += clog[i][j][2]
-                        matrix_toa_ok[x, y] = clog[i][j][3]
+                        #matrix_toa_ok[x, y] = clog[i][j][3]
                 else:
-                    number_of_failed_particles += 1
-                    for j in range(cluster_size_clog):
-                        x, y = int(clog[i][j][0]), int(clog[i][j][1])
-
-                        matrix_energy_bad[x, y] += clog[i][j][2]
-                        matrix_toa_bad[x, y] = clog[i][j][3]
+                    if number_of_failed_particles < number_of_particles:
+                        number_of_failed_particles += 1
+                        for j in range(cluster_size_clog):
+                            x, y = int(clog[i][j][0]), int(clog[i][j][1])
+    
+                            matrix_energy_bad[x, y] += clog[i][j][2]
+                            #matrix_toa_bad[x, y] = clog[i][j][3]
             else:
                 break
     except Exception:
         pass
+
+    matrix_energy_all = matrix_energy_ok + matrix_energy_bad
     
     #print(f'The number of particles that are displayed in Passed matrix is {number_of_passed_particles}')
-    return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad, number_of_passed_particles, number_of_failed_particles
-
+    #return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad, number_of_passed_particles, number_of_failed_particles
+    return matrix_energy_all, 0, matrix_energy_ok, 0, matrix_energy_bad, 0, number_of_passed_particles, number_of_failed_particles
 
 def create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
     """
