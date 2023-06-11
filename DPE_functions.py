@@ -1431,25 +1431,28 @@ def create_matrix_tpx3_old(data, number_frames, random):
     return matrix_energy, matrix_toa
 
 
-def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, OutputPath, OutputName):
+def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, OutputPath, OutputName):
     """
     Old name: plot_single_cluster_ToT   
     """
+
+    if not os.path.exists(OutputPath):
+        os.makedirs(OutputPath)
+
     tickfnt = 16
     margin = 5
 
-    clog = read_clog(clog_path)[2]
     matrix = np.zeros([256, 256])
 
     x = []
     y = []
 
-    for i in range(len(clog[frame_number][:])):
-        x.append(clog[frame_number][i][0])
-        y.append(clog[frame_number][i][1])
+    for i in range(len(clog_data[:])):
+        x.append(clog_data[i][0])
+        y.append(clog_data[i][1])
 
-    for i in range(len(clog[frame_number][:])):
-        matrix[int(x[i]), int(y[i])] += clog[frame_number][i][2]
+    for i in range(len(clog_data[:])):
+        matrix[int(x[i]), int(y[i])] += clog_data[i][2]
 
     if (max(x) - min(x)) < (max(y) - min(y)):
         difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
@@ -1480,10 +1483,10 @@ def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, Out
     plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
     plt.xlabel('X position [pixel]', fontsize=tickfnt)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-    plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
+    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix, fmt="%.3f")
+    #np.savetxt(OutputPath + OutputName + '_' +
+    #           str(cluster_number) + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, title, OutputPath, OutputName):

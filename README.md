@@ -7,7 +7,7 @@ The library contains methods that are capable of reading both Elist and clog fil
 # Methods to implement:
 1) Single particle tracks with histograms on top and right side of the track to indicate the energy deposited in each row and column. (In progress)
 
-2) Plot 3D particle tract. Define a method based on Bergmann's article and use it for plotting.
+2) Plot 3D particle track. Define a method based on Bergmann's article and use it for plotting.
 
 3) In single particle tracks, draw a line along the track. This is just a first step for length determination. Not necessary, just for me as a practise.
 
@@ -17,10 +17,6 @@ The library contains methods that are capable of reading both Elist and clog fil
     - this can be made such that the main image will always be the deposited energy. The other option is to draw each cluster with one specific value of the whole cluster - its height, roundness,...
 
 5) Create a figure that shows recalculated total deposited energy to dose that was deposited in the sensor based on the sensor material (this value depends on material density - Si, SiC, CdTe, GaAs, Diamond).
-
-6) Update method **read_elist_filter** so that it does not require printed elist (write_elist() method), read file and load it into the memory. Usually this information is already present in the memory. Also compare the classic append method with numpy append method.
-
-7) Update method **read_elist_filter_parameters**, so that it does not require a loaded and printed elist (write_elist() method). The results it uses are already loaded in the memory. 
 
 # Description of classes and methods that are included
 
