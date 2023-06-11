@@ -223,11 +223,14 @@ elist_filtered - the DPE output elist with the added COL from cluster_filter,
 clog - clog output of DPE, 
 number_frames - number of frames to integrate, to add to merged plot from the beginning, from frame number zero in the clog file output of DPE for TPX3 data a frame is created every 100 ns. For TPX3 t3pa data - input number_frames is the cluster - event number. For raw clog frame data - number_frames is the frame number.
 
-<img align="left" width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/1_all.png">
+<p align="center">
+  <img width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/1_all.png">
 
-<img align="center" width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/3_failed.png">
+<img width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/2_passed.png">
 
-<img align="right" width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/2_passed.png">
+<img width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/3_failed.png">
+</p>
+
 
 ## create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
 Carlos + Lukas + Andrej, 8 August 2022 
