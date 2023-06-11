@@ -300,6 +300,12 @@ Method that is used to print single frame/cluster (depending on the read_clog me
 ## print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, title, OutputPath, OutputName)
 Method that takes single cluster and returns a figure of deposited energy that is smoothened by the Gaussian interpolation method.
 
+<p align="center">
+  <img width="300" height="300" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/test_figure_0.png">
+
+<img width="300" height="300" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/test_figure_0_smooth.png">
+</p>
+
 ## print_figure_single_cluster_energy_histograms(clog_path, frame_number, vmax, title, OutputPath, OutputName)
 **WARNING** Uses read_clog method that returns coincidences or frames in case of TPX2 data processing. **WARNING**
 
@@ -358,6 +364,7 @@ This method checks whether the given X or Y position is in mask. It can be used 
 ## gauss_fitting(X,C,X_mean,sigma)
 **NOTE** Find where it is used and whether it is still necessary. Probably used in measurements of Temporal stability and position of 59.6 keV peak in acquired data from C05, L06 and FitPIX detector (measured some time at the beginning of the 2023 year). **NOTE**
 
+
 ## smooth(x,window_len,window)
 This method was made using a cookbook available here: 
 https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html 
@@ -379,12 +386,18 @@ y=smooth(x)
 TODO: the window parameter could be the window itself if an array instead of a string 
 NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1):-(window_len/2)] instead of just y.
 
+
 ## straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, centroid_y, line_max, vmax, OutputPath, OutputName):
 **WARNING** Contains a constraint on the minimal Y difference between the max Y and min Y values (to pre-select events with larger path in the detector, presumably protons). **WARNING**
 
 This is a simple method that takes a single cluster, its centroid, then for each row of the cluster, row centroid is calculated. For each row its position is then changed based on the difference between the total centroid and row centroid. As a result, the particle cluster is then straightened. This can be used for protons or other particles with low curvature of the track; however, it can not be used for events on the sensor border, fragmentation events or high curvature events such as electrons.
 
 Returns a figure with cluster before straightening, after and the smoothened energy deposited in rows with sampling length of 5 values.
+
+<p align="center">
+  <img width="600" height="500" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/all_in_one_13604.png">
+</p>
+
 
 ## cluster_skeleton(cluster_data, cluster_number, OutputPath, OutputName)
 Zhang’s method vs Lee’s method 
@@ -402,8 +415,18 @@ Note that Lee’s method [Lee94] is designed to be used on 3-D images, and is se
 
 For a given cluster returns figure of original cluster, its skeleton using Zha84 and Lee94 method.
 
+<p align="center">
+  <img width="600" height="300" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/skeleton_test_neighbours_13604.png">
+</p>
+
+
 ## get_neighbors_of_matrix_element(cluster_matrix, radius, row_number, column_number)
 Given matrix coordinate X Y, the method returns its neighbour values, a matrix of 3x3 dimension when distance of 1 pixel is investigated. The distance from point is given by the radius (cuboid mask).
 
+
 ## cluster_skeleton_ends_joints(cluster_data, cluster_number, OutputPath, OutputName)
 Method that utilizes get_neighbors_of_matrix_element() method to investigate particle skeleton in order to determine the end/entry and joint points of the cluster skeleton.
+
+<p align="center">
+  <img width="600" height="300" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/skeleton_test_neighbours_points_13604.png">
+</p>
