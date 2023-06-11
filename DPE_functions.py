@@ -1043,6 +1043,7 @@ def create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clo
     #return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad, number_of_passed_particles, number_of_failed_particles
     return matrix_energy_all, 0, matrix_energy_ok, 0, matrix_energy_bad, 0, number_of_passed_particles, number_of_failed_particles
 
+
 def create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
     """
     Carlos + Lukas + Andrej, 8 August 2022
@@ -1189,7 +1190,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName):
