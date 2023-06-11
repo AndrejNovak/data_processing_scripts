@@ -4,17 +4,17 @@ from DPE_functions import *
 # All paths to data to process
 
 # VdG neutrons
-#'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06'
-#'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07'
-#'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05'
+#'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\'
+#'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\'
+#'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\'
 
 #PTC protons
-#'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV'
-#'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV'
+#'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\'
+#'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\'
 
 # Rez protons
-#'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06'
-#'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07'
+#'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\'
+#'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\'
 
 # OUT FOLDERS
 """
@@ -27,9 +27,9 @@ from DPE_functions import *
 'Q:\\2023_iworid_data_processing\\D05\\VdG\\'
 """
 
-all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05']
+all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06']
 
-all_out_folders = ['Q:\\2023_iworid_data_processing\\D05\\VdG\\']
+all_out_folders = ['Q:\\2023_iworid_data_processing\\L06\\VdG\\']
 
 for idx2, var2 in enumerate(all_paths):
     FileInPath = var2
@@ -42,7 +42,7 @@ for idx2, var2 in enumerate(all_paths):
 
     for idx, var in enumerate(folder_data):
         var = folder_data[idx]
-        FolderInPath = FileInPath + '\\' + var + '\\Files\\'
+        FolderInPath = FileInPath + var + '\\Files\\'
         number_of_particles = 1000
         print(idx2, FileInPath)
         print(idx, FolderInPath)
