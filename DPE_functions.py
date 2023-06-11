@@ -773,9 +773,9 @@ def read_elist_filter_numpy(elist_data, new_filter=None):
                 if new_filter.pass_filter(cluster_variable):
                     filter_values[i] = 1
 
-            elist_data = np.column_stack((elist_data,filter_values))
+            #elist_data = np.column_stack((elist_data,filter_values))
 
-        return elist_data
+        return np.column_stack((elist_data,filter_values))
 
     else:
         print('No filter was used, there is nothing to be processed')
@@ -977,6 +977,7 @@ def create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, clog, number_of
 
 def create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clog, number_of_particles):
     """
+    *** WARNING *** TOA matrices are commented, if you want to use them, uncomment respective sections *** WARNING ***
     2023_05_31 - 
     This method is an update of create_matrix_filter_tpx3_t3pa_for_filtering() that operates together with
     the read_elist_filter_numpy() method.
@@ -991,50 +992,56 @@ def create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clo
     results can be saved if needed (use numpy.savetxt() method). 
     """
 
-    matrix_energy_all = np.zeros([256, 256])
-    matrix_toa_all = np.zeros([256, 256])
+    #matrix_energy_all = np.zeros([256, 256])
+    #matrix_toa_all = np.zeros([256, 256])
 
     matrix_energy_ok = np.zeros([256, 256])
-    matrix_toa_ok = np.zeros([256, 256])
+    #matrix_toa_ok = np.zeros([256, 256])
 
     matrix_energy_bad = np.zeros([256, 256])
-    matrix_toa_bad = np.zeros([256, 256])
+    #matrix_toa_bad = np.zeros([256, 256])
 
     number_of_passed_particles = 0
     number_of_failed_particles = 0
     
     try:
-        for i in range(len(filtered_elist[:,0])):
+        #for i in range(len(filtered_elist[:,0])):
+        for i in range(len(filtered_elist[:])):
             if number_of_passed_particles < number_of_particles:
                 cluster_size_clog = len(clog[i][:])
                 #print(f'The number of events in frame {i} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
-                for j in range(cluster_size_clog):
-                    x, y = int(clog[i][j][0]), int(clog[i][j][1])
+                #for j in range(cluster_size_clog):
+                #    x, y = int(clog[i][j][0]), int(clog[i][j][1])
 
-                    matrix_energy_all[x, y] += clog[i][j][2]
-                    matrix_toa_all[x, y] = clog[i][j][3]
+                    #matrix_energy_all[x, y] += clog[i][j][2]
+                    #matrix_toa_all[x, y] = clog[i][j][3]
 
-                if filtered_elist[i,-1] == 1 :
+                #if filtered_elist[i,-1] == 1 :
+                if filtered_elist[i] == 1 :
                     number_of_passed_particles += 1
                     for j in range(cluster_size_clog):
                         x, y = int(clog[i][j][0]), int(clog[i][j][1])
 
                         matrix_energy_ok[x, y] += clog[i][j][2]
-                        matrix_toa_ok[x, y] = clog[i][j][3]
+                        #matrix_toa_ok[x, y] = clog[i][j][3]
                 else:
-                    number_of_failed_particles += 1
-                    for j in range(cluster_size_clog):
-                        x, y = int(clog[i][j][0]), int(clog[i][j][1])
-
-                        matrix_energy_bad[x, y] += clog[i][j][2]
-                        matrix_toa_bad[x, y] = clog[i][j][3]
+                    if number_of_failed_particles < number_of_particles:
+                        number_of_failed_particles += 1
+                        for j in range(cluster_size_clog):
+                            x, y = int(clog[i][j][0]), int(clog[i][j][1])
+    
+                            matrix_energy_bad[x, y] += clog[i][j][2]
+                            #matrix_toa_bad[x, y] = clog[i][j][3]
             else:
                 break
     except Exception:
         pass
+
+    matrix_energy_all = matrix_energy_ok + matrix_energy_bad
     
     #print(f'The number of particles that are displayed in Passed matrix is {number_of_passed_particles}')
-    return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad, number_of_passed_particles, number_of_failed_particles
+    #return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad, number_of_passed_particles, number_of_failed_particles
+    return matrix_energy_all, 0, matrix_energy_ok, 0, matrix_energy_bad, 0, number_of_passed_particles, number_of_failed_particles
 
 
 def create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
@@ -1424,25 +1431,28 @@ def create_matrix_tpx3_old(data, number_frames, random):
     return matrix_energy, matrix_toa
 
 
-def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, OutputPath, OutputName):
+def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, OutputPath, OutputName):
     """
     Old name: plot_single_cluster_ToT   
     """
+
+    if not os.path.exists(OutputPath):
+        os.makedirs(OutputPath)
+
     tickfnt = 16
     margin = 5
 
-    clog = read_clog(clog_path)[2]
     matrix = np.zeros([256, 256])
 
     x = []
     y = []
 
-    for i in range(len(clog[frame_number][:])):
-        x.append(clog[frame_number][i][0])
-        y.append(clog[frame_number][i][1])
+    for i in range(len(clog_data[:])):
+        x.append(clog_data[i][0])
+        y.append(clog_data[i][1])
 
-    for i in range(len(clog[frame_number][:])):
-        matrix[int(x[i]), int(y[i])] += clog[frame_number][i][2]
+    for i in range(len(clog_data[:])):
+        matrix[int(x[i]), int(y[i])] += clog_data[i][2]
 
     if (max(x) - min(x)) < (max(y) - min(y)):
         difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
@@ -1473,10 +1483,10 @@ def print_figure_single_cluster_energy(clog_path, frame_number, vmax, title, Out
     plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
     plt.xlabel('X position [pixel]', fontsize=tickfnt)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-    plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
+    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix, fmt="%.3f")
+    #np.savetxt(OutputPath + OutputName + '_' +
+    #           str(cluster_number) + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, title, OutputPath, OutputName):
