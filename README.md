@@ -224,11 +224,11 @@ clog - clog output of DPE,
 number_frames - number of frames to integrate, to add to merged plot from the beginning, from frame number zero in the clog file output of DPE for TPX3 data a frame is created every 100 ns. For TPX3 t3pa data - input number_frames is the cluster - event number. For raw clog frame data - number_frames is the frame number.
 
 <p align="center">
-  <img width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/1_all.png">
+  <img width="300" height="300" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/1_all.png">
 
-<img width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/2_passed.png">
+<img width="300" height="300" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/2_passed.png">
 
-<img width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/3_failed.png">
+<img width="300" height="300" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/3_failed.png">
 </p>
 
 
