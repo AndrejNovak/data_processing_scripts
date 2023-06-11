@@ -223,6 +223,12 @@ elist_filtered - the DPE output elist with the added COL from cluster_filter,
 clog - clog output of DPE, 
 number_frames - number of frames to integrate, to add to merged plot from the beginning, from frame number zero in the clog file output of DPE for TPX3 data a frame is created every 100 ns. For TPX3 t3pa data - input number_frames is the cluster - event number. For raw clog frame data - number_frames is the frame number.
 
+<img align="left" width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/1_all.png">
+
+<img align="center" width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/3_failed.png">
+
+<img align="right" width="200" height="200" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/2_passed.png">
+
 ## create_matrix_filter_tpx_frame(filtered_elist, clog, number_column_filter, number_particles):
 Carlos + Lukas + Andrej, 8 August 2022 
 old name: create_matrix_filter_tpx_f 
@@ -290,10 +296,6 @@ Method that is used to print single frame/cluster (depending on the read_clog me
 
 ## print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, title, OutputPath, OutputName)
 Method that takes single cluster and returns a figure of deposited energy that is smoothened by the Gaussian interpolation method.
-
-<img align="left" width="100" height="100" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/1_all.png">
-
-<img align="right" width="100" height="100" src="https://github.com/AndrejNovak/data_processing_scripts/blob/master/figures/2_passed.png">
 
 ## print_figure_single_cluster_energy_histograms(clog_path, frame_number, vmax, title, OutputPath, OutputName)
 **WARNING** Uses read_clog method that returns coincidences or frames in case of TPX2 data processing. **WARNING**
