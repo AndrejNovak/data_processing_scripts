@@ -85,9 +85,10 @@ Rez protons - 31 MeV
 """
 
 lin_wd = 1.75
-tickfnt = 16
+tickfnt = 18
 alpha_val = 0.9
 mydpi = 300
+
 
 all_paths = [
 'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\07\\',
@@ -116,8 +117,30 @@ all_paths = [
 'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\33_10ms\\',
 'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\33_10ms\\',
 'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\38_10ms\\',
-'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\38_10ms\\']
-
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\38_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\28_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\28_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\29_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\29_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\30_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\30_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\31_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\31_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\34_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\34_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\35_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\35_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\36_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\36_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\37_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\37_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\39_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\39_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\40_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\40_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\41_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\41_500ms\\'
+]
 
 all_out_folders = [
 'Q:\\2023_iworid_data_processing\\processing_selected\\VdG_07\\L06\\',
@@ -139,20 +162,143 @@ all_out_folders = [
 'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\226MeV\\75deg\\',
 'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\226MeV\\45deg\\',
 'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\226MeV\\00deg\\',
-'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg\\L06\\',
-'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg\\L07\\',
-'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg\\L06\\',
-'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg\\L07\\',
-'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg\\L06\\',
-'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg\\L07\\',
-'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg\\L06\\',
-'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg\\L07\\']
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_13MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_13MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_13MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_13MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_13MeV\\L07\\'
+]
 
 labels = ['SiC L06 VdG', 'SiC L07 VdG', 'Si D05 VdG', 'SiC L06 VdG', 'SiC L07 VdG', 'Si D05 VdG', 'SiC L06 VdG', 'SiC L07 VdG', 'Si D05 VdG',
           'SiC L07 100 MeV', 'SiC L07 100 MeV', 'SiC L07 100 MeV', 'SiC L07 100 MeV','SiC L07 100 MeV','SiC L07 226 MeV','SiC L07 226 MeV','SiC L07 226 MeV','SiC L07 226 MeV','SiC L07 226 MeV',
-          'SiC L06 31 MeV','SiC L07 31 MeV','SiC L06 31 MeV','SiC L07 31 MeV','SiC L06 31 MeV','SiC L07 31 MeV','SiC L06 31 MeV','SiC L07 31 MeV',]
+          'SiC L06 31 MeV 00deg','SiC L07 31 MeV 00deg','SiC L06 31 MeV 45deg','SiC L07 31 MeV 45deg','SiC L06 13 MeV 60deg','SiC L07 31 MeV 60deg','SiC L06 31 MeV 75deg','SiC L07 31 MeV 75deg',
+          'SiC L06 20 MeV 00deg','SiC L07 20 MeV 00deg','SiC L06 13 MeV 00deg','SiC L07 13 MeV 00deg','SiC L06 13 MeV 45deg','SiC L07 13 MeV 45deg','SiC L06 20 MeV 45deg','SiC L07 20 MeV 45deg',
+          'SiC L06 20 MeV 60deg','SiC L07 20 MeV 60deg','SiC L06 13 MeV 60deg','SiC L07 13 MeV 60deg','SiC L06 13 MeV 75deg','SiC L07 13 MeV 75deg','SiC L06 20 MeV 75deg','SiC L07 20 MeV 75deg',
+          'SiC L06 31 MeV 85deg','SiC L07 31 MeV 85deg','SiC L06 20 MeV 85deg','SiC L07 20 MeV 85deg','SiC L06 13 MeV 85deg','SiC L07 13 MeV 85deg']
 
-thicknesses = np.array([65, 65, 500, 65, 65, 500, 65, 65, 500, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,])
+thicknesses = np.array([65, 65, 500, 65, 65, 500, 65, 65, 500, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65])
+
+
+"""
+all_paths = [
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\90deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\88deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\75deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\45deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\00deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\90deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\88deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\75deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\45deg\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\00deg\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\27_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\27_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\32_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\32_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\33_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\33_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\38_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\38_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\28_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\28_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\29_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\29_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\30_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\30_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\31_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\31_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\34_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\34_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\35_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\35_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\36_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\36_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\37_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\37_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\39_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\39_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\40_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\40_100ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\41_500ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\41_500ms\\'
+]
+
+all_out_folders = [
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\100MeV\\90deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\100MeV\\88deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\100MeV\\75deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\100MeV\\45deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\100MeV\\00deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\226MeV\\90deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\226MeV\\88deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\226MeV\\75deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\226MeV\\45deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\ptc\\226MeV\\00deg\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\00deg_13MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_13MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\45deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\60deg_13MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_13MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\75deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_31MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_31MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_20MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_20MeV\\L07\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_13MeV\\L06\\',
+'Q:\\2023_iworid_data_processing\\processing_selected\\rez\\85deg_13MeV\\L07\\'
+]
+
+labels = ['SiC L07 100 MeV', 'SiC L07 100 MeV', 'SiC L07 100 MeV', 'SiC L07 100 MeV','SiC L07 100 MeV','SiC L07 226 MeV','SiC L07 226 MeV','SiC L07 226 MeV','SiC L07 226 MeV','SiC L07 226 MeV',
+          'SiC L06 31 MeV 00deg','SiC L07 31 MeV 00deg','SiC L06 31 MeV 45deg','SiC L07 31 MeV 45deg','SiC L06 13 MeV 60deg','SiC L07 31 MeV 60deg','SiC L06 31 MeV 75deg','SiC L07 31 MeV 75deg',
+          'SiC L06 20 MeV 00deg','SiC L07 20 MeV 00deg','SiC L06 13 MeV 00deg','SiC L07 13 MeV 00deg','SiC L06 13 MeV 45deg','SiC L07 13 MeV 45deg','SiC L06 20 MeV 45deg','SiC L07 20 MeV 45deg',
+          'SiC L06 20 MeV 60deg','SiC L07 20 MeV 60deg','SiC L06 13 MeV 60deg','SiC L07 13 MeV 60deg','SiC L06 13 MeV 75deg','SiC L07 13 MeV 75deg','SiC L06 20 MeV 75deg','SiC L07 20 MeV 75deg',
+          'SiC L06 31 MeV 85deg','SiC L07 31 MeV 85deg','SiC L06 20 MeV 85deg','SiC L07 20 MeV 85deg','SiC L06 13 MeV 85deg','SiC L07 13 MeV 85deg']
+
+thicknesses = np.array([65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65])
+"""
 
 for idx, var in enumerate(all_paths):
     FileInPath = var
@@ -208,7 +354,7 @@ for idx, var in enumerate(all_paths):
     Size_min = np.array([0,4,30,30])
     Size_max = np.array([4,30,100,1000])
 
-    number_of_particles = np.array([3000,1000,1000,1000])
+    number_of_particles = np.array([4000,2000,2000,2000])
 
     for k in range(len(E_min)):
         print(f'Filter for Energy range {E_min[k]}-{E_max[k]} keV and size range {Size_min[k]}-{Size_max[k]} px')
@@ -233,7 +379,7 @@ for idx, var in enumerate(all_paths):
         except Exception:
             pass
 
-        number_of_single_clusters = 10
+        number_of_single_clusters = 20
         passed_clusters = 0
 
         filtered_energy = np.empty([0])
@@ -241,21 +387,16 @@ for idx, var in enumerate(all_paths):
         filtered_size = np.empty([0])
         filtered_length = np.empty([0])
 
-        try:
-            for i in range(len(filtered_elist[:,0])):
-                if filtered_elist[i,-1] == 1 and passed_clusters < number_of_particles:
-                    print_figure_single_cluster_energy(clog[i], i, energy_colorbar_max_value, 'Cluster #' + str(i) + '\nEnergy '+str(int(filtered_elist[i,4])) + ' keV, Size ' + str(int(filtered_elist[i,7])) + ' px', FolderOut + '\\' + FileOutName + '\\', 'Cluster')
-                    passed_clusters +=1
-        except Exception:
-            pass
-        """
         for i in range(len(filtered_elist[:,0])):
-            if filtered_elist[i,-1] == 1:
-                filtered_energy = np.append(filtered_energy, filtered_elist[i,4])
-                filtered_height = np.append(filtered_height, filtered_elist[i,8])
-                filtered_size = np.append(filtered_size, filtered_elist[i,7])
-                filtered_length = np.append(filtered_length, filtered_elist[i,13])
-        """
+            if filtered_elist[i,-1] == 1 and passed_clusters < number_of_single_clusters:
+                passed_clusters +=1
+                try:
+                    print_figure_single_cluster_energy(clog[i], i, energy_colorbar_max_value, 'Cluster #' + str(i) + '\nEnergy '+str(int(filtered_elist[i,4])) + ' keV, Size ' + str(int(filtered_elist[i,7])) + ' px', FolderOut + '\\' + FileOutName + '\\', 'Cluster')
+                    print_figure_single_cluster_toa_tpx(clog[i], i, 30, 'Cluster #' + str(i) + ' ToA', FolderOut + '\\' + FileOutName + '\\', 'ToA_Cluster')
+                except Exception:
+                    pass
+            if passed_clusters == number_of_single_clusters:
+                break
         
         filtered_energy = filtered_elist[filtered_elist[:,-1] == 1][:,4]
         filtered_height = filtered_elist[filtered_elist[:,-1] == 1][:,8]
@@ -272,6 +413,9 @@ for idx, var in enumerate(all_paths):
 
         print(f'{len(filtered_energy)} particles passed filter Energy range {E_min[k]}-{E_max[k]} keV and size range {Size_min[k]}-{Size_max[k]} px')
 
+        if not os.path.exists(FolderOut + '\\histograms_' + histogram_type + '\\'):
+            os.makedirs(FolderOut + '\\histograms_' + histogram_type + '\\')
+
         plt.close()
         plt.clf()
         plt.cla()
@@ -285,8 +429,8 @@ for idx, var in enumerate(all_paths):
         plt.tick_params(axis='x', labelsize=tickfnt)
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('Deposited energy distribution')
-        #plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_filtered_energy_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.legend(loc='upper right')
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\filtered_energy_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
     
         plt.close()
         plt.clf()
@@ -301,8 +445,8 @@ for idx, var in enumerate(all_paths):
         plt.tick_params(axis='x', labelsize=tickfnt)
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('Cluster height distribution')
-        #plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_filtered_height_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.legend(loc='upper right')
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\filtered_height_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
         plt.close()
         plt.clf()
@@ -311,14 +455,14 @@ for idx, var in enumerate(all_paths):
         #plt.xlim(left=1, right=1E3)
         #plt.ylim(bottom=10, top=1E7)
         plt.yscale('log')
-        plt.xscale('log')
+        #plt.xscale('log')
         plt.xlabel('Size [px]', fontsize=tickfnt)
         plt.ylabel('Particles [count]', fontsize=tickfnt)
         plt.tick_params(axis='x', labelsize=tickfnt)
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('Cluster size distribution')
-        #plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_filtered_size_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.legend(loc='upper right')
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\filtered_size_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
         plt.close()
         plt.clf()
@@ -333,8 +477,8 @@ for idx, var in enumerate(all_paths):
         plt.tick_params(axis='x', labelsize=tickfnt)
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('LET distribution')
-        #plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_filtered_LET_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.legend(loc='upper right')
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\filtered_LET_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
         plt.close()
         plt.clf()
@@ -349,8 +493,8 @@ for idx, var in enumerate(all_paths):
         plt.tick_params(axis='x', labelsize=tickfnt)
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('Per-pixel energy distribution')
-        #plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_filtered_perpxE_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.legend(loc='upper right')
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\filtered_perpxE_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 
         # ALL NON FILTERED HISTOGRAMS
@@ -368,13 +512,13 @@ for idx, var in enumerate(all_paths):
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('Deposited energy distribution')
         plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_All_energy_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\All_energy_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
     
         plt.close()
         plt.clf()
         plt.cla()
         plt.hist(filtered_elist[:,8], bins=np.histogram_bin_edges(filtered_elist[:,8], bins=histogram_type), histtype = 'step', label=labels[idx], linewidth=lin_wd)
-        #plt.xlim(left=5, right=5E3)
+        #plt.xlim(left=0, right=1E4) # comment, this is because of the REZ histograms
         #plt.ylim(bottom=10, top=1E6)
         plt.yscale('log')
         plt.xscale('log')
@@ -384,7 +528,7 @@ for idx, var in enumerate(all_paths):
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('Cluster height distribution')
         plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_All_height_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\All_height_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
         plt.close()
         plt.clf()
@@ -393,14 +537,14 @@ for idx, var in enumerate(all_paths):
         #plt.xlim(left=1, right=1E3)
         #plt.ylim(bottom=10, top=1E7)
         plt.yscale('log')
-        plt.xscale('log')
+        #plt.xscale('log')
         plt.xlabel('Size [px]', fontsize=tickfnt)
         plt.ylabel('Particles [count]', fontsize=tickfnt)
         plt.tick_params(axis='x', labelsize=tickfnt)
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('Cluster size distribution')
         plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_All_size_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\All_size_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
         elist_LET = filtered_elist[:,4] / (np.sqrt((filtered_elist[:,13] * 55) ** 2 + thicknesses[idx]**2))
 
@@ -408,7 +552,7 @@ for idx, var in enumerate(all_paths):
         plt.clf()
         plt.cla()
         plt.hist(elist_LET[:], bins=np.histogram_bin_edges(elist_LET[:], bins=histogram_type), histtype = 'step', label=labels[idx], linewidth=lin_wd)
-        #plt.xlim(left=1E-1, right=5E1)
+        #plt.xlim(left=1E-1, right=1E2) # comment, this is because of the REZ histograms
         #plt.ylim(bottom=10, top=1E6)
         plt.yscale('log')
         plt.xscale('log')
@@ -418,7 +562,7 @@ for idx, var in enumerate(all_paths):
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('LET distribution')
         plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_All_LET_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\All_LET_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
         plt.close()
         plt.clf()
@@ -434,4 +578,4 @@ for idx, var in enumerate(all_paths):
         plt.tick_params(axis='y', labelsize=tickfnt)
         plt.title('Per-pixel energy distribution')
         plt.legend(loc='upper right')
-        plt.savefig(FolderOut + histogram_type + '_All_perpxE_histogram' + FileOutName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        plt.savefig(FolderOut + '\\histograms_' + histogram_type + '\\All_perpxE_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)

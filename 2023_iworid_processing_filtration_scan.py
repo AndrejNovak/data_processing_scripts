@@ -27,7 +27,7 @@ from DPE_functions import *
 'Q:\\2023_iworid_data_processing\\D05\\VdG\\'
 """
 
-all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06']
+all_paths = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\']
 
 all_out_folders = ['Q:\\2023_iworid_data_processing\\L06\\VdG\\']
 

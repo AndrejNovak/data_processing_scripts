@@ -773,8 +773,6 @@ def read_elist_filter_numpy(elist_data, new_filter=None):
                 if new_filter.pass_filter(cluster_variable):
                     filter_values[i] = 1
 
-            #elist_data = np.column_stack((elist_data,filter_values))
-
         return np.column_stack((elist_data,filter_values))
 
     else:
@@ -1005,18 +1003,10 @@ def create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clo
     number_of_failed_particles = 0
     
     try:
-        #for i in range(len(filtered_elist[:,0])):
         for i in range(len(filtered_elist[:])):
             if number_of_passed_particles < number_of_particles:
                 cluster_size_clog = len(clog[i][:])
-                #print(f'The number of events in frame {i} are {len(clog[0])} the total number of pixels is {cluster_size_clog}')
-                #for j in range(cluster_size_clog):
-                #    x, y = int(clog[i][j][0]), int(clog[i][j][1])
 
-                    #matrix_energy_all[x, y] += clog[i][j][2]
-                    #matrix_toa_all[x, y] = clog[i][j][3]
-
-                #if filtered_elist[i,-1] == 1 :
                 if filtered_elist[i] == 1 :
                     number_of_passed_particles += 1
                     for j in range(cluster_size_clog):
@@ -1039,7 +1029,6 @@ def create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist, clo
 
     matrix_energy_all = matrix_energy_ok + matrix_energy_bad
     
-    #print(f'The number of particles that are displayed in Passed matrix is {number_of_passed_particles}')
     #return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad, number_of_passed_particles, number_of_failed_particles
     return matrix_energy_all, 0, matrix_energy_ok, 0, matrix_energy_bad, 0, number_of_passed_particles, number_of_failed_particles
 
@@ -1161,7 +1150,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     """
 
     mydpi = 300
-    tickfnt = 16
+    tickfnt = 18
 
     if not os.path.exists(OutputPath):
         os.makedirs(OutputPath)
@@ -1193,6 +1182,60 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
+def print_figure_flat_field(matrix, open_beam, title, OutputPath, OutputName):
+    """
+    Flat-field correction of image/matrix given the open-beam measurement
+    correction_coefficient - correction coefficients, can be calculated as an average or median of flood image/open-beam
+    matrix - image we want to correct using open-beam at the same Threshold level
+    matrix_ff = matrix * (mean_open_beam/matrix)
+    """
+
+    mydpi = 300
+    tickfnt = 18
+
+    if not os.path.exists(OutputPath):
+        os.makedirs(OutputPath)
+
+    correction_coefficient = np.zeros((256, 256))
+    matrix_flat_field = np.zeros((256, 256))
+
+    for i in range(256):
+        for j in range(256):
+            if open_beam[i][j] == 0:
+                matrix_flat_field[i][j] = 0
+                correction_coefficient[i][j] = 0
+            else:
+                correction_coefficient[i][j] = np.mean(open_beam) / open_beam[i][j]
+                matrix_flat_field[i][j] = matrix[i][j] * correction_coefficient[i][j]
+
+    for i in range(100):
+        vmax = np.median(matrix_flat_field) - 2000 + i * 100
+        plt.close()
+        plt.cla()
+        plt.clf()
+        plt.rcParams["figure.figsize"] = (11.7, 8.3)
+        # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        # If the orientation of matrix doesnt fit, use this instead
+        plt.matshow(np.flip(np.rot90(
+            matrix_flat_field[::-1, :])), origin='lower', cmap='gray')
+        plt.gca().xaxis.tick_bottom()
+        cbar = plt.colorbar(label='Counts [-]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+        cbar.set_label(label='Counts [-]', size=tickfnt,
+                       weight='regular')   # format="%.1E"
+        cbar.ax.tick_params(labelsize=tickfnt)
+        plt.clim(0, vmax)
+        plt.xlabel('X position [pixel]', fontsize=tickfnt)
+        plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+        plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+        plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+        plt.tick_params(axis='x', labelsize=tickfnt)
+        plt.tick_params(axis='y', labelsize=tickfnt)
+        plt.title(label=title, fontsize=tickfnt)
+        plt.savefig(OutputPath + OutputName + str(int(vmax)) + '_max.png', dpi=mydpi,
+                    transparent=True, bbox_inches="tight", pad_inches=0.01)
+        #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+
+
 def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName):
     """
     Old name: print_fig_E
@@ -1201,7 +1244,7 @@ def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName)
     """
 
     mydpi = 300
-    tickfnt = 16
+    tickfnt = 18
 
     if not os.path.exists(OutputPath):
         os.makedirs(OutputPath)
@@ -1302,7 +1345,7 @@ def print_figure_toa(cluster_data, vmax, title, OutputPath, OutputName):
         difference_position_y = 0
     
     margin = 5
-    tickfnt = 16
+    tickfnt = 18
     mydpi = 300
 
     if not os.path.exists(OutputPath):
@@ -1439,7 +1482,7 @@ def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, O
     if not os.path.exists(OutputPath):
         os.makedirs(OutputPath)
 
-    tickfnt = 16
+    tickfnt = 18
     margin = 5
 
     matrix = np.zeros([256, 256])
@@ -1481,6 +1524,8 @@ def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, O
     plt.title(label=title, fontsize=tickfnt+4)
     plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
     plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
     plt.xlabel('X position [pixel]', fontsize=tickfnt)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
@@ -1649,7 +1694,7 @@ def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, O
     
     For Timepix3 and Timepix2 detectors.
     """
-    tickfnt = 16
+    tickfnt = 18
     margin = 5
 
     clog = read_clog(clog_path)[2]
@@ -1700,27 +1745,26 @@ def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, O
                str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
-def print_figure_single_cluster_toa_tpx(clog_path, frame_number, vmax, title, OutputPath, OutputName):
+def print_figure_single_cluster_toa_tpx(clog_data, frame_number, vmax, title, OutputPath, OutputName):
     """
     Old name: plot_single_cluster_ToA
     
     For Timepix detectors.
     """
-    tickfnt = 16
+    tickfnt = 18
     margin = 5
 
-    clog = read_clog(clog_path)[2]
     matrix = np.zeros([256, 256])
 
     x = []
     y = []
 
-    for i in range(len(clog[frame_number][:])):
-        x.append(clog[frame_number][i][0])
-        y.append(clog[frame_number][i][1])
+    for i in range(len(clog_data[:])):
+        x.append(clog_data[i][0])
+        y.append(clog_data[i][1])
 
-    for i in range(len(clog[frame_number][:])):
-        matrix[int(x[i]), int(y[i])] = clog[frame_number][i][2]
+    for i in range(len(clog_data[:])):
+        matrix[int(x[i]), int(y[i])] += clog_data[i][2]
 
     if (max(x) - min(x)) < (max(y) - min(y)):
         difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
@@ -1753,15 +1797,15 @@ def print_figure_single_cluster_toa_tpx(clog_path, frame_number, vmax, title, Ou
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '_' + str(frame_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '_' +
-               str(frame_number) + '.txt', matrix, fmt="%.3f")
+    #np.savetxt(OutputPath + OutputName + '_' +
+    #           str(frame_number) + '.txt', matrix, fmt="%.3f")
 
 
 def plot_single_cluster_toa_gaas(OutputPath, clog_path, frame_number, indicator, vmax):
     """
     This is a plot function that I used for Elitech 2023 school article, it is not really published.
     """
-    tickfnt = 16
+    tickfnt = 18
     margin = 5
 
     clog = read_clog(clog_path)[2]
@@ -1912,7 +1956,7 @@ def gaas_core_halo_study(FileInPath, FileInName, FileOutPath, FileOutName, angle
     plt.close()
     plt.clf()
     plt.cla()
-    tickfnt = 16
+    tickfnt = 18
     a = plt.hist(hist_data[:], bins=512, histtype='step',
                  label=title, linewidth=1.75)
     ys = a[0]
@@ -1935,7 +1979,7 @@ def gaas_core_halo_study(FileInPath, FileInName, FileOutPath, FileOutName, angle
     plt.close()
     plt.clf()
     plt.cla()
-    tickfnt = 16
+    tickfnt = 18
     a = plt.hist(hist_data_halo[:], bins=128,
                  histtype='step', label=title, linewidth=1.75)
     ys = a[0]
@@ -2094,7 +2138,7 @@ def print_figure_single_cluster_count_histograms(clog_path, frame_number, Output
     """
     The same function as print_figure_single_cluster_energy but with histograms.
     """
-    tickfnt = 16
+    tickfnt = 18
 
     clog = read_clog(clog_path)[2]
     matrix = np.zeros([256, 256])
@@ -2288,7 +2332,7 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         else:
             difference_position_y = 0
 
-        tickfnt = 16
+        tickfnt = 18
         margin = 5
 
         plt.close()
@@ -2681,7 +2725,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
         if not os.path.exists(OutputPath):
             os.makedirs(OutputPath)
         try:
-            tickfnt = 16
+            tickfnt = 18
             plt.close()
             plt.cla()
             plt.clf()
