@@ -65,7 +65,10 @@ for idx, var in enumerate(folder_data_main):
             FolderOutPath = all_out_folders + var + '\\' + var2 + '\\'
 
             energy_colorbar_max_value = np.mean(matrix_energy)
-            print_figure_energy(matrix_energy, energy_colorbar_max_value, 'Dep E, range ' + str(energy_window[i,0]) + '- ' + str(energy_window[i,1] + 'keV X-ray photons'), FolderOutPath, FileOutName)
+            try:
+                print_figure_energy(matrix_energy, energy_colorbar_max_value, 'Dep E, range ' + str(energy_window[i,0]) + '- ' + str(energy_window[i,1]) + 'keV X-ray photons', FolderOutPath, FileOutName)
+            except Exception:
+                pass
             mydpi = 300
             tickfnt = 16
 

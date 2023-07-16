@@ -33,7 +33,7 @@ from skimage.util import invert
 
 """
 Changing colormap to start at transparent zero
-This code creates a new colormap called "modified_hot" by modifying the original "hot_r" colormap.
+This code creates a new colormap called "viridis" by modifying the original "hot_r" colormap.
 The colormap is created by using the "get_cmap()" function from matplotlib to retrieve the "hot_r" 
 colormap and then applying it to a range of 256 colors. The last column of the color_array is then 
 set to a range of values from 0 to 1 with a length of 256 using the numpy linspace function. 
@@ -317,6 +317,62 @@ def read_clog(filename):
     To access first layer (selected frame) use: data[0]
     To access second layer (selected 4-group of selected frame) use: data[0][0]
     To access third layer (selected value from selected 4-group of selected frame) use: data[0][0][0] 
+    
+    *** C++ VERSION ***
+    #include <iostream>
+    #include <fstream>
+    #include <vector>
+    #include <regex>
+
+    std::tuple<std::vector<double>, std::vector<double>, std::vector<std::vector<std::vector<double>>>> read_clog(std::string filename) {
+        std::ifstream inputFile(filename);
+        std::vector<std::string> lines;
+        std::string line;
+        while (std::getline(inputFile, line)) {
+            lines.push_back(line);
+        }
+        inputFile.close();
+    
+        std::vector<double> frame_unix_time;
+        std::vector<double> frame_times;
+        std::vector<std::vector<std::vector<double>>> all_values;
+        std::vector<std::vector<double>> current_cluster;
+        std::vector<double> a;
+        std::regex pattern_b("\\[[^\\]\\[]*\\]");
+        for (const std::string& line : lines) {
+            if (line != "\n") {
+                std::vector<std::string> split_line;
+                std::string word;
+                std::istringstream iss(line);
+                while (iss >> word) {
+                    split_line.push_back(word);
+                }
+                if (split_line[0] == "Frame") {
+                    double unixtime = std::stod(split_line[2].substr(1, split_line[2].length() - 2));
+                    frame_unix_time.push_back(unixtime);
+                    double measurement_time = std::stod(split_line[3].substr(0, split_line[3].length() - 1));
+                    frame_times.push_back(measurement_time);
+                    all_values.push_back(current_cluster);
+                    current_cluster.clear();
+                    continue;
+                }
+                std::smatch match;
+                std::regex_search(line, match, pattern_b);
+                std::string match_str = match.str();
+                match_str = match_str.substr(1, match_str.length() - 2);
+                std::istringstream iss2(match_str);
+                std::string element;
+                while (std::getline(iss2, element, ',')) {
+                    a.push_back(std::stod(element));
+                }
+                current_cluster.push_back(a);
+                a.clear();
+            }
+        }
+    
+        return std::make_tuple(frame_unix_time, frame_times, std::vector<std::vector<std::vector<double>>>(all_values.begin() + 1, all_values.end()));
+    }
+    **** END OF C++ ***
     """
 
     with open(filename) as inputFile:
@@ -1159,10 +1215,10 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.cla()
     plt.clf()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
     cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
     cbar.set_label(label='Energy [keV]', size=tickfnt,
@@ -1179,7 +1235,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_flat_field(matrix, open_beam, title, OutputPath, OutputName):
@@ -1214,7 +1270,7 @@ def print_figure_flat_field(matrix, open_beam, title, OutputPath, OutputName):
         plt.cla()
         plt.clf()
         plt.rcParams["figure.figsize"] = (11.7, 8.3)
-        # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
         # If the orientation of matrix doesnt fit, use this instead
         plt.matshow(np.flip(np.rot90(
             matrix_flat_field[::-1, :])), origin='lower', cmap='gray')
@@ -1253,28 +1309,34 @@ def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName)
     plt.cla()
     plt.clf()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
     cbar = plt.colorbar(label='Deposited energy per-pixel [keV/px]', aspect=20*0.8, shrink=0.8) # shrink=0.8
     cbar.set_label(label='Deposited energy per-pixel [keV/px]', size=tickfnt,
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
+    linwid = 2
+    plt.axhline(y = 80, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axvline(x = 80, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axvline(x = 160, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axvline(x = 240, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axvline(x = 320, color = 'black', linestyle = '-', linewidth = linwid)
     # plt.clim(vmin,vmax) - set your own range using vmin, vmax
     plt.clim(1, vmax)
     plt.xlabel('X position [pixel]', fontsize=tickfnt)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-    plt.xlim([0,100])
-    plt.ylim([0,100])
+    plt.xlim([0,400])
+    plt.ylim([0,160])
     #plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     #plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title(label=title, fontsize=tickfnt)
+    #plt.title(label=title, fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
-                transparent=True, bbox_inches="tight", pad_inches=0.01)
+                transparent=True, bbox_inches="tight", pad_inches=0.2)
     np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
@@ -1295,10 +1357,10 @@ def print_figure_energy_apcom_2023(matrix, vmax, title, OutputPath, OutputName):
     plt.cla()
     plt.clf()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
     cbar = plt.colorbar(label='Deposited energy per-pixel [keV/px]', aspect=20*0.8, shrink=0.8) # shrink=0.8
     cbar.set_label(label='Deposited energy per-pixel [keV/px]', size=tickfnt,
@@ -1355,10 +1417,10 @@ def print_figure_toa(cluster_data, vmax, title, OutputPath, OutputName):
     plt.cla()
     plt.clf()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot')
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis')
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
-                origin='lower', cmap='modified_hot')    # cmap='modified_hot' 'viridis'
+                origin='lower', cmap='viridis')    # cmap='viridis' 'viridis'
     plt.gca().xaxis.tick_bottom()
     cbar = plt.colorbar(label='ToA [ns]', aspect=20*0.8)
     cbar.set_label(label='ToA [ns]', size=tickfnt,
@@ -1511,10 +1573,10 @@ def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, O
     plt.clf()
     plt.subplot()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
     cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) # shrink=0.8
@@ -1568,10 +1630,10 @@ def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, tit
     plt.clf()
     plt.subplot()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.imshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm(), interpolation='gaussian')
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm(), interpolation='gaussian')
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
     cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) # shrink=0.8
@@ -1593,10 +1655,10 @@ def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, tit
     plt.clf()
     plt.subplot()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.imshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm(), interpolation='None')
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm(), interpolation='None')
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
     cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) # shrink=0.8
@@ -1666,7 +1728,7 @@ def print_figure_single_cluster_energy_histograms(clog_path, frame_number, vmax,
     axs[0, 0].set_yscale('log')
     axs[0, 1].axis('off')
     aa = axs[1, 0].matshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     axs[1, 0].xaxis.tick_bottom()
     cbar = fig.colorbar(aa)
     #axs[1, 0].set_clim(1, vmax)
@@ -1724,10 +1786,10 @@ def print_figure_single_cluster_toa_tpx3(clog_path, frame_number, vmax, title, O
     plt.clf()
     plt.subplot()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
-                origin='lower', cmap='modified_hot')
+                origin='lower', cmap='viridis')
     plt.gca().xaxis.tick_bottom()
     plt.clim(0, vmax)
     cbar = plt.colorbar(label='ToA [ns]', aspect=20*0.8) # shrink=0.8
@@ -1780,10 +1842,10 @@ def print_figure_single_cluster_toa_tpx(clog_data, frame_number, vmax, title, Ou
     plt.clf()
     plt.subplot()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
-                origin='lower', cmap='modified_hot')
+                origin='lower', cmap='viridis')
     plt.gca().xaxis.tick_bottom()
     plt.clim(0, vmax)
     cbar = plt.colorbar(label='ToA [ns]', aspect=20*0.8) # shrink=0.8
@@ -1848,10 +1910,10 @@ def plot_single_cluster_toa_gaas(OutputPath, clog_path, frame_number, indicator,
     plt.clf()
     plt.subplot()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
     # If the orientation of matrix doesnt fit, use this instead
     plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
-                origin='lower', cmap='modified_hot')
+                origin='lower', cmap='viridis')
     plt.gca().xaxis.tick_bottom()
     plt.clim(0, vmax)
     cbar = plt.colorbar(label='ToA [ns]', aspect=20*0.8) # shrink=0.8
@@ -2348,7 +2410,7 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         fig_ax1.set_xlim([min(new_x) - difference_position_x / 2 - margin, max(new_x) + difference_position_x / 2 + margin])
         fig_ax1.set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
         # Display image, `aspect='auto'` makes it fill the whole `axes` (ax3)
-        im2 = fig_ax1.imshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix.flatten())))
+        im2 = fig_ax1.imshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='viridis', norm=LogNorm(vmin=1, vmax=max(matrix.flatten())))
         # Create divider for existing axes instance
         divider2 = make_axes_locatable(fig_ax1)
         # Append axes to the right of ax3, with 20% width of ax3
@@ -2383,7 +2445,7 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         fig_ax2.set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
         fig_ax2.set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
         # Display image, `aspect='auto'` makes it fill the whole `axes` (ax3)
-        im3 = fig_ax2.imshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix.flatten())))
+        im3 = fig_ax2.imshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='viridis', norm=LogNorm(vmin=1, vmax=max(matrix.flatten())))
         # Create divider for existing axes instance
         divider3 = make_axes_locatable(fig_ax2)
         # Append axes to the right of ax3, with 20% width of ax3
@@ -2493,21 +2555,21 @@ def cluster_skeleton(cluster_data, cluster_number, OutputPath, OutputName):
                              sharex=True, sharey=True)
 
         ax = axes.ravel()
-        ax[0].imshow(matrix, origin='lower', cmap='modified_hot')
+        ax[0].imshow(matrix, origin='lower', cmap='viridis')
         ax[0].set_xlabel('X position [pixel]')
         ax[0].set_ylabel('Y position [pixel]')
         ax[0].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
         ax[0].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
         ax[0].set_title('original', fontsize=20)
 
-        ax[1].imshow(skeleton, origin='lower', cmap='modified_hot')
+        ax[1].imshow(skeleton, origin='lower', cmap='viridis')
         ax[1].set_xlabel('X position [pixel]')
         ax[1].set_ylabel('Y position [pixel]')
         ax[1].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
         ax[1].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
         ax[1].set_title('skeleton', fontsize=20)
 
-        ax[2].imshow(skeleton_lee, origin='lower', cmap='modified_hot')
+        ax[2].imshow(skeleton_lee, origin='lower', cmap='viridis')
         ax[2].set_xlabel('X position [pixel]')
         ax[2].set_ylabel('Y position [pixel]')
         ax[2].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
@@ -2618,7 +2680,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
             fig.tight_layout()
             ax = axes.ravel()
             #fig.suptitle('Cluster ' + str(cluster_number) + ', '+ str(len(end_x)) + ' ends\n', fontsize=20, y=0.98)
-            im0 = ax[0].imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
+            im0 = ax[0].imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='viridis', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
             divider0 = make_axes_locatable(ax[0])
             cax0 = divider0.append_axes("right", size="20%", pad=0.05)
             cbar0 = plt.colorbar(im0, cax=cax0, format="%.0f")
@@ -2632,7 +2694,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
             ax[0].set_title('Deposited energy', fontsize=tickfnt)
 
             skeleton_copy_rotated = np.flip(np.rot90(skeleton[::-1, :].copy()))
-            ax[1].imshow(skeleton_copy_rotated, origin='lower', cmap='modified_hot')
+            ax[1].imshow(skeleton_copy_rotated, origin='lower', cmap='viridis')
             ax[1].scatter(end_x, end_y, c='royalblue', s=8)
             #ax[1].scatter(joint_x, joint_y, c='red', s=2)
             ax[1].scatter(np.mean(joint_x), np.mean(joint_y), c='green', s=1.25)
@@ -2642,7 +2704,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
             ax[1].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
             ax[1].set_title('Skeleton with end points', fontsize=tickfnt)
 
-            im2 = ax[2].imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='modified_hot', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
+            im2 = ax[2].imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='viridis', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
             divider2 = make_axes_locatable(ax[2])
             cax2 = divider2.append_axes("right", size="20%", pad=0.05)
             cbar2 = plt.colorbar(im2, cax=cax2, format="%i")
@@ -2668,7 +2730,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
         plt.cla()
         plt.clf()
         plt.figure(figsize=(6, 6))
-        plot1 = plt.imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='modified_hot', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
+        plot1 = plt.imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='viridis', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
         plt.gca().xaxis.tick_bottom()
         plt.clim(1, max(matrix_energy.flatten()))
         cbar = plt.colorbar(plot1, label='Energy [keV]', aspect=20*0.8, format="%i") # shrink=0.8
@@ -2688,7 +2750,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
         plt.cla()
         plt.clf()
         plt.figure(figsize=(6, 6))
-        plot2 = plt.imshow(skeleton_copy_rotated, origin='lower', cmap='modified_hot')
+        plot2 = plt.imshow(skeleton_copy_rotated, origin='lower', cmap='viridis')
         plt.clim(1, max(skeleton_copy_rotated.flatten()))
         cbar = plt.colorbar(plot2, label='[-]', aspect=20*0.8, format="%.1f") # shrink=0.8
         cbar.set_label(label='[-]', size=tickfnt,
@@ -2707,7 +2769,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
         plt.cla()
         plt.clf()
         plt.figure(figsize=(6, 6))
-        plot3 = plt.imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='modified_hot', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
+        plot3 = plt.imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='viridis', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
         plt.clim(1, max(matrix_number_of_neighbours.flatten()))
         cbar = plt.colorbar(plot3, label='Neighbours [-]', aspect=20*0.8, format="%.1f") # shrink=0.8
         cbar.set_label(label='Neighbours [-]', size=tickfnt,
@@ -2731,7 +2793,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
             plt.clf()
             plt.subplot()
             plt.rcParams["figure.figsize"] = (11.7, 8.3)
-            plt.matshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='modified_hot', norm=colors.LogNorm())
+            plt.matshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
             plt.gca().xaxis.tick_bottom()
             plt.clim(1, max(matrix_energy.flatten()))
             cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) # shrink=0.8
@@ -2752,7 +2814,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
             plt.clf()
             plt.subplot()
             plt.rcParams["figure.figsize"] = (11.7, 8.3)
-            plt.matshow(skeleton_copy_rotated, origin='lower', cmap='modified_hot')
+            plt.matshow(skeleton_copy_rotated, origin='lower', cmap='viridis')
             plt.gca().xaxis.tick_bottom()
             plt.clim(1, max(skeleton_copy_rotated.flatten()))
             plt.scatter(end_x, end_y, c='blue', s=1.75)
@@ -2774,7 +2836,7 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
             plt.clf()
             plt.subplot()
             plt.rcParams["figure.figsize"] = (11.7, 8.3)
-            plt.matshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='modified_hot')
+            plt.matshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='viridis')
             plt.gca().xaxis.tick_bottom()
             plt.clim(1, max(matrix_number_of_neighbours.flatten()))
             plt.scatter(end_x, end_y, c='blue', s=1.75)
