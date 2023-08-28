@@ -1300,7 +1300,7 @@ def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName)
     """
 
     mydpi = 300
-    tickfnt = 18
+    tickfnt = 16
 
     if not os.path.exists(OutputPath):
         os.makedirs(OutputPath)
@@ -1319,19 +1319,19 @@ def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName)
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
     linwid = 2
-    plt.axhline(y = 80, color = 'black', linestyle = '-', linewidth = linwid)
     plt.axvline(x = 80, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axvline(x = 160, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axvline(x = 240, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axvline(x = 320, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axhline(y = 80, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axhline(y = 160, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axhline(y = 240, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axhline(y = 320, color = 'black', linestyle = '-', linewidth = linwid)
     # plt.clim(vmin,vmax) - set your own range using vmin, vmax
     plt.clim(1, vmax)
     plt.xlabel('X position [pixel]', fontsize=tickfnt)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-    plt.xlim([0,400])
-    plt.ylim([0,160])
-    #plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
-    #plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+    plt.xlim([0,160])
+    plt.ylim([0,400])
+    plt.xticks([0, 79, 159], ['1', '80', '160'])
+    plt.yticks([0, 79, 159, 239, 319, 399], ['1', '80', '160', '240', '320', '400'])
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
     #plt.title(label=title, fontsize=tickfnt)
