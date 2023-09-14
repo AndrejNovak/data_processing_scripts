@@ -135,7 +135,7 @@ energy_colorbar_max_value = 5000
 print_figure_energy(rez_centroid_matrix, energy_colorbar_max_value, ' ', FolderInPath, '04_fig_dep_E_centroid_rez')
 print_figure_energy(ptc_centroid_matrix, energy_colorbar_max_value, ' ', FolderInPath, '04_fig_dep_E_centroid_ptc')
 
-
+"""
 
 #
 # NEXT TASK - distribution of energy, LET and track length
@@ -170,22 +170,38 @@ ptc_elist_data_85deg = np.loadtxt(ptc_elist_path_85deg, skiprows=2, delimiter=';
 
 energy_minimum = 0
 energy_maximum = 10000000
-size_minimum = 0
+size_minimum = 4
 size_maximum = 20000
 
-filter_parameters = Cluster_filter_multiple_parameter([energy_minimum, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy
+filter_parameters_rez_00 = Cluster_filter_multiple_parameter([160, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_rez_elist_data_00deg = read_elist_filter_numpy(rez_elist_data_00deg, filter_parameters_rez_00)
 
-filtered_rez_elist_data_00deg = read_elist_filter_numpy(rez_elist_data_00deg, filter_parameters)
-filtered_rez_elist_data_45deg = read_elist_filter_numpy(rez_elist_data_45deg, filter_parameters)
-filtered_rez_elist_data_60deg = read_elist_filter_numpy(rez_elist_data_60deg, filter_parameters)
-filtered_rez_elist_data_75deg = read_elist_filter_numpy(rez_elist_data_75deg, filter_parameters)
-filtered_rez_elist_data_85deg = read_elist_filter_numpy(rez_elist_data_85deg, filter_parameters)
+filter_parameters_rez_45 = Cluster_filter_multiple_parameter([290, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_rez_elist_data_45deg = read_elist_filter_numpy(rez_elist_data_45deg, filter_parameters_rez_45)
 
-filtered_ptc_elist_data_00deg = read_elist_filter_numpy(ptc_elist_data_00deg, filter_parameters)
-filtered_ptc_elist_data_45deg = read_elist_filter_numpy(ptc_elist_data_45deg, filter_parameters)
-filtered_ptc_elist_data_60deg = read_elist_filter_numpy(ptc_elist_data_60deg, filter_parameters)
-filtered_ptc_elist_data_75deg = read_elist_filter_numpy(ptc_elist_data_75deg, filter_parameters)
-filtered_ptc_elist_data_85deg = read_elist_filter_numpy(ptc_elist_data_85deg, filter_parameters)
+filter_parameters_rez_60 = Cluster_filter_multiple_parameter([440, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_rez_elist_data_60deg = read_elist_filter_numpy(rez_elist_data_60deg, filter_parameters_rez_60)
+
+filter_parameters_rez_75 = Cluster_filter_multiple_parameter([440, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_rez_elist_data_75deg = read_elist_filter_numpy(rez_elist_data_75deg, filter_parameters_rez_75)
+
+filter_parameters_rez_85 = Cluster_filter_multiple_parameter([440, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_rez_elist_data_85deg = read_elist_filter_numpy(rez_elist_data_85deg, filter_parameters_rez_85)
+
+filter_parameters_ptc_00 = Cluster_filter_multiple_parameter([180, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_ptc_elist_data_00deg = read_elist_filter_numpy(ptc_elist_data_00deg, filter_parameters_ptc_00)
+
+filter_parameters_ptc_45 = Cluster_filter_multiple_parameter([240, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_ptc_elist_data_45deg = read_elist_filter_numpy(ptc_elist_data_45deg, filter_parameters_ptc_45)
+
+filter_parameters_ptc_60 = Cluster_filter_multiple_parameter([240, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_ptc_elist_data_60deg = read_elist_filter_numpy(ptc_elist_data_60deg, filter_parameters_ptc_60)
+
+filter_parameters_ptc_75 = Cluster_filter_multiple_parameter([240, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_ptc_elist_data_75deg = read_elist_filter_numpy(ptc_elist_data_75deg, filter_parameters_ptc_75)
+
+filter_parameters_ptc_85 = Cluster_filter_multiple_parameter([450, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_ptc_elist_data_85deg = read_elist_filter_numpy(ptc_elist_data_85deg, filter_parameters_ptc_85)
 
 bins = np.array([2048, 600000])
 bins_length = np.array([70, 128])
@@ -207,8 +223,8 @@ g = plt.hist(filtered_ptc_elist_data_45deg[filtered_ptc_elist_data_45deg[:,-1] =
 h = plt.hist(filtered_ptc_elist_data_60deg[filtered_ptc_elist_data_60deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
 i = plt.hist(filtered_ptc_elist_data_75deg[filtered_ptc_elist_data_75deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
 j = plt.hist(filtered_ptc_elist_data_85deg[filtered_ptc_elist_data_85deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
-plt.xlim(left=1, right=1E5)
-plt.ylim(bottom=1, top=y_top_limit)
+plt.xlim(left=100, right=1E5)
+plt.ylim(bottom=5, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('Energy [keV]', fontsize=tickfnt)
@@ -274,8 +290,8 @@ plt.plot(g[:,0], g[:,1], linestyle='dashed', label=labels[6], linewidth=lin_wd, 
 plt.plot(h[:,0], h[:,1], linestyle='dashed', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(i[:,0], i[:,1], linestyle='dashed', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(j[:,0], j[:,1], linestyle='dashed', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
-plt.xlim(left=1, right=1E5)
-plt.ylim(bottom=1, top=y_top_limit)
+plt.xlim(left=100, right=1E5)
+plt.ylim(bottom=5, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('Energy [keV]', fontsize=tickfnt)
@@ -294,25 +310,25 @@ y_top_limit = 1E5
 plt.close()
 plt.clf()
 plt.cla()
-a = plt.hist(filtered_rez_elist_data_00deg[filtered_rez_elist_data_00deg[:,-1] == 1][:,13] * 55, bins=bins_length[0], histtype = 'step', label=labels[0], linewidth=lin_wd, alpha=alpha_val)
-b = plt.hist(filtered_rez_elist_data_45deg[filtered_rez_elist_data_45deg[:,-1] == 1][:,13] * 55, bins=bins_length[0], histtype = 'step', label=labels[1], linewidth=lin_wd, alpha=alpha_val)
-c = plt.hist(filtered_rez_elist_data_60deg[filtered_rez_elist_data_60deg[:,-1] == 1][:,13] * 55, bins=bins_length[0], histtype = 'step', label=labels[2], linewidth=lin_wd, alpha=alpha_val)
-d = plt.hist(filtered_rez_elist_data_75deg[filtered_rez_elist_data_75deg[:,-1] == 1][:,13] * 55, bins=bins_length[0], histtype = 'step', label=labels[3], linewidth=lin_wd, alpha=alpha_val)
-e = plt.hist(filtered_rez_elist_data_85deg[filtered_rez_elist_data_85deg[:,-1] == 1][:,13] * 55, bins=bins_length[0], histtype = 'step', label=labels[4], linewidth=lin_wd, alpha=alpha_val)
-f = plt.hist(filtered_ptc_elist_data_00deg[filtered_ptc_elist_data_00deg[:,-1] == 1][:,13] * 55, bins=bins_length[1], histtype = 'step', label=labels[5], linewidth=lin_wd, alpha=alpha_val)
-g = plt.hist(filtered_ptc_elist_data_45deg[filtered_ptc_elist_data_45deg[:,-1] == 1][:,13] * 55, bins=bins_length[1], histtype = 'step', label=labels[6], linewidth=lin_wd, alpha=alpha_val)
-h = plt.hist(filtered_ptc_elist_data_60deg[filtered_ptc_elist_data_60deg[:,-1] == 1][:,13] * 55, bins=bins_length[1], histtype = 'step', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
-i = plt.hist(filtered_ptc_elist_data_75deg[filtered_ptc_elist_data_75deg[:,-1] == 1][:,13] * 55, bins=bins_length[1], histtype = 'step', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
-j = plt.hist(filtered_ptc_elist_data_85deg[filtered_ptc_elist_data_85deg[:,-1] == 1][:,13] * 55, bins=bins_length[1], histtype = 'step', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
-plt.xlim(left=1, right=1E4)
-plt.ylim(bottom=1, top=y_top_limit)
+a = plt.hist(np.sqrt((filtered_rez_elist_data_00deg[filtered_rez_elist_data_00deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=150, histtype = 'step', label=labels[0], linewidth=lin_wd, alpha=alpha_val)
+b = plt.hist(np.sqrt((filtered_rez_elist_data_45deg[filtered_rez_elist_data_45deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=50, histtype = 'step', label=labels[1], linewidth=lin_wd, alpha=alpha_val)
+c = plt.hist(np.sqrt((filtered_rez_elist_data_60deg[filtered_rez_elist_data_60deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=88, histtype = 'step', label=labels[2], linewidth=lin_wd, alpha=alpha_val)
+d = plt.hist(np.sqrt((filtered_rez_elist_data_75deg[filtered_rez_elist_data_75deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=36, histtype = 'step', label=labels[3], linewidth=lin_wd, alpha=alpha_val)
+e = plt.hist(np.sqrt((filtered_rez_elist_data_85deg[filtered_rez_elist_data_85deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=60, histtype = 'step', label=labels[4], linewidth=lin_wd, alpha=alpha_val)
+f = plt.hist(np.sqrt((filtered_ptc_elist_data_00deg[filtered_ptc_elist_data_00deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=124, histtype = 'step', label=labels[5], linewidth=lin_wd, alpha=alpha_val)
+g = plt.hist(np.sqrt((filtered_ptc_elist_data_45deg[filtered_ptc_elist_data_45deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=224, histtype = 'step', label=labels[6], linewidth=lin_wd, alpha=alpha_val)
+h = plt.hist(np.sqrt((filtered_ptc_elist_data_60deg[filtered_ptc_elist_data_60deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=150, histtype = 'step', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
+i = plt.hist(np.sqrt((filtered_ptc_elist_data_75deg[filtered_ptc_elist_data_75deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=200, histtype = 'step', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
+j = plt.hist(np.sqrt((filtered_ptc_elist_data_85deg[filtered_ptc_elist_data_85deg[:,-1] == 1][:,13] * 55)**2 + thickness**2), bins=238, histtype = 'step', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=65, right=1E4)
+plt.ylim(bottom=5, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
-plt.xlabel('Track length [$\mu$m]', fontsize=tickfnt)
+plt.xlabel('3D track length [$\mu$m]', fontsize=tickfnt)
 plt.ylabel('Particles [count]', fontsize=tickfnt)
 plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
-plt.title('Cluster length distribution')
+plt.title('Cluster 3D length distribution')
 plt.legend(loc='upper right')
 plt.savefig(FolderInPath + '05_fig_b_length_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 a_ys = a[0]
@@ -371,8 +387,8 @@ plt.plot(g[:,0], g[:,1], linestyle='dashed', label=labels[6], linewidth=lin_wd, 
 plt.plot(h[:,0], h[:,1], linestyle='dashed', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(i[:,0], i[:,1], linestyle='dashed', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(j[:,0], j[:,1], linestyle='dashed', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
-plt.xlim(left=1, right=1E4)
-plt.ylim(bottom=1, top=y_top_limit)
+plt.xlim(left=65, right=1E4)
+plt.ylim(bottom=5, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('Track length [$\mu$m]', fontsize=tickfnt)
@@ -412,8 +428,8 @@ g = plt.hist(let_g, bins=bins[1], histtype = 'step', label=labels[6], linewidth=
 h = plt.hist(let_h, bins=bins[1], histtype = 'step', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
 i = plt.hist(let_i, bins=bins[1], histtype = 'step', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
 j = plt.hist(let_j, bins=bins[1], histtype = 'step', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
-plt.xlim(left=1E-1, right=1E3)
-plt.ylim(bottom=1, top=y_top_limit)
+plt.xlim(left=0.7, right=100)
+plt.ylim(bottom=5, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
@@ -480,8 +496,8 @@ plt.plot(g[:,0], g[:,1], linestyle='dashed', label=labels[6], linewidth=lin_wd, 
 plt.plot(h[:,0], h[:,1], linestyle='dashed', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(i[:,0], i[:,1], linestyle='dashed', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(j[:,0], j[:,1], linestyle='dashed', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
-plt.xlim(left=1E-1, right=1E3)
-plt.ylim(bottom=1, top=y_top_limit)
+plt.xlim(left=0.7, right=100)
+plt.ylim(bottom=5, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
@@ -492,8 +508,9 @@ plt.title('LET distribution')
 plt.legend(loc='upper right')
 plt.savefig(FolderInPath + '05_fig_c_LET_histogram_dashed_lines.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-"""
 
+"""
+###################################################################################################
 #
 # Track length
 #
@@ -771,7 +788,7 @@ energy_maximum = 10000000
 size_minimum = 0
 size_maximum = 20000
 
-for number in range(200):
+for number in range(300):
     if number == 0:
         energy_minimum = 1
     else:
@@ -959,9 +976,8 @@ for number in range(200):
 
 
 
-
 #
-# Track length
+# 3D Track length
 #
 
 filename_elist = 'ExtElist.txt'
@@ -1033,7 +1049,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'a_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1051,7 +1067,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'b_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1069,7 +1085,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'c_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1087,7 +1103,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'd_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1105,7 +1121,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'e_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1123,7 +1139,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'f_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1141,7 +1157,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'g_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1159,7 +1175,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'h_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1177,7 +1193,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'i_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
@@ -1195,6 +1211,7 @@ for number in range(300):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Cluster length distribution')
+    plt.title('Cluster 3D length distribution')
     plt.legend(loc='upper right')
     plt.savefig(FolderInPath + 'j_length_histogram_' + str(binning) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+"""
