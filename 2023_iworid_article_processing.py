@@ -18,7 +18,7 @@ paths = [
 'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\32_10ms\\',
 'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\33_10ms\\',
 'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\38_10ms\\',
-'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\39_10ms\\',
+'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\39_100ms\\',
 'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\00deg\\',
 'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\45deg\\',
 'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\60deg\\',
@@ -113,7 +113,7 @@ for i in range(len(rez_elist_data_00deg[:,0])):
     x_position = int(mm_to_px(rez_elist_data_00deg[i,2]))
     y_position = int(mm_to_px(rez_elist_data_00deg[i,3]))
     
-    if rez_elist_data_00deg[i,4] > 100 and rez_elist_data_00deg[i,7] > 4 and counter_le < 23000:
+    if rez_elist_data_00deg[i,4] > 160 and rez_elist_data_00deg[i,7] > 4 and counter_le < 23000:
         rez_centroid_matrix[x_position, y_position] += rez_elist_data_00deg[i,4]
         counter_le += 1
 print(f"Median value of cluster energy is {np.median(rez_elist_data_00deg[:,4])}")
@@ -122,7 +122,7 @@ for i in range(len(ptc_elist_data_00deg[:,0])):
     x_position = int(mm_to_px(ptc_elist_data_00deg[i,2]))
     y_position = int(mm_to_px(ptc_elist_data_00deg[i,3]))
     
-    if ptc_elist_data_00deg[i,4] > 100 and ptc_elist_data_00deg[i,7] > 4 and counter_he < 23000:
+    if ptc_elist_data_00deg[i,4] > 180 and ptc_elist_data_00deg[i,7] > 4 and counter_he < 23000:
         ptc_centroid_matrix[x_position, y_position] += ptc_elist_data_00deg[i,4]
         counter_he += 1
 print(f"Median value of cluster energy is {np.median(ptc_elist_data_00deg[:,4])}")
@@ -134,7 +134,6 @@ FolderInPath = 'C:\\Users\\andrej\\Documents\\FEI\\data_processing_scripts\\iwor
 energy_colorbar_max_value = 5000
 print_figure_energy(rez_centroid_matrix, energy_colorbar_max_value, ' ', FolderInPath, '04_fig_dep_E_centroid_rez')
 print_figure_energy(ptc_centroid_matrix, energy_colorbar_max_value, ' ', FolderInPath, '04_fig_dep_E_centroid_ptc')
-
 """
 
 #
@@ -182,10 +181,10 @@ filtered_rez_elist_data_45deg = read_elist_filter_numpy(rez_elist_data_45deg, fi
 filter_parameters_rez_60 = Cluster_filter_multiple_parameter([440, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
 filtered_rez_elist_data_60deg = read_elist_filter_numpy(rez_elist_data_60deg, filter_parameters_rez_60)
 
-filter_parameters_rez_75 = Cluster_filter_multiple_parameter([440, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filter_parameters_rez_75 = Cluster_filter_multiple_parameter([600, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
 filtered_rez_elist_data_75deg = read_elist_filter_numpy(rez_elist_data_75deg, filter_parameters_rez_75)
 
-filter_parameters_rez_85 = Cluster_filter_multiple_parameter([440, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filter_parameters_rez_85 = Cluster_filter_multiple_parameter([700, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
 filtered_rez_elist_data_85deg = read_elist_filter_numpy(rez_elist_data_85deg, filter_parameters_rez_85)
 
 filter_parameters_ptc_00 = Cluster_filter_multiple_parameter([180, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
@@ -224,7 +223,7 @@ h = plt.hist(filtered_ptc_elist_data_60deg[filtered_ptc_elist_data_60deg[:,-1] =
 i = plt.hist(filtered_ptc_elist_data_75deg[filtered_ptc_elist_data_75deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
 j = plt.hist(filtered_ptc_elist_data_85deg[filtered_ptc_elist_data_85deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
 plt.xlim(left=100, right=1E5)
-plt.ylim(bottom=5, top=y_top_limit)
+plt.ylim(bottom=1, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('Energy [keV]', fontsize=tickfnt)
@@ -291,7 +290,7 @@ plt.plot(h[:,0], h[:,1], linestyle='dashed', label=labels[7], linewidth=lin_wd, 
 plt.plot(i[:,0], i[:,1], linestyle='dashed', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(j[:,0], j[:,1], linestyle='dashed', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
 plt.xlim(left=100, right=1E5)
-plt.ylim(bottom=5, top=y_top_limit)
+plt.ylim(bottom=1, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('Energy [keV]', fontsize=tickfnt)
@@ -301,6 +300,46 @@ plt.tick_params(axis='y', labelsize=tickfnt)
 plt.title('Deposited energy distribution')
 plt.legend(loc='upper right')
 plt.savefig(FolderInPath + '05_fig_a_energy_histogram_dashed_lines.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+a = plt.hist(filtered_rez_elist_data_00deg[filtered_rez_elist_data_00deg[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels[0], linewidth=lin_wd, alpha=alpha_val)
+b = plt.hist(filtered_rez_elist_data_45deg[filtered_rez_elist_data_45deg[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels[1], linewidth=lin_wd, alpha=alpha_val)
+c = plt.hist(filtered_rez_elist_data_60deg[filtered_rez_elist_data_60deg[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels[2], linewidth=lin_wd, alpha=alpha_val)
+d = plt.hist(filtered_rez_elist_data_75deg[filtered_rez_elist_data_75deg[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels[3], linewidth=lin_wd, alpha=alpha_val)
+e = plt.hist(filtered_rez_elist_data_85deg[filtered_rez_elist_data_85deg[:,-1] == 1][:,4], bins=1024, histtype = 'step', label=labels[4], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=100, right=1E5)
+plt.ylim(bottom=1, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Energy [keV]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Deposited energy distribution')
+plt.legend(loc='upper right')
+plt.savefig(FolderInPath + '05_fig_aa_energy_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+f = plt.hist(filtered_ptc_elist_data_00deg[filtered_ptc_elist_data_00deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[5], linewidth=lin_wd, alpha=alpha_val)
+g = plt.hist(filtered_ptc_elist_data_45deg[filtered_ptc_elist_data_45deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[6], linewidth=lin_wd, alpha=alpha_val)
+h = plt.hist(filtered_ptc_elist_data_60deg[filtered_ptc_elist_data_60deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
+i = plt.hist(filtered_ptc_elist_data_75deg[filtered_ptc_elist_data_75deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
+j = plt.hist(filtered_ptc_elist_data_85deg[filtered_ptc_elist_data_85deg[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=100, right=1E5)
+plt.ylim(bottom=1, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Energy [keV]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Deposited energy distribution')
+plt.legend(loc='upper right')
+plt.savefig(FolderInPath + '05_fig_ab_energy_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 #
 # Track length
@@ -429,7 +468,7 @@ h = plt.hist(let_h, bins=bins[1], histtype = 'step', label=labels[7], linewidth=
 i = plt.hist(let_i, bins=bins[1], histtype = 'step', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
 j = plt.hist(let_j, bins=bins[1], histtype = 'step', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
 plt.xlim(left=0.7, right=100)
-plt.ylim(bottom=5, top=y_top_limit)
+plt.ylim(bottom=1, top=y_top_limit)
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
@@ -459,6 +498,46 @@ i_ys = i[0]
 i_xs = i[1]
 j_ys = j[0]
 j_xs = j[1]
+
+plt.close()
+plt.clf()
+plt.cla()
+a = plt.hist(let_a, bins=bins[0], histtype = 'step', label=labels[0], linewidth=lin_wd, alpha=alpha_val)
+b = plt.hist(let_b, bins=bins[0], histtype = 'step', label=labels[1], linewidth=lin_wd, alpha=alpha_val)
+c = plt.hist(let_c, bins=bins[0], histtype = 'step', label=labels[2], linewidth=lin_wd, alpha=alpha_val)
+d = plt.hist(let_d, bins=bins[0], histtype = 'step', label=labels[3], linewidth=lin_wd, alpha=alpha_val)
+e = plt.hist(let_e, bins=bins[0], histtype = 'step', label=labels[4], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=0.7, right=100)
+plt.ylim(bottom=1, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('LET distribution')
+plt.legend(loc='upper right')
+plt.savefig(FolderInPath + '05_fig_ca_LET_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+f = plt.hist(let_f, bins=bins[1], histtype = 'step', label=labels[5], linewidth=lin_wd, alpha=alpha_val)
+g = plt.hist(let_g, bins=bins[1], histtype = 'step', label=labels[6], linewidth=lin_wd, alpha=alpha_val)
+h = plt.hist(let_h, bins=bins[1], histtype = 'step', label=labels[7], linewidth=lin_wd, alpha=alpha_val)
+i = plt.hist(let_i, bins=bins[1], histtype = 'step', label=labels[8], linewidth=lin_wd, alpha=alpha_val)
+j = plt.hist(let_j, bins=bins[1], histtype = 'step', label=labels[9], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=0.7, right=100)
+plt.ylim(bottom=1, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('LET distribution')
+plt.legend(loc='upper right')
+plt.savefig(FolderInPath + '05_fig_cb_LET_histogram.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 np.savetxt(FolderInPath+ 'LET_histogram_values_' + str(out_names[0]) + '.txt', np.c_[a_xs[1:], a_ys])
 np.savetxt(FolderInPath+ 'LET_histogram_values_' + str(out_names[1]) + '.txt', np.c_[b_xs[1:], b_ys])
