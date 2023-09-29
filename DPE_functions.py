@@ -703,6 +703,7 @@ def read_elist_filter_parameters(filename, new_filter=None):
     else:
         print('No filter was used, there is nothing to be processed')
 
+
 def read_elist_filter_parameters_numpy(filename, new_filter=None):
     # optimise the read_elist_filter_parameters() function 
     return 0
