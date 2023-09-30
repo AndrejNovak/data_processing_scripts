@@ -1301,7 +1301,7 @@ def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName)
     """
 
     mydpi = 300
-    tickfnt = 16
+    tickfnt = 12
 
     if not os.path.exists(OutputPath):
         os.makedirs(OutputPath)
@@ -1315,24 +1315,24 @@ def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName)
     plt.matshow(np.flip(np.rot90(
         matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
-    cbar = plt.colorbar(label='Deposited energy per-pixel [keV/px]', aspect=20*0.8, shrink=0.8) # shrink=0.8
-    cbar.set_label(label='Deposited energy per-pixel [keV/px]', size=tickfnt,
+    cbar = plt.colorbar(label='Per-pixel deposited energy [keV/px]', aspect=20*0.8, shrink=0.3, location='top') # shrink=0.8
+    cbar.set_label(label='Per-pixel deposited energy [keV/px]', size=tickfnt,
                    weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
     linwid = 2
-    plt.axvline(x = 80, color = 'black', linestyle = '-', linewidth = linwid)
     plt.axhline(y = 80, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axhline(y = 160, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axhline(y = 240, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axhline(y = 320, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axvline(x = 80, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axvline(x = 160, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axvline(x = 240, color = 'black', linestyle = '-', linewidth = linwid)
+    plt.axvline(x = 320, color = 'black', linestyle = '-', linewidth = linwid)
     # plt.clim(vmin,vmax) - set your own range using vmin, vmax
     plt.clim(1, vmax)
     plt.xlabel('X position [pixel]', fontsize=tickfnt)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-    plt.xlim([0,160])
-    plt.ylim([0,400])
-    plt.xticks([0, 79, 159], ['1', '80', '160'])
-    plt.yticks([0, 79, 159, 239, 319, 399], ['1', '80', '160', '240', '320', '400'])
+    plt.xlim([0,400])
+    plt.ylim([0,160])
+    plt.yticks([0, 79, 159], ['1', '80', '160'])
+    plt.xticks([0, 79, 159, 239, 319, 399], ['1', '80', '160', '240', '320', '400'])
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
     #plt.title(label=title, fontsize=tickfnt)

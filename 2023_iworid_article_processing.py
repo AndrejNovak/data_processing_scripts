@@ -71,13 +71,13 @@ for idx, var in enumerate(paths):
     energy_colorbar_max_value = 1000
 
     print_figure_energy(energy_matrix, energy_colorbar_max_value, labels[idx], FolderOut, out_names[idx] + '_all')
-
+"""
 
 # Figure 3 - matrix with two rows, top row is low energy, bottom row is high energy
 # 5 submatrices showing all particles detected under different angle of beam incidence
 
 FolderInPath = 'C:\\Users\\andrej\\Documents\\FEI\\data_processing_scripts\\iworid_article_figures\\'
-two_row_energy_matrix = np.zeros([160,400])
+two_row_energy_matrix = np.zeros([400,160])
 
 rez_00deg = np.loadtxt(FolderInPath + 'rez_00_all.txt')
 rez_45deg = np.loadtxt(FolderInPath + 'rez_45_all.txt')
@@ -90,21 +90,22 @@ ptc_60deg = np.loadtxt(FolderInPath + 'ptc_60_all.txt')
 ptc_75deg = np.loadtxt(FolderInPath + 'ptc_75_all.txt')
 ptc_85deg = np.loadtxt(FolderInPath + 'ptc_85_all.txt')
 
-two_row_energy_matrix[0:80,0:80] = rez_85deg[120:200,175:255]
-two_row_energy_matrix[0:80,80:160] = rez_75deg[80:160,80:160]
-two_row_energy_matrix[0:80,160:240] = rez_60deg[80:160,80:160]
-two_row_energy_matrix[0:80,240:320] = rez_45deg[80:160,80:160] 
-two_row_energy_matrix[0:80,320:400] = rez_00deg[80:160,80:160] 
+two_row_energy_matrix[0:80,80:160] = rez_00deg[80:160,80:160] 
+two_row_energy_matrix[80:160,80:160] = rez_45deg[80:160,80:160] 
+two_row_energy_matrix[160:240,80:160] = rez_60deg[80:160,80:160]
+two_row_energy_matrix[240:320,80:160] = rez_75deg[80:160,80:160]
+two_row_energy_matrix[320:400,80:160] = rez_85deg[120:200,175:255]
 
-two_row_energy_matrix[80:160,0:80,] = ptc_85deg[80:160,175:255]
-two_row_energy_matrix[80:160,80:160] = ptc_75deg[80:160,80:160]
-two_row_energy_matrix[80:160,160:240] = ptc_60deg[80:160,80:160]
-two_row_energy_matrix[80:160,240:320] = ptc_45deg[80:160,80:160] 
-two_row_energy_matrix[80:160,320:400] = ptc_00deg[80:160,80:160] 
+two_row_energy_matrix[0:80,0:80] = ptc_00deg[80:160,80:160] 
+two_row_energy_matrix[80:160,0:80] = ptc_45deg[80:160,80:160] 
+two_row_energy_matrix[160:240,0:80] = ptc_60deg[80:160,80:160]
+two_row_energy_matrix[240:320,0:80] = ptc_75deg[80:160,80:160]
+two_row_energy_matrix[320:400,0:80] = ptc_85deg[80:160,175:255]
 
 energy_colorbar_max_value = 1000
 print_figure_energy_iworid_2023(two_row_energy_matrix, energy_colorbar_max_value, ' ', FolderInPath, '03_fig_deposited_energy')
 
+"""
 
 
 #   Figure 4 - spatial homogeneity of clusters - perpendicular direction 0 degrees, filtered particles
