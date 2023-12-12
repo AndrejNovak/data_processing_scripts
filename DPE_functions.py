@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 from skimage.util import invert
 
 
-# matplotlib.use('Agg')   # To solve issue: Fail to create pixmap with Tk_GetPixmap
+matplotlib.use('Agg')   # To solve issue: Fail to create pixmap with Tk_GetPixmap
 
 """
 Changing colormap to start at transparent zero
@@ -823,7 +823,7 @@ def read_elist_filter_numpy(elist_data, new_filter=None):
     filter_values = np.zeros([len(elist_data[:,0])])
 
     if new_filter is not None:
-        if len(elist_data[0,:]) == 16:
+        if len(elist_data[0,:]) == 29: # 16 for old ExtElist.txt format
             for i in range(len(elist_data[:,0])):
                 cluster_variable = elist_data[i,:]
 
@@ -1236,7 +1236,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+    #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_flat_field(matrix, open_beam, title, OutputPath, OutputName):
@@ -1595,6 +1595,63 @@ def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, O
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     #np.savetxt(OutputPath + OutputName + '_' +
     #           str(cluster_number) + '.txt', matrix, fmt="%.3f")
+
+
+def print_figure_single_cluster_energy_neural_network(clog_data, cluster_number, vmax, OutputPath, OutputName):
+    """
+    This function serves for image creation that will be used in neural network training
+    for recognition of protons in CdTe data. 
+    """
+
+    if not os.path.exists(OutputPath):
+        os.makedirs(OutputPath)
+
+    tickfnt = 18
+    margin = 5
+
+    matrix = np.zeros([256, 256])
+
+    x = []
+    y = []
+
+    for i in range(len(clog_data[:])):
+        x.append(clog_data[i][0])
+        y.append(clog_data[i][1])
+
+    for i in range(len(clog_data[:])):
+        matrix[int(x[i]), int(y[i])] += clog_data[i][2]
+
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+    else:
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+    else:
+        difference_position_y = 0
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    plt.subplot()
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
+    plt.matshow(np.flip(np.rot90(
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
+    plt.gca().xaxis.tick_bottom()
+    plt.clim(1, vmax)
+    #cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8) # shrink=0.8
+    #cbar.set_label(label='Energy [keV]', size=tickfnt,
+    #               weight='regular')   # format="%.1E"
+    #cbar.ax.tick_params(labelsize=tickfnt)
+    plt.axis('off')
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    #plt.tick_params(axis='x', labelsize=tickfnt)
+    #plt.tick_params(axis='y', labelsize=tickfnt)
+    #plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    #plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
+                dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 
 def print_figure_single_cluster_energy_smooth(clog_path, frame_number, vmax, title, OutputPath, OutputName):
