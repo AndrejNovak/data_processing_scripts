@@ -44,3 +44,27 @@ for i in range(len(elist_data[:,0])):
         cluster_skeleton_ends_joints(clog[i], i, min_pixel_energy, OutputPath_straightening, OutputName_skeleton)
         k += 1
 """
+
+# Chapter 3
+# Figure 3.5 - example of all cluster parameters calculated by DPE
+
+clog_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\'
+elist_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\EventListExt.advelist'
+
+elist_data = np.loadtxt(elist_path, skiprows=2, delimiter='\t')
+clog = read_clog_multiple(clog_path)
+print(f'The total number of clusters is {len(clog[:])}')
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_3\\'
+
+cluster_number = 12683
+clog_data = clog[cluster_number]
+vmax = elist_data[cluster_number,8] + 100
+title = '150 MeV proton, $75^\circ$ elevation angle'
+OutputName = 'DPE_output_example'
+
+print_figure_single_cluster_energy_event_parameters(clog_data, elist_data, cluster_number, vmax, title, OutputPath, OutputName)
+
+title = ''
+OutputName = 'DPE_output_example_no_colorbar'
+print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, OutputPath, OutputName)

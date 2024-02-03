@@ -55,7 +55,7 @@ plt.register_cmap(cmap=map_object)
 
 
 # Some input data
-folder_data = r'C:\Users\andrej\Documents\FEI\\'
+folder_data = 'C:\\Users\\andrej\\Documents\\FEI\\'
 filename_clog = 'ClusterLog.clog'
 filename_elist = 'Elist.txt'
 filename_out = 'Elist_filtered.txt'
@@ -111,7 +111,7 @@ square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering(filtered_elist, c
 energy_colorbar_max_value = 10000
 toa_colorbar_max_value = 5
 
-folder_figures = r'C:/Users/andrej/Documents/FEI/'
+folder_figures = 'C:\\Users\\andrej\\Documents\\FEI\\'
 
 try:
     print_figure_energy(square_matrices[0], energy_colorbar_max_value, 'Deposited energy - particles all', folder_figures, '1_all')
@@ -785,11 +785,6 @@ def read_elist_filter_parameters(filename, new_filter=None):
         print('No filter was used, there is nothing to be processed')
 
 
-def read_elist_filter_parameters_numpy(filename, new_filter=None):
-    # optimise the read_elist_filter_parameters() function 
-    return 0
-
-
 def read_elist_filter(filename, column_number_pairs_for_ratios, header_text_new_columns, units_text_new_columns, new_filter=None):
     """
     OUTDATED TO SOME EXTENT (2023_05_31)
@@ -1374,96 +1369,6 @@ def print_figure_flat_field(matrix, open_beam, title, OutputPath, OutputName):
         #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
-def print_figure_energy_iworid_2023(matrix, vmax, title, OutputPath, OutputName):
-    """
-    Old name: print_fig_E
-
-    Function to print a figure of deposited energy in logarithmic colorbar scale.
-    """
-
-    mydpi = 300
-    tickfnt = 12
-
-    if not os.path.exists(OutputPath):
-        os.makedirs(OutputPath)
-
-    plt.close()
-    plt.cla()
-    plt.clf()
-    plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
-    # If the orientation of matrix doesnt fit, use this instead
-    plt.matshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
-    plt.gca().xaxis.tick_bottom()
-    cbar = plt.colorbar(label='Per-pixel deposited energy [keV/px]', aspect=20*0.8, shrink=0.3, location='top') # shrink=0.8
-    cbar.set_label(label='Per-pixel deposited energy [keV/px]', size=tickfnt,
-                   weight='regular')   # format="%.1E"
-    cbar.ax.tick_params(labelsize=tickfnt)
-    linwid = 2
-    plt.axhline(y = 80, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axvline(x = 80, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axvline(x = 160, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axvline(x = 240, color = 'black', linestyle = '-', linewidth = linwid)
-    plt.axvline(x = 320, color = 'black', linestyle = '-', linewidth = linwid)
-    # plt.clim(vmin,vmax) - set your own range using vmin, vmax
-    plt.clim(1, vmax)
-    plt.xlabel('X position [pixel]', fontsize=tickfnt)
-    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-    plt.xlim([0,400])
-    plt.ylim([0,160])
-    plt.yticks([0, 79, 159], ['1', '80', '160'])
-    plt.xticks([0, 79, 159, 239, 319, 399], ['1', '80', '160', '240', '320', '400'])
-    plt.tick_params(axis='x', labelsize=tickfnt)
-    plt.tick_params(axis='y', labelsize=tickfnt)
-    #plt.title(label=title, fontsize=tickfnt)
-    plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
-                transparent=True, bbox_inches="tight", pad_inches=0.2)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
-
-
-def print_figure_energy_apcom_2023(matrix, vmax, title, OutputPath, OutputName):
-    """
-    Old name: print_fig_E
-
-    Function to print a figure of deposited energy in logarithmic colorbar scale.
-    """
-
-    mydpi = 300
-    tickfnt = 18
-
-    if not os.path.exists(OutputPath):
-        os.makedirs(OutputPath)
-
-    plt.close()
-    plt.cla()
-    plt.clf()
-    plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
-    # If the orientation of matrix doesnt fit, use this instead
-    plt.matshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
-    plt.gca().xaxis.tick_bottom()
-    cbar = plt.colorbar(label='Deposited energy per-pixel [keV/px]', aspect=20*0.8, shrink=0.8) # shrink=0.8
-    cbar.set_label(label='Deposited energy per-pixel [keV/px]', size=tickfnt,
-                   weight='regular')   # format="%.1E"
-    cbar.ax.tick_params(labelsize=tickfnt)
-    # plt.clim(vmin,vmax) - set your own range using vmin, vmax
-    plt.clim(1, vmax)
-    plt.xlabel('X position [pixel]', fontsize=tickfnt)
-    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
-    plt.xlim([0,240])
-    plt.ylim([0,160])
-    #plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
-    #plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
-    plt.tick_params(axis='x', labelsize=tickfnt)
-    plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title(label=title, fontsize=tickfnt)
-    plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
-                transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
-
-
 def print_figure_toa(cluster_data, vmax, title, OutputPath, OutputName):
     """
     Old name: print_fig_ToA
@@ -1661,10 +1566,10 @@ def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, O
         matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
-    cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
-    cbar.set_label(label='Energy [keV]', size=tickfnt,
-                   weight='regular')   # format="%.1E"
-    cbar.ax.tick_params(labelsize=tickfnt)
+    #cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+    #cbar.set_label(label='Energy [keV]', size=tickfnt,
+    #               weight='regular')   # format="%.1E"
+    #cbar.ax.tick_params(labelsize=tickfnt)
     plt.title(label=title, fontsize=tickfnt+4)
     plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
     plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
@@ -1676,6 +1581,66 @@ def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, O
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.01)
     #np.savetxt(OutputPath + OutputName + '_' +
     #           str(cluster_number) + '.txt', matrix, fmt="%.3f")
+
+
+def print_figure_single_cluster_energy_event_parameters(clog_data, elist_data, cluster_number, vmax, title, OutputPath, OutputName):
+    """
+    Single cluster with all its parameters assigned from DPE processing  
+
+    This function will work only with the newest DPE version and Extended Advalist output
+    """
+
+    if not os.path.exists(OutputPath):
+        os.makedirs(OutputPath)
+    
+    tickfnt = 14
+    margin = 5
+
+    matrix = np.zeros([256, 256])
+
+    x = []
+    y = []
+
+    for i in range(len(clog_data[:])):
+        x.append(clog_data[i][0])
+        y.append(clog_data[i][1])
+
+    for i in range(len(clog_data[:])):
+        matrix[int(x[i]), int(y[i])] += clog_data[i][2]
+
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+    else:
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+    else:
+        difference_position_y = 0
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    fig, ax = plt.subplots(1, 1, figsize=(15, 15))
+    plt.matshow(np.flip(np.rot90(
+        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
+    plt.gca().xaxis.tick_bottom()
+    plt.clim(1, vmax)
+    cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+    cbar.set_label(label='Energy [keV]', size=tickfnt,
+                    weight='regular')   # format="%.1E"
+    cbar.ax.tick_params(labelsize=tickfnt)
+    plt.title(label=title, fontsize=tickfnt)
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    props = dict(boxstyle='round', facecolor='grey', alpha=0.05)  # bbox features
+    my_text = f'Detector ID = {elist_data[cluster_number,0]:.0f} [-]\n Event ID = {elist_data[cluster_number,1]:.0f} [-]\n X = {elist_data[cluster_number,2]:.3f} [px]\n Y = {elist_data[cluster_number,3]:.3f} [px]\n E = {elist_data[cluster_number,4]:.2f} [keV]\n T = {elist_data[cluster_number,5]:.3f} [ns]\n Flags = {elist_data[cluster_number,6]:.0f} [-]\n Size = {elist_data[cluster_number,7]:.0f} [px]\n Height = {elist_data[cluster_number,8]:.2f} [keV]\n BorderPixCount = {elist_data[cluster_number,9]:.0f} [-]\n Roundness = {elist_data[cluster_number,10]:.2f} [-]\n AngleAzim = {elist_data[cluster_number,11]:.2f} [deg]\n Linearity = {elist_data[cluster_number,12]:.2f} [-]\n LengthProj = {elist_data[cluster_number,13]:.2f} [px]\n WidthProj = {elist_data[cluster_number,14]:.2f} [px]\n IsSensEdge = {elist_data[cluster_number,15]:.0f} [-]\n StdAlong = {elist_data[cluster_number,16]:.2f} [px]\n StdPerp = {elist_data[cluster_number,17]:.2f} [px]\n Thin = {elist_data[cluster_number,18]:.2f} [-]\n Thick = {elist_data[cluster_number,19]:.2f} [-]\n CurlyThin = {elist_data[cluster_number,20]:.2f} [-]\n EpixMean = {elist_data[cluster_number,21]:.2f} [keV]\n EpixStd = {elist_data[cluster_number,22]:.2f} [keV]\n LengthCorrStd = {elist_data[cluster_number,23]:.2f} [px]\n Length3DCorrStd = {elist_data[cluster_number,24]:.2f} [$\mu$m]\n AngleElev = {elist_data[cluster_number,25]:.2f} [deg]\n LET = {elist_data[cluster_number,26]:.2f} [keV/$\mu$m]\n Diameter = {elist_data[cluster_number,27]:.2f} [px]\n PIDClass = {elist_data[cluster_number,28]:.0f} [-]'
+    plt.text(1.1, 0.95, my_text, transform=ax.transAxes, fontsize=9, verticalalignment='top', bbox=props)
+    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
+                dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
 
 
 def print_figure_single_cluster_energy_neural_network(clog_data, cluster_number, vmax, OutputPath, OutputName):
