@@ -1,5 +1,7 @@
 from DPE_functions import *
 
+import time
+
 """
 # Chapter 3
 # Figure 3.1 - 150 MeV proton and line graph of deposited energy
@@ -43,10 +45,12 @@ for i in range(len(elist_data[:,0])):
         #cluster_skeleton(clog[i], i, OutputPath_straightening, OutputName_skeleton)
         cluster_skeleton_ends_joints(clog[i], i, min_pixel_energy, OutputPath_straightening, OutputName_skeleton)
         k += 1
-"""
+
 
 # Chapter 3
 # Figure 3.5 - example of all cluster parameters calculated by DPE
+
+tic = time.perf_counter()
 
 clog_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\'
 elist_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\EventListExt.advelist'
@@ -68,3 +72,94 @@ print_figure_single_cluster_energy_event_parameters(clog_data, elist_data, clust
 title = ''
 OutputName = 'DPE_output_example_no_colorbar'
 print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, OutputPath, OutputName)
+
+toc = time.perf_counter()
+print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
+
+
+
+# Chapter 3
+# Figure 3.6 - cluster skeltonization and neighbours
+
+tic = time.perf_counter()
+
+clog_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\'
+elist_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\EventListExt.advelist'
+
+elist_data = np.loadtxt(elist_path, skiprows=2, delimiter='\t')
+clog = read_clog_multiple(clog_path)
+print(f'The total number of clusters is {len(clog[:])}')
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_3\\'
+
+cluster_number = 12683
+clog_data = clog[cluster_number]
+vmax = elist_data[cluster_number,8] + 100
+title = '150 MeV proton, $75^\circ$ elevation angle'
+
+#OutputName = 'straightening_test'
+#straighten_single_cluster_rows(clog[cluster_number], cluster_number, elist_data[cluster_number, 2], elist_data[cluster_number, 3], elist_data[cluster_number,8], elist_data[cluster_number,8]+100, OutputPath, OutputName)
+
+OutputName = 'skeleton_test'
+#cluster_skeleton_ends_joints(clog_data, cluster_number, 0, OutputPath, OutputName)
+
+for i in range(100):
+    cluster_skeleton_ends_joints(clog[i], i, 8, OutputPath, OutputName)
+
+toc = time.perf_counter()
+print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
+"""
+
+
+
+# Chapter 3
+# Figure 3.7 - cluster skeltonization - anomaly example
+
+tic = time.perf_counter()
+
+clog_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\'
+elist_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\EventListExt.advelist'
+
+elist_data = np.loadtxt(elist_path, skiprows=2, delimiter='\t')
+clog = read_clog_multiple(clog_path)
+print(f'The total number of clusters is {len(clog[:])}')
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_3\\'
+OutputName = 'anomaly'
+
+for i in range(300):
+    cluster_skeleton_ends_joints(clog[i], i, 8, OutputPath, OutputName)
+
+toc = time.perf_counter()
+print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
+
+
+
+"""
+# Chapter 3
+# Figure 3.8 - cluster straightening example
+
+tic = time.perf_counter()
+
+clog_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\'
+elist_path = 'Q:\\DPE_carlos_data_output\\2022_06_krakow\\B3\\H09_TPX3_Si500\\15\\File\\EventListExt.advelist'
+
+elist_data = np.loadtxt(elist_path, skiprows=2, delimiter='\t')
+clog = read_clog_multiple(clog_path)
+print(f'The total number of clusters is {len(clog[:])}')
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_3\\'
+
+cluster_number = 30655
+clog_data = clog[cluster_number]
+vmax = elist_data[cluster_number,8] + 100
+title = '150 MeV proton, $75^\circ$ elevation angle'
+
+OutputName = 'straightening_test_new'
+
+straighten_single_cluster_rows(clog[cluster_number], cluster_number, elist_data[cluster_number, 2], elist_data[cluster_number, 3], elist_data[cluster_number,8], elist_data[cluster_number,8]+100, OutputPath, OutputName)
+
+toc = time.perf_counter()
+print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
+
+"""

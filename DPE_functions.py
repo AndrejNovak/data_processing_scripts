@@ -7,7 +7,7 @@ import fnmatch
 import itertools
 import random
 import numpy as np
-import matplotlib
+import matplotlib 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -135,7 +135,7 @@ class Cluster_filter:
     """
     Lukas+Carlos, ADV, Prague, 8 Aug 2022
     Cluster_filter class is used to filter events in elist based on given criteria. The class takes 
-    two inputs in its constructor, "edges" and "indeces". The "edges" is a list of border values for 
+    two inputs in its constructor, "edges" and "indices". The "edges" is a list of border values for 
     a given cluster analysis (CA) parameter (PAR) and "indeces" is a list of column numbers in the 
     elist of the given cluster analysis parameter (CA PAR).
 
@@ -147,7 +147,7 @@ class Cluster_filter:
     the range, otherwise false.
 
     edges = border values for the given CA PAR
-    indeces = COL in elist of the given CA PAR, e.g. 4 for Energy
+    indices = COL in elist of the given CA PAR, e.g. 4 for Energy
     """
 
     def __init__(self, edges = [], indices = []):
@@ -168,20 +168,19 @@ class Cluster_filter:
 
 class Cluster_filter_one_parameter:
     """
-    Lukas + Carlos, ADV, Prague, 8 Aug 2022
-    Cluster_filter_ONE_PAR is a class used to filter events in elist based on given criteria. The class takes
-    two inputs in its constructor, "edges" and "indeces". The "edges" is a list of border values for a given 
-    cluster analysis parameter (CA PAR) and "indeces" is a list of column numbers in the elist of the given CA PAR.
+    This class is used to filter events in Elist based on the given criteria. Two inputs are taken into its constructor
+    "edges" and "indices". The "edges" is a list of border values for a given cluster analysis parameter and "indices" 
+    is a list of column numbers in the elist of the given cluster analysis parameter.
 
-    The class has one method called "pass_filter" that takes a variable "cluster_var" as input. The function iterates
-    over the range of indeces, and for each index it defines a lower edge and an upper edge using the elements in the 
+    The class has one method called "pass_filter" that takes a variable "cluster_var" as an input. The function iterates
+    over the range of indices, and for each index it defines a lower edge and an upper edge using the elements in the 
     edges list. It also defines a variable i_var which is the element of indeces list at the current index. 
     The function then compares the i_var-th element of the cluster_var to the defined lower and upper edge and returns 
     true if the element is within the range, otherwise false. This class is similar to the first class "cluster_filter", 
     the only difference is the class name, the rest of the code is identical.
 
     edges = border values for the given CA PAR
-    indeces = COL in elist of the given CA PAR, e.g. 4 for Energy
+    indices = COL in elist of the given CA PAR, e.g. 4 for Energy
     """
 
     def __init__(self, edges = [], indices = []):
@@ -364,12 +363,20 @@ def print_out_mask(FilePath, filename):
     """
     You insert matrix mask for a given detector and this function creates mask that
     can be used as a DPE input file mask.
-    """
+
+    Before optimizing:
+
     mask = np.loadtxt(FilePath + filename)
     with open(FilePath + '\\DPE_mask_converted.txt', 'w') as f:
         for i, j in itertools.product(range(256), range(256)):
             if mask[i,j] == 0:
                 f.write(f'[{str(j)},{str(i)}' + ']\n') 
+    """
+    mask = np.loadtxt(os.path.join(FilePath, filename))
+    with open(os.path.join(FilePath, 'DPE_mask_converted.txt'), 'w') as f:
+        for i, j in itertools.product(range(256), repeat=2):
+            if mask[i, j] == 0:
+                f.write(f'[{j},{i}]\n') 
        
 
 def read_clog(filename):
@@ -514,7 +521,8 @@ def read_clog_clusters(filename):
     To access first layer (selected frame) use: data[0]
     To access second layer (selected 4-group of selected frame) use: data[0][0]
     To access third layer (selected value from selected 4-group of selected frame) use: data[0][0][0] 
-    """
+    
+    Code before optimization:
 
     with open(filename) as inputFile:
         lines = inputFile.readlines()
@@ -556,6 +564,36 @@ def read_clog_clusters(filename):
     # to fix problem with first list being empty, needs solution without copying for better performance
     return frame_unix_time, frame_times, all_values
 
+    Problem with the funcion:
+    VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with 
+    different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.       
+        return np.array(frame_unix_time), np.array(frame_times), np.array(all_values)
+    """
+    frame_unix_time = []
+    frame_times = []
+    all_values = []
+
+    pattern_b = r"\[[^][]*]"
+
+    frame_counter = 0
+
+    with open(filename) as inputFile:
+        for line in inputFile:
+            if line.strip():
+                if line.split()[0] == "Frame":
+                    frame_counter += 1
+                    _, _, unixtime, measurement_time, _ = line.split()
+                    frame_unix_time.append(float(unixtime.lstrip("(").rstrip(",")))
+                    frame_times.append(float(measurement_time.rstrip(",")))
+                    continue
+
+                a = re.findall(pattern_b, line)
+                current_cluster = [[float(x) for x in element.strip("[]").split(",")] for element in a]
+                all_values.append(current_cluster)
+
+    return np.array(frame_unix_time), np.array(frame_times), np.array(all_values)
+
+
 
 def read_clog_multiple(FileInPath):
     """
@@ -563,20 +601,23 @@ def read_clog_multiple(FileInPath):
     in the given directory. It utilizes the read_clog function that goes per cluster.
     It reads Elist and writes a Coincidence elist, a list which contains information
     about if and how many coincidence clusters each frame contains.
-    """
-    
-    OutputPath = FileInPath
-    
-    #elist_path = FileInPath + 'ExtElist.txt'
-    #elist_data = read_elist(elist_path)[2]
-    #OutputName = 'Coincidence_ExtElist'
-    #write_coincidence_elist(elist_path, OutputPath, OutputName)
+
+    Before optimization:
 
     full_clog_data = []
 
     for file in os.listdir(FileInPath):
         if file.endswith('.clog') and not file.startswith('MASK'):
             full_clog_data.extend(read_clog_clusters(os.path.join(FileInPath, file))[2])
+
+    return full_clog_data
+    """
+    full_clog_data = []
+
+    for file in os.listdir(FileInPath):
+        if file.endswith('.clog') and not file.startswith('MASK'):
+            _, _, clusters = read_clog_clusters(os.path.join(FileInPath, file))
+            full_clog_data.extend(clusters)
 
     return full_clog_data
 
@@ -596,7 +637,8 @@ def get_elist_column(filename, col_name):
 
     Example, select column with Energy values:
     selected_column = get_column('path/to/Elist.txt', 'E') 
-    """
+    
+    Before optimization:
 
     with open(filename, 'r') as inputFile:
         lines = inputFile.readlines()
@@ -612,6 +654,17 @@ def get_elist_column(filename, col_name):
 
     for line in lines:
         column_data = np.append(column_data, line.rstrip().split(';')[col_num])
+
+    return column_data
+    """
+    with open(filename, 'r') as inputFile:
+        names = inputFile.readline().rstrip().split(';')
+        units = inputFile.readline().rstrip().split(';')
+        lines = inputFile.readlines()
+
+    col_num = names.index(col_name)
+
+    column_data = np.array([line.rstrip().split(';')[col_num] for line in lines])
 
     return column_data
 
@@ -633,7 +686,8 @@ def read_elist(filename):
 
     Example, return data only
     data = read_elist('path/to/Elist.txt')[2]
-    """
+    
+    Before optimizing:
 
     with open(filename) as inputFile:
         lines = inputFile.readlines()
@@ -641,6 +695,14 @@ def read_elist(filename):
 
     splitlines = [list(line.rstrip().split(";")) for line in lines]
     return splitlines[0], splitlines[1], splitlines[2:]
+    """
+
+    with open(filename) as inputFile:
+        header = inputFile.readline().rstrip().split(";")
+        units = inputFile.readline().rstrip().split(";")
+        data = [line.rstrip().split(";") for line in inputFile]
+
+    return header, units, data
 
 
 def read_elist_add_new_parameters(filename, column_number_pairs_for_ratios, header_text_new_columns, units_text_new_columns):
@@ -662,7 +724,8 @@ def read_elist_add_new_parameters(filename, column_number_pairs_for_ratios, head
     column_number_pairs_for_ratios = [4,7,9,7]    # Energy, Size, BorderPixel, Size
     header_text_new_columns = ['E/Size', 'BorderPixel/Size']
     units_text_new_columns = ['keV/px', 'a.u.']
-    """
+    
+    Before optimization:
 
     with open(filename, "r") as inputFile:
         lines = inputFile.readlines()
@@ -702,6 +765,37 @@ def read_elist_add_new_parameters(filename, column_number_pairs_for_ratios, head
     # print('Number of all clusters = ', cluster_count_all)
 
     # the full elist with extended col output as single object
+    return splitlines[0], splitlines[1], splitlines[2:]
+    """
+
+    with open(filename, "r") as inputFile:
+        lines = inputFile.readlines()
+
+    splitlines = []
+
+    number_pairs_new_columns = len(column_number_pairs_for_ratios) // 2
+
+    for idx, line in enumerate(lines):
+        cluster_variable = line.rstrip().split(";")
+        
+        if idx < 2:
+            if idx == 0:
+                for header in header_text_new_columns:
+                    cluster_variable.append(header)
+            else:
+                for unit in units_text_new_columns:
+                    cluster_variable.append(unit)
+        else:
+            cluster_variable = [float(i) for i in cluster_variable]
+
+            for i in range(number_pairs_new_columns):
+                numerator_idx = column_number_pairs_for_ratios[i * 2]
+                denominator_idx = column_number_pairs_for_ratios[i * 2 + 1]
+                new_column_value = cluster_variable[numerator_idx] / cluster_variable[denominator_idx]
+                cluster_variable.append(new_column_value)
+
+        splitlines.append(cluster_variable)
+
     return splitlines[0], splitlines[1], splitlines[2:]
 
 
@@ -1620,6 +1714,7 @@ def print_figure_single_cluster_energy_event_parameters(clog_data, elist_data, c
     plt.close()
     plt.cla()
     plt.clf()
+    plt.close('all')
     fig, ax = plt.subplots(1, 1, figsize=(15, 15))
     plt.matshow(np.flip(np.rot90(
         matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
@@ -2442,6 +2537,8 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
     row_centroid = []
     count = 0
 
+    print(f'Centroid X is {centroid_x} and Y {centroid_y}')
+
     total_energy_row_values = []
 
     if (int(max(y)) - int(min(y))) > 30:
@@ -2505,9 +2602,9 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         plt.cla()
         plt.clf()
         fig = plt.figure(constrained_layout=True, figsize=(10, 10))
-        fig.suptitle('Cluster ' + str(cluster_number), fontsize=20)
+        #fig.suptitle('Cluster ' + str(cluster_number), fontsize=20)
         gs = fig.add_gridspec(2, 2)
-        fig_ax1 = fig.add_subplot(gs[0,0])
+        fig_ax1 = fig.add_subplot(gs[0,1])
         fig_ax1.set_title('Straightening test')
         fig_ax1.set_xlabel('X position [pixel]')
         fig_ax1.set_ylabel('Y position [pixel]')
@@ -2542,7 +2639,7 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         else:
             difference_position_y = 0
 
-        fig_ax2 = fig.add_subplot(gs[0,1])
+        fig_ax2 = fig.add_subplot(gs[0,0])
         fig_ax2.set_title('Before straightening')
         fig_ax2.set_xlabel('X position [pixel]')
         fig_ax2.set_ylabel('Y position [pixel]')
@@ -2579,13 +2676,19 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         fig_ax4.plot(plot_x_data, energy_sample[::-1])
         fig_ax4.set_xlabel('Sample number [-]')
         fig_ax4.set_ylabel('Mean energy in sample [keV]')
-        fig_ax4.set_ylim([0, 1.1 * max(energy_sample[::-1])])
-        fig_ax4.legend(legend)
+        
+        max_y_old = 0
 
         for w in windows:
             smooth_value = smooth(total_energy_row_values[::-1],sampling_length,w)
+            max_y = max(smooth_value)
+            if max_y < max_y_old:
+                max_y = max_y_old
             plot_x_data_smooth = np.linspace(0, len(smooth_value), len(smooth_value), endpoint=True)
             fig_ax4.plot(plot_x_data_smooth, smooth_value)
+
+        fig_ax4.legend(legend)
+        fig_ax4.set_ylim([0, 1.1 * max_y])
 
         if not os.path.exists(OutputPath):
             os.makedirs(OutputPath)
@@ -2734,6 +2837,12 @@ def get_neighbors_of_matrix_element(cluster_matrix, radius, row_number, column_n
 def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy, OutputPath, OutputName):
     """
     Fix this function after it is used for the APCOM article
+
+    Problems with discrete colormap:
+     RuntimeWarning: Mean of empty slice.
+    return _methods._mean(a, axis=axis, dtype=dtype,   
+     RuntimeWarning: invalid value encountered in double_scalars
+    ret = ret.dtype.type(ret / rcount) 
     """
     
     matrix = np.zeros([256, 256])
@@ -2803,57 +2912,50 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
     for i in range(len(skeleton_x_coordinate)):
         matrix_number_of_neighbours[skeleton_x_coordinate[i], skeleton_y_coordinate[i]] = saved_number_of_neighbours[i]
     
-    # pridane kvoli APCOMU
-    # DELETE THIS CONSTRAINT
-    if len(end_x) == 2:
-        try:
-            tickfnt = 22
-            plt.close()
-            plt.cla()
-            plt.clf()
-            fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(24, 6),
+        tickfnt = 22
+        plt.close()
+        plt.cla()
+        plt.clf()
+        fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(24, 6),
                                  sharex=True, sharey=True)
-            fig.tight_layout()
-            ax = axes.ravel()
-            #fig.suptitle('Cluster ' + str(cluster_number) + ', '+ str(len(end_x)) + ' ends\n', fontsize=20, y=0.98)
-            im0 = ax[0].imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='viridis', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
-            divider0 = make_axes_locatable(ax[0])
-            cax0 = divider0.append_axes("right", size="20%", pad=0.05)
-            cbar0 = plt.colorbar(im0, cax=cax0, format="%.0f")
-            cbar0.ax.set_ylabel('Energy [keV]', fontsize=tickfnt)
-            cbar0.ax.tick_params(labelsize=tickfnt)
-            ax[0].set_xlabel('X position [pixel]', fontsize=tickfnt)
-            ax[0].set_ylabel('Y position [pixel]', fontsize=tickfnt)
-            ax[0].tick_params(axis='both', which='major', labelsize=tickfnt)
-            ax[0].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
-            ax[0].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
-            ax[0].set_title('Deposited energy', fontsize=tickfnt)
+        fig.tight_layout()
+        ax = axes.ravel()
+        #fig.suptitle('Cluster ' + str(cluster_number) + ', '+ str(len(end_x)) + ' ends\n', fontsize=20, y=0.98)
+        im0 = ax[0].imshow(np.flip(np.rot90(matrix_energy[::-1, :])), origin='lower', cmap='viridis', norm=LogNorm(vmin=1, vmax=max(matrix_energy.flatten())))
+        divider0 = make_axes_locatable(ax[0])
+        cax0 = divider0.append_axes("right", size="20%", pad=0.05)
+        cbar0 = plt.colorbar(im0, cax=cax0, format="%.0f")
+        cbar0.ax.set_ylabel('Energy [keV]', fontsize=tickfnt)
+        cbar0.ax.tick_params(labelsize=tickfnt)
+        ax[0].set_xlabel('X position [pixel]', fontsize=tickfnt)
+        ax[0].set_ylabel('Y position [pixel]', fontsize=tickfnt)
+        ax[0].tick_params(axis='both', which='major', labelsize=tickfnt)
+        ax[0].set_xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+        ax[0].set_ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+        ax[0].set_title('Deposited energy', fontsize=tickfnt)
 
-            skeleton_copy_rotated = np.flip(np.rot90(skeleton[::-1, :].copy()))
-            ax[1].imshow(skeleton_copy_rotated, origin='lower', cmap='viridis')
-            ax[1].scatter(end_x, end_y, c='royalblue', s=8)
-            #ax[1].scatter(joint_x, joint_y, c='red', s=2)
-            ax[1].scatter(np.mean(joint_x), np.mean(joint_y), c='green', s=1.25)
-            ax[1].set_xlabel('X position [pixel]', fontsize=tickfnt)
-            ax[1].set_ylabel('Y position [pixel]', fontsize=tickfnt)
-            ax[1].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
-            ax[1].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
-            ax[1].set_title('Skeleton with end points', fontsize=tickfnt)
+        skeleton_copy_rotated = np.flip(np.rot90(skeleton[::-1, :].copy()))
+        ax[1].imshow(skeleton_copy_rotated, origin='lower', cmap='gray_r')
+        ax[1].scatter(end_x, end_y, c='royalblue', s=8)
+        #ax[1].scatter(joint_x, joint_y, c='red', s=2)
+        ax[1].scatter(np.mean(joint_x), np.mean(joint_y), c='green', s=1.25)
+        ax[1].set_xlabel('X position [pixel]', fontsize=tickfnt)
+        ax[1].set_ylabel('Y position [pixel]', fontsize=tickfnt)
+        ax[1].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
+        ax[1].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
+        ax[1].set_title('Skeleton with end points', fontsize=tickfnt)
 
-            im2 = ax[2].imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='viridis', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
-            divider2 = make_axes_locatable(ax[2])
-            cax2 = divider2.append_axes("right", size="20%", pad=0.05)
-            cbar2 = plt.colorbar(im2, cax=cax2, format="%i")
-            cbar2.ax.set_ylabel('Number of neighbours [-]', fontsize=tickfnt)
-            cbar2.ax.tick_params(labelsize=tickfnt)
-            ax[2].set_xlabel('X position [pixel]', fontsize=tickfnt)
-            ax[2].set_ylabel('Y position [pixel]', fontsize=tickfnt)
-            ax[2].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
-            ax[2].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
-            ax[2].set_title('Number of neighbours', fontsize=tickfnt)
-
-        except Exception:
-            pass
+        im2 = ax[2].imshow(np.flip(np.rot90(matrix_number_of_neighbours[::-1, :])), origin='lower', cmap='viridis', vmin=0, vmax=max(matrix_number_of_neighbours.flatten()))
+        divider2 = make_axes_locatable(ax[2])
+        cax2 = divider2.append_axes("right", size="20%", pad=0.05)
+        cbar2 = plt.colorbar(im2, cax=cax2, format="%i", ticks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        cbar2.ax.set_ylabel('Number of neighbours [-]', fontsize=tickfnt)
+        cbar2.ax.tick_params(labelsize=tickfnt)
+        ax[2].set_xlabel('X position [pixel]', fontsize=tickfnt)
+        ax[2].set_ylabel('Y position [pixel]', fontsize=tickfnt)
+        ax[2].set_xlim([min(skeleton_x_coordinate) - difference_position_x / 2 - margin, max(skeleton_x_coordinate) + difference_position_x / 2 + margin])
+        ax[2].set_ylim([min(skeleton_y_coordinate) - difference_position_y / 2 - margin, max(skeleton_y_coordinate) + difference_position_y / 2 + margin])
+        ax[2].set_title('Number of neighbours', fontsize=tickfnt)
 
         if not os.path.exists(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\'):
             os.makedirs(OutputPath + 'number_of_ends_'+ str(len(end_x))+ '\\')
