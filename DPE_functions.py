@@ -2619,7 +2619,7 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         # Create colorbar in the appended axes
         # Tick locations can be set with the kwarg `ticks`
         # and the format of the ticklabels with kwarg `format`
-        cbar2 = plt.colorbar(im2, cax=cax2, format="%.2f") #ticks=MultipleLocator(0.2)
+        cbar2 = plt.colorbar(im2, cax=cax2, format="%.0f") #ticks=MultipleLocator(0.2)
         # Remove xticks from ax3
         #ax2.xaxis.set_visible(False)
         # Manually set ticklocations
@@ -2654,7 +2654,7 @@ def straighten_single_cluster_rows(cluster_data, cluster_number, centroid_x, cen
         # Create colorbar in the appended axes
         # Tick locations can be set with the kwarg `ticks`
         # and the format of the ticklabels with kwarg `format`
-        cbar3 = plt.colorbar(im3, cax=cax3, format="%.2f") #ticks=MultipleLocator(0.2)
+        cbar3 = plt.colorbar(im3, cax=cax3, format="%.0f") #ticks=MultipleLocator(0.2)
         # Remove xticks from ax3
         #ax2.xaxis.set_visible(False)
         # Manually set ticklocations
@@ -2853,9 +2853,9 @@ def cluster_skeleton_ends_joints(cluster_data, cluster_number, min_pixel_energy,
     energy = [item[2] for item in cluster_data[:]]
 
     for i in range(len(cluster_data[:])):
-        #if energy[i] > min_pixel_energy:
-        matrix[int(x[i]), int(y[i])] = 1
-        matrix_energy[int(x[i]), int(y[i])] += energy[i]
+        if energy[i] > min_pixel_energy:
+            matrix[int(x[i]), int(y[i])] = 1
+            matrix_energy[int(x[i]), int(y[i])] += energy[i]
 
     margin = 5
 

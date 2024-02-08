@@ -108,8 +108,6 @@ for i in range(100):
 
 toc = time.perf_counter()
 print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
-"""
-
 
 
 # Chapter 3
@@ -127,13 +125,19 @@ print(f'The total number of clusters is {len(clog[:])}')
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_3\\'
 OutputName = 'anomaly'
 
-for i in range(300):
-    cluster_skeleton_ends_joints(clog[i], i, 8, OutputPath, OutputName)
+number_of_clusters = 500
+number = 0
+border_margin_min = 20
+border_margin_max = 236
+
+for i in range(len(elist_data[:,0])):
+    if elist_data[i,4] > 3500 and elist_data[i,2] > border_margin_min and elist_data[i,2] < border_margin_max and elist_data[i,3] > border_margin_min and elist_data[i,3] < border_margin_max and number < number_of_clusters:
+        print(elist_data[i,4])
+        cluster_skeleton_ends_joints(clog[i], i, 5, OutputPath, OutputName)
+        number =+ 1
 
 toc = time.perf_counter()
 print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
-
-
 
 """
 # Chapter 3
@@ -161,5 +165,3 @@ straighten_single_cluster_rows(clog[cluster_number], cluster_number, elist_data[
 
 toc = time.perf_counter()
 print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
-
-"""
