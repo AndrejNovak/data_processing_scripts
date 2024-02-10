@@ -1406,7 +1406,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_flat_field(matrix, open_beam, title, OutputPath, OutputName):
@@ -1660,10 +1660,10 @@ def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, O
         matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
-    #cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
-    #cbar.set_label(label='Energy [keV]', size=tickfnt,
-    #               weight='regular')   # format="%.1E"
-    #cbar.ax.tick_params(labelsize=tickfnt)
+    cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+    cbar.set_label(label='Energy [keV]', size=tickfnt,
+                   weight='regular')   # format="%.1E"
+    cbar.ax.tick_params(labelsize=tickfnt)
     plt.title(label=title, fontsize=tickfnt+4)
     plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
     plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
