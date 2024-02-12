@@ -262,7 +262,6 @@ print_figure_energy(matrix22, vmax, '', OutputPath, '4_segment_22MeV')
 print_figure_energy(matrix31, vmax, '', OutputPath, '4_segment_31MeV')
 """
 
-
 # Chapter 5
 # Figure 5.3 - single clusters
 """
@@ -640,8 +639,8 @@ print_figure_energy(square_matrices[2], energy_colorbar_max_value, 'Filtered clu
 
 
 # Chapter 5
-# Figure 5.9 - filtered cluster energy and LET distributionfiltration example
-
+# Figure 5.10 - filtered cluster energy and LET distributionfiltration example
+"""
 CdTe_energy = np.loadtxt('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\histogram\\filtered_Energy_hist_CdTe_2000um.txt')
 GaAs_energy = np.loadtxt('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\histogram\\filtered_Energy_hist_GaAs_500um.txt')
 Si100_energy = np.loadtxt('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\histogram\\filtered_Energy_hist_Si_100um.txt')
@@ -713,3 +712,199 @@ plt.text(0.98, 0.4, f'CdTe 2000 $\mu$m = {float(np.round(CdTe_LET[np.where(CdTe_
 plt.tick_params(labelsize=tickfnt)
 plt.tick_params(labelsize=tickfnt)
 plt.savefig(OutputPath + 'filtered_LET_31MeV.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+"""
+
+# Chapter 5
+# Figure 5.11 - single deposited energy graphs - 2023 rez measurement
+# 31 MeV, angles 0, 45, 60, 75, 85
+
+
+clog_paths_L06 = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\27_10ms\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\32_10ms\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\33_10ms\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\38_10ms\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\39_10ms\\File\\']
+
+clog_paths_L07 = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\27_10ms\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\32_10ms\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\33_10ms\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\38_10ms\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\39_10ms\\File\\']
+
+clog_paths_CdTe = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D04\\45_10ms\\File\\',
+                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D04\\48_10ms\\File\\',
+                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D04\\51_10ms\\File\\',
+                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D04\\52_10ms\\File\\',
+                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D04\\54_10ms\\File\\']
+
+clog_paths_GaAs = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\X00_GaAs\\45\\File\\',
+                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\X00_GaAs\\48\\File\\',
+                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\X00_GaAs\\51\\File\\',
+                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\X00_GaAs\\52\\File\\',
+                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\X00_GaAs\\55_10ms\\File\\']
+
+clog_paths_Si300 = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\E03\\11_10ms\\File\\',
+                    'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\E03\\16_10ms\\File\\',
+                    'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\E03\\17_10ms\\File\\',
+                    'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\E03\\22_10ms\\File\\',
+                    'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\E03\\23_10ms\\File\\']
+
+clog_paths_Si500 = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D05\\02_10ms\\File\\',
+                    'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D05\\04_10ms\\File\\',
+                    'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D05\\05_10ms\\File\\',
+                    'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D05\\06_10ms\\File\\',
+                    'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\D05\\07_10ms\\File\\']
+
+elist_paths_L06 = [f"{x}EventListExt.advelist" for x in clog_paths_L06]
+elist_paths_L07 = [f"{x}EventListExt.advelist" for x in clog_paths_L07]
+elist_paths_CdTe = [f"{x}EventListExt.advelist" for x in clog_paths_CdTe]
+elist_paths_GaAs = [f"{x}EventListExt.advelist" for x in clog_paths_GaAs]
+elist_paths_Si300 = [f"{x}EventListExt.advelist" for x in clog_paths_Si300]
+elist_paths_Si500 = [f"{x}EventListExt.advelist" for x in clog_paths_Si500]
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\rez_2023\\'
+
+number_of_particles = np.array([2000, 1000, 1000, 1000, 800, 800])
+number_of_particles_sic = np.array([5000, 5000, 4000, 4000, 6000, 6000])
+angle = ['00', '45', '60', '75', '85']
+OutNames = ['L06_65um', 'L07_65um', 'CdTe_1000um', 'GaAs_500um', 'Si_300um', 'Si_500um']
+TitleLabel = ['SiC 65 $\mu$m', 'SiC 65 $\mu$m', 'CdTe 1000 $\mu$m','GaAs:Cr 500 $\mu$m', 'Si 300 $\mu$m', 'Si 500 $\mu$m']
+
+vmax = 3000
+iterator = 0
+
+for i in range(len(elist_paths_L06)):
+    elist_data_L06 = np.loadtxt(elist_paths_L06[i], skiprows=2, delimiter='\t')
+    elist_data_L07 = np.loadtxt(elist_paths_L07[i], skiprows=2, delimiter='\t')
+    elist_data_CdTe = np.loadtxt(elist_paths_CdTe[i], skiprows=2, delimiter='\t')
+    elist_data_GaAs = np.loadtxt(elist_paths_GaAs[i], skiprows=2, delimiter='\t')
+    elist_data_Si300 = np.loadtxt(elist_paths_Si300[i], skiprows=2, delimiter='\t')
+    elist_data_Si500 = np.loadtxt(elist_paths_Si500[i], skiprows=2, delimiter='\t')
+
+    clog_L06 = read_clog_multiple(clog_paths_L06[i])
+    clog_L07 = read_clog_multiple(clog_paths_L07[i])
+    clog_CdTe = read_clog_multiple(clog_paths_CdTe[i])
+    clog_GaAs = read_clog_multiple(clog_paths_GaAs[i])
+    clog_Si300 = read_clog_multiple(clog_paths_Si300[i])
+    clog_Si500 = read_clog_multiple(clog_paths_Si500[i])
+
+    matrix_energy_L06 = np.zeros([256,256])
+    for j in range(len(clog_L06[:])):
+        cluster_size_clog = len(clog_L06[j][:])
+        if iterator < number_of_particles_sic[i] and cluster_size_clog > 3:
+                iterator += 1
+                for k in range(cluster_size_clog):
+                        x, y = int(clog_L06[j][k][0]), int(clog_L06[j][k][1])
+                        matrix_energy_L06[x, y] += clog_L06[j][k][2]
+    iterator = 0
+    np.savetxt(OutputPath + OutNames[0] + '_' + angle[i] + '.txt', matrix_energy_L06, fmt="%.3f")
+    print_figure_energy(matrix_energy_L06, vmax, TitleLabel[0], OutputPath, OutNames[0] + '_' + angle[i])
+
+    matrix_energy_L07 = np.zeros([256,256])
+    for j in range(len(clog_L07[:])):
+        cluster_size_clog = len(clog_L07[j][:])
+        if iterator < number_of_particles_sic[i] and cluster_size_clog > 3:
+                iterator += 1
+                for k in range(cluster_size_clog):
+                        x, y = int(clog_L07[j][k][0]), int(clog_L07[j][k][1])
+                        matrix_energy_L07[x, y] += clog_L07[j][k][2]
+    iterator = 0
+    np.savetxt(OutputPath + OutNames[1] + '_' + angle[i] + '.txt', matrix_energy_L07, fmt="%.3f")
+    print_figure_energy(matrix_energy_L07, vmax, TitleLabel[1], OutputPath, OutNames[1] + '_' + angle[i])
+
+    matrix_energy_CdTe = np.zeros([256,256])
+    for j in range(len(clog_CdTe[:])):
+        cluster_size_clog = len(clog_CdTe[j][:])
+        if iterator < number_of_particles[i] and cluster_size_clog > 3:
+                iterator += 1
+                for k in range(cluster_size_clog):
+                        x, y = int(clog_CdTe[j][k][0]), int(clog_CdTe[j][k][1])
+                        matrix_energy_CdTe[x, y] += clog_CdTe[j][k][2]
+    iterator = 0
+    np.savetxt(OutputPath + OutNames[2] + '_' + angle[i] + '.txt', matrix_energy_CdTe, fmt="%.3f")
+    print_figure_energy(matrix_energy_CdTe, vmax, TitleLabel[2], OutputPath, OutNames[2] + '_' + angle[i])
+
+    matrix_energy_GaAs = np.zeros([256,256])
+    for j in range(len(clog_GaAs[:])):
+        cluster_size_clog = len(clog_GaAs[j][:])
+        if iterator < number_of_particles[i] and cluster_size_clog > 3:
+                iterator += 1
+                for k in range(cluster_size_clog):
+                        x, y = int(clog_GaAs[j][k][0]), int(clog_GaAs[j][k][1])
+                        matrix_energy_GaAs[x, y] += clog_GaAs[j][k][2]
+    iterator = 0
+    np.savetxt(OutputPath + OutNames[3] + '_' + angle[i] + '.txt', matrix_energy_GaAs, fmt="%.3f")
+    print_figure_energy(matrix_energy_GaAs, vmax, TitleLabel[3], OutputPath, OutNames[3] + '_' + angle[i])
+
+    matrix_energy_Si300 = np.zeros([256,256])
+    for j in range(len(clog_Si300[:])):
+        cluster_size_clog = len(clog_Si300[j][:])
+        if iterator < number_of_particles[i] and cluster_size_clog > 3:
+                iterator += 1
+                for k in range(cluster_size_clog):
+                        x, y = int(clog_Si300[j][k][0]), int(clog_Si300[j][k][1])
+                        matrix_energy_Si300[x, y] += clog_Si300[j][k][2]
+    iterator = 0
+    np.savetxt(OutputPath + OutNames[4] + '_' + angle[i] + '.txt', matrix_energy_Si300, fmt="%.3f")
+    print_figure_energy(matrix_energy_Si300, vmax, TitleLabel[4], OutputPath, OutNames[4] + '_' + angle[i])
+
+    matrix_energy_Si500 = np.zeros([256,256])
+    for j in range(len(clog_Si500[:])):
+        cluster_size_clog = len(clog_Si500[j][:])
+        if iterator < number_of_particles[i] and cluster_size_clog > 3:
+                iterator += 1
+                for k in range(cluster_size_clog):
+                        x, y = int(clog_Si500[j][k][0]), int(clog_Si500[j][k][1])
+                        matrix_energy_Si500[x, y] += clog_Si500[j][k][2]
+    iterator = 0
+    np.savetxt(OutputPath + OutNames[5] + '_' + angle[i] + '.txt', matrix_energy_Si500, fmt="%.3f")
+    print_figure_energy(matrix_energy_Si500, vmax, TitleLabel[5], OutputPath, OutNames[5] + '_' + angle[i])
+
+
+# Chapter 5
+# Figure 5.12 - single deposited energy graphs - 2023 rez measurement
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\rez_2023\\'
+angle = ['00', '45', '60', '75', '85']
+
+matrix_energy_CdTe = np.loadtxt(OutputPath + 'CdTe_1000um_' + angle[2] + '.txt')
+matrix_energy_GaAs = np.loadtxt(OutputPath + 'GaAs_500um_' + angle[2] + '.txt')
+matrix_energy_L06 = np.loadtxt(OutputPath + 'L06_65um_' + angle[2] + '.txt')
+matrix_energy_L07 = np.loadtxt(OutputPath + 'L07_65um_' + angle[2] + '.txt')
+matrix_energy_Si300 = np.loadtxt(OutputPath + 'Si_300um_' + angle[2] + '.txt')
+matrix_energy_Si500 = np.loadtxt(OutputPath + 'Si_500um_' + angle[2] + '.txt')
+
+matrix_segment = np.zeros([384,256])
+matrix_segment[0:128,128:256] = matrix_energy_CdTe[64:192,64:192]
+matrix_segment[0:128,0:128] = matrix_energy_GaAs[64:192,64:192]
+matrix_segment[128:256,128:256] = matrix_energy_L06[64:192,64:192]
+matrix_segment[128:256,0:128] = matrix_energy_L07[64:192,64:192]
+matrix_segment[256:384,128:256] = matrix_energy_Si300[64:192,64:192]
+matrix_segment[256:384,0:128] = matrix_energy_Si500[64:192,64:192]
+
+mydpi = 300
+tickfnt = 18
+OutputName = '6segment_dep_E'
+
+plt.close()
+plt.cla()
+plt.clf()
+plt.rcParams["figure.figsize"] = (11.7, 8.3)
+plt.matshow(np.flip(np.rot90(matrix_segment[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
+plt.gca().xaxis.tick_bottom()
+cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+cbar.set_label(label='Energy [keV]', size=tickfnt, weight='regular')   # format="%.1E"
+cbar.ax.tick_params(labelsize=tickfnt)
+plt.clim(1, vmax)
+plt.xlabel('X position [pixel]', fontsize=tickfnt)
+plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+plt.xticks([0, 63, 127, 191, 255, 319, 383], ['1', '64', '128', '192', '256', '320', '384'])
+plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.savefig(OutputPath + OutputName + angle[2] + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+np.savetxt(OutputPath + OutputName + angle[2] + '.txt', matrix_segment, fmt="%.3f")
+
+
+# Chapter 5
+# Figure 5.12 - 6 segment 2D matrix - 2023 rez measurement
