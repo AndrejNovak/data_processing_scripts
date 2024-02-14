@@ -696,9 +696,9 @@ plt.savefig(OutputPath + 'filtered_LET_31MeV.png', dpi=mydpi, transparent=True, 
 """
 
 # Chapter 5
-# Figure 5.11 - single deposited energy graphs - 2023 rez measurement
+# Figure 5.12 - single deposited energy graphs - 2023 rez measurement
 # 31 MeV, angles 0, 45, 60, 75, 85
-
+"""
 clog_paths_L06 = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\27_10ms\\File\\',
                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\32_10ms\\File\\',
                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\33_10ms\\File\\',
@@ -771,7 +771,7 @@ for i in range(len(elist_paths_L06)):
     matrix_energy_L06 = np.zeros([256,256])
     for j in range(len(clog_L06[:])):
         cluster_size_clog = len(clog_L06[j][:])
-        if iterator < number_of_particles_sic[i] and cluster_size_clog > 3:
+        if iterator < number_of_particles_sic[i] and cluster_size_clog > 4:
                 iterator += 1
                 for k in range(cluster_size_clog):
                     x, y = int(clog_L06[j][k][0]), int(clog_L06[j][k][1])
@@ -840,10 +840,6 @@ for i in range(len(elist_paths_L06)):
     np.savetxt(OutputPath + OutNames[5] + '_' + angle[i] + '.txt', matrix_energy_Si500, fmt="%.3f")
     print_figure_energy(matrix_energy_Si500, vmax, TitleLabel[5], OutputPath, OutNames[5] + '_' + angle[i])
 
-
-# Chapter 5
-# Figure 5.12 - single deposited energy graphs - 2023 rez measurement
-
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\rez_2023\\'
 angle = ['00', '45', '60', '75', '85']
 
@@ -887,11 +883,11 @@ plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
 plt.savefig(OutputPath + OutputName + angle[2] + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 np.savetxt(OutputPath + OutputName + angle[2] + '.txt', matrix_segment, fmt="%.3f")
-
+"""
 
 # Chapter 5
-# Figure 5.12 - 6 segment 2D matrix - 2023 rez measurement
-
+# Figure 5.13 - 8 segment 2D matrix - 2023 rez measurement
+"""
 clog_paths_L06_13MeV = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\29_100ms\\File\\',
                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\30_100ms\\File\\',
                   'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\35_500ms\\File\\',
@@ -993,3 +989,195 @@ plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
 plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 np.savetxt(OutputPath + OutputName + '.txt', two_row_energy_matrix, fmt="%.3f")
+"""
+
+# Chapter 5
+# Figure 5.14 - homogeneity and distribution different angles, 13 and 31 MeV
+# 31 MeV, angles 0, 45, 60, 75, 85
+
+elist_paths_L06 = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\27_10ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\32_10ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\33_10ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\38_10ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\39_100ms\\File\\EventListExt.advelist']
+
+elist_paths_L07 = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\27_10ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\32_10ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\33_10ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\38_10ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\39_100ms\\File\\EventListExt.advelist']
+
+elist_paths_L06_13MeV = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\29_100ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\30_100ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\35_500ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\36_500ms\\File\\EventListExt.advelist']
+
+elist_paths_L07_13MeV = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\29_100ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\30_100ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\35_500ms\\File\\EventListExt.advelist',
+                  'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L07\\36_500ms\\File\\EventListExt.advelist']
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\homogeneity\\'
+
+#number_of_particles_sic = np.array([10000, 5000, 4000, 4000, 9000, 4000])
+angle = ['00', '45', '60', '75', '85']
+OutNames = ['L06_65um', 'L07_65um']
+TitleLabel = ['L06 SiC 65 $\mu$m', 'L07 SiC 65 $\mu$m']
+tickfnt = 16
+lin_wd = 2
+mydpi = 300
+
+energy_minimum = 150
+energy_maximum = 100000
+size_minimum = 3
+size_maximum = 100000000
+vmax = 5000
+iterator = 0
+
+for i in range(len(elist_paths_L06)):
+    elist_data_L06 = np.loadtxt(elist_paths_L06[i], skiprows=2, delimiter='\t')
+    elist_data_L07 = np.loadtxt(elist_paths_L07[i], skiprows=2, delimiter='\t')
+
+    matrix_energy_L06_homogeneity = np.zeros([256,256])
+    for j in range(len(elist_data_L06[:,0])):
+        if elist_data_L06[j,7] > size_minimum and elist_data_L06[j,4] > energy_minimum: # iterator < number_of_particles_sic[i] and
+            #iterator += 1
+            matrix_energy_L06_homogeneity[int(elist_data_L06[j,2]), int(elist_data_L06[j,3])] += elist_data_L06[j,4]
+    iterator = 0
+    print(f'L06 angle {angle[i]} mean energy is {np.mean(matrix_energy_L06_homogeneity.flatten())} keV')
+    np.savetxt(OutputPath + OutNames[0] + '_' + angle[i] + '_homogeneity_31MeV.txt', matrix_energy_L06_homogeneity, fmt="%.3f")
+    print_figure_energy(matrix_energy_L06_homogeneity, vmax, TitleLabel[0] + ' 31 MeV', OutputPath, OutNames[0] + '_' + angle[i] + '_homogeneity_31MeV') 
+
+    matrix_energy_L07_homogeneity = np.zeros([256,256])
+    for j in range(len(elist_data_L07[:,0])):
+        if elist_data_L07[j,7] > size_minimum and elist_data_L07[j,4] > energy_minimum: # iterator < number_of_particles_sic[i] and
+            #iterator += 1
+            matrix_energy_L07_homogeneity[int(elist_data_L07[j,2]), int(elist_data_L07[j,3])] += elist_data_L07[j,4]
+    iterator = 0
+    print(f'L07 angle {angle[i]} mean energy is {np.mean(matrix_energy_L07_homogeneity.flatten())} keV')
+    np.savetxt(OutputPath + OutNames[1] + '_' + angle[i] + '_homogeneity_31MeV.txt', matrix_energy_L07_homogeneity, fmt="%.3f")
+    print_figure_energy(matrix_energy_L07_homogeneity, vmax, TitleLabel[1] + ' 31 MeV', OutputPath, OutNames[1] + '_' + angle[i] + '_homogeneity_31MeV')
+
+    filter_parameters_L06 = Cluster_filter_multiple_parameter([energy_minimum, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+    filtered_elist_data_L06 = read_elist_filter_numpy(elist_data_L06, filter_parameters_L06)
+
+    filter_parameters_L07 = Cluster_filter_multiple_parameter([energy_minimum, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+    filtered_elist_data_L07 = read_elist_filter_numpy(elist_data_L07, filter_parameters_L07)
+
+    plt.close('all')
+    plt.clf()
+    plt.cla()
+    a = plt.hist(filtered_elist_data_L06[filtered_elist_data_L06[:,-1] == 1][:,4], bins=2048, histtype = 'step', label=TitleLabel[0], linewidth=lin_wd)
+    b = plt.hist(filtered_elist_data_L07[filtered_elist_data_L07[:,-1] == 1][:,4], bins=100000, histtype = 'step', label=TitleLabel[1], linewidth=lin_wd)
+    plt.xlim(left=1E2, right=1E6) #left=1E3
+    plt.ylim(bottom=1, top=1E5)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('Energy [keV]', fontsize=tickfnt)
+    plt.ylabel('Particles [count]', fontsize=tickfnt)
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title('Deposited energy, 31 MeV ' + str(angle[i]) + ' deg', fontsize=tickfnt - 2)
+    plt.legend(loc='upper right', fontsize=tickfnt)
+    plt.savefig(OutputPath + 'energy_deposition_' + angle[i] + '_homogeneity_31MeV.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    a_ys = a[0] / np.max(a[0])
+    a_xs = a[1]
+    b_ys = b[0] / np.max(b[0])
+    b_xs = b[1]
+    np.savetxt(OutputPath + 'normalised_energy_histogram_values_L06_' + str(angle[i]) + '_31MeV.txt', np.c_[a_xs[1:], a_ys])
+    np.savetxt(OutputPath + 'normalised_energy_histogram_values_L07_' + str(angle[i]) + '_31MeV.txt', np.c_[b_xs[1:], b_ys])
+
+    a = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_L06_' + str(angle[i]) + '_31MeV.txt')
+    b = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_L07_' + str(angle[i]) + '_31MeV.txt')
+    plt.close()
+    plt.clf()
+    plt.cla()
+    plt.plot(a[:,0], a[:,1], label=TitleLabel[0], linewidth=lin_wd, alpha=1)
+    plt.plot(b[:,0], b[:,1], label=TitleLabel[1], linewidth=lin_wd, alpha=1)
+    plt.xlim(left=1E2, right=1E4)
+    plt.ylim(bottom=0, top=1.1)
+    plt.xscale('log')
+    plt.xlabel('Energy [keV]', fontsize=tickfnt)
+    plt.ylabel('Normalised particle count [-]', fontsize=tickfnt)
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title('Deposited energy, 31 MeV ' + str(angle[i]) + ' deg', fontsize=tickfnt - 2)
+    plt.legend(loc='upper right', fontsize=tickfnt)
+    print(f'Max position of 31 MeV L06 peak {angle[i]} degrees: {a[np.where(a[:,1] == np.max(a[:,1]))[0],0]} keV')
+    print(f'Max position of 31 MeV L07 peak {angle[i]} degrees: {b[np.where(b[:,1] == np.max(b[:,1]))[0],0]} keV')
+    #plt.text(0.98, 0.4, f'CdTe 2000 $\mu$m = {int(CdTe_energy[np.where(CdTe_energy[:,1] == np.max(CdTe_energy[:,1]))[0],0])} keV \n GaAs 500 $\mu$m = {int(GaAs_energy[np.where(GaAs_energy[:,1] == np.max(GaAs_energy[:,1]))[0],0])} keV \n Si 100 $\mu$m = {int(Si100_energy[np.where(Si100_energy[:,1] == np.max(Si100_energy[:,1]))[0],0])} keV \n Si 300 $\mu$m = {int(Si300_energy[np.where(Si300_energy[:,1] == np.max(Si300_energy[:,1]))[0],0])} keV \n Si 500 $\mu$m = {int(Si500_energy[np.where(Si500_energy[:,1] == np.max(Si500_energy[:,1]))[0],0])} keV \n', size=8, ha='right', va='bottom', transform=ax.transAxes)
+    plt.savefig(OutputPath + 'normalised_energy_histogram_values_' + str(angle[i]) + '_31MeV_final.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+for i in range(len(elist_paths_L06_13MeV)):
+    elist_data_L06 = np.loadtxt(elist_paths_L06_13MeV[i], skiprows=2, delimiter='\t')
+    elist_data_L07 = np.loadtxt(elist_paths_L07_13MeV[i], skiprows=2, delimiter='\t')
+
+    matrix_energy_L06_homogeneity = np.zeros([256,256])
+    for j in range(len(elist_data_L06[:,0])):
+        if elist_data_L06[j,7] > size_minimum and elist_data_L06[j,4] > energy_minimum: # iterator < number_of_particles_sic[i] and
+            #iterator += 1
+            matrix_energy_L06_homogeneity[int(elist_data_L06[j,2]), int(elist_data_L06[j,3])] += elist_data_L06[j,4]
+    iterator = 0
+    print(f'L06 angle {angle[i]} mean energy is {np.mean(matrix_energy_L06_homogeneity.flatten())} keV')
+    np.savetxt(OutputPath + OutNames[0] + '_' + angle[i] + '_homogeneity_13MeV.txt', matrix_energy_L06_homogeneity, fmt="%.3f")
+    print_figure_energy(matrix_energy_L06_homogeneity, vmax, TitleLabel[0] + ' 13 MeV', OutputPath, OutNames[0] + '_' + angle[i] + '_homogeneity_13MeV')
+
+    matrix_energy_L07_homogeneity = np.zeros([256,256])
+    for j in range(len(elist_data_L07[:,0])):
+        if elist_data_L07[j,7] > size_minimum and elist_data_L07[j,4] > energy_minimum: # iterator < number_of_particles_sic[i] and
+            #iterator += 1
+            matrix_energy_L07_homogeneity[int(elist_data_L07[j,2]), int(elist_data_L07[j,3])] += elist_data_L07[j,4]
+    iterator = 0
+    print(f'L07 angle {angle[i]} mean energy is {np.mean(matrix_energy_L07_homogeneity.flatten())} keV')
+    np.savetxt(OutputPath + OutNames[1] + '_' + angle[i] + '_homogeneity_13MeV.txt', matrix_energy_L07_homogeneity, fmt="%.3f")
+    print_figure_energy(matrix_energy_L07_homogeneity, vmax, TitleLabel[1] + ' 13 MeV', OutputPath, OutNames[1] + '_' + angle[i] + '_homogeneity_13MeV')
+
+    filter_parameters_L06 = Cluster_filter_multiple_parameter([200, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+    filtered_elist_data_L06 = read_elist_filter_numpy(elist_data_L06, filter_parameters_L06)
+
+    filter_parameters_L07 = Cluster_filter_multiple_parameter([200, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+    filtered_elist_data_L07 = read_elist_filter_numpy(elist_data_L07, filter_parameters_L07)
+
+    plt.close('all')
+    plt.clf()
+    plt.cla()
+    a = plt.hist(filtered_elist_data_L06[filtered_elist_data_L06[:,-1] == 1][:,4], bins=2048, histtype = 'step', label=TitleLabel[0], linewidth=lin_wd)
+    b = plt.hist(filtered_elist_data_L07[filtered_elist_data_L07[:,-1] == 1][:,4], bins=40000, histtype = 'step', label=TitleLabel[1], linewidth=lin_wd)
+    plt.xlim(left=1E2, right=1E6) #left=1E3
+    plt.ylim(bottom=1, top=1E5)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('Energy [keV]', fontsize=tickfnt)
+    plt.ylabel('Particles [count]', fontsize=tickfnt)
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title('Deposited energy, 13 MeV ' + str(angle[i]) + ' deg', fontsize=tickfnt - 2)
+    plt.legend(loc='upper right', fontsize=tickfnt)
+    plt.savefig(OutputPath + 'energy_deposition_' + angle[i] + '_homogeneity_13MeV.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    a_ys = a[0] / np.max(a[0])
+    a_xs = a[1]
+    b_ys = b[0] / np.max(b[0])
+    b_xs = b[1]
+    np.savetxt(OutputPath + 'normalised_energy_histogram_values_L06_' + str(angle[i]) + '_13MeV.txt', np.c_[a_xs[1:], a_ys])
+    np.savetxt(OutputPath + 'normalised_energy_histogram_values_L07_' + str(angle[i]) + '_13MeV.txt', np.c_[b_xs[1:], b_ys])
+
+    a = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_L06_' + str(angle[i]) + '_13MeV.txt')
+    b = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_L07_' + str(angle[i]) + '_13MeV.txt')
+    plt.close()
+    plt.clf()
+    plt.cla()
+    plt.plot(a[:,0], a[:,1], label=TitleLabel[0], linewidth=lin_wd, alpha=1)
+    plt.plot(b[:,0], b[:,1], label=TitleLabel[1], linewidth=lin_wd, alpha=1)
+    plt.xlim(left=1E2, right=1E4)
+    plt.ylim(bottom=0, top=1.1)
+    plt.xscale('log')
+    plt.xlabel('Energy [keV]', fontsize=tickfnt)
+    plt.ylabel('Normalised particle count [-]', fontsize=tickfnt)
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title('Deposited energy, 13 MeV ' + str(angle[i]) + ' deg', fontsize=tickfnt - 2)
+    plt.legend(loc='upper right', fontsize=tickfnt)
+    print(f'Max position of 13 MeV L06 peak {angle[i]} degrees: {a[np.where(a[:,1] == np.max(a[:,1]))[0],0]} keV')
+    print(f'Max position of 13 MeV L07 peak {angle[i]} degrees: {b[np.where(b[:,1] == np.max(b[:,1]))[0],0]} keV')
+    #plt.text(0.98, 0.4, f'CdTe 2000 $\mu$m = {int(CdTe_energy[np.where(CdTe_energy[:,1] == np.max(CdTe_energy[:,1]))[0],0])} keV \n GaAs 500 $\mu$m = {int(GaAs_energy[np.where(GaAs_energy[:,1] == np.max(GaAs_energy[:,1]))[0],0])} keV \n Si 100 $\mu$m = {int(Si100_energy[np.where(Si100_energy[:,1] == np.max(Si100_energy[:,1]))[0],0])} keV \n Si 300 $\mu$m = {int(Si300_energy[np.where(Si300_energy[:,1] == np.max(Si300_energy[:,1]))[0],0])} keV \n Si 500 $\mu$m = {int(Si500_energy[np.where(Si500_energy[:,1] == np.max(Si500_energy[:,1]))[0],0])} keV \n', size=8, ha='right', va='bottom', transform=ax.transAxes)
+    plt.savefig(OutputPath + 'normalised_energy_histogram_values_' + str(angle[i]) + '_13MeV_final.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
