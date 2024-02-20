@@ -1,5 +1,9 @@
 from DPE_functions import *
 
+############################
+######### PROTONS #########
+############################
+
 # Chapter 3
 # Figure 3.1 - 150 MeV proton and line graph of deposited energy
 """
@@ -909,7 +913,7 @@ angle = ['00', '45', '60', '75']
 OutNames = ['L06_65um', 'L07_65um', 'CdTe_1000um', 'GaAs_500um', 'Si_300um', 'Si_500um']
 TitleLabel = ['SiC 65 $\mu$m', 'SiC 65 $\mu$m', 'CdTe 1000 $\mu$m','GaAs:Cr 500 $\mu$m', 'Si 300 $\mu$m', 'Si 500 $\mu$m']
 
-vmax = 3000
+vmax = 1000
 iterator = 0
 
 for i in range(len(elist_paths_L06_13MeV)):
@@ -1840,7 +1844,7 @@ np.savetxt(OutputPath + '3_segment_' + name_det[2] + '_75deg_total.txt', matrix_
 
 # Chapter 5
 # Figure 5.24 - C235 5cm PMMA irradiation CdTe Si
-
+"""
 label_det = ['CdTe 1000 $\mu$m', 'Si 500 $\mu$m']
 name_det = ['CdTe_1000um', 'Si_500um']
 mydpi = 300
@@ -1883,7 +1887,7 @@ for i in range(1):
     matrix_energy_CdTe = np.zeros([256,256])
     for j in range(len(clog_CdTe[:])):
         cluster_size_clog = len(clog_CdTe[j][:])
-        if iterator < number_of_photons and cluster_size_clog < 5: #
+        if iterator < number_of_photons and cluster_size_clog < 5 and elist_data_CdTe[j,4] < 300: #
                 iterator += 1
                 for k in range(cluster_size_clog):
                     x, y = int(clog_CdTe[j][k][0]), int(clog_CdTe[j][k][1])
@@ -1908,7 +1912,7 @@ for i in range(1):
     matrix_energy_Si500 = np.zeros([256,256])
     for j in range(len(clog_Si500[:])):
         cluster_size_clog = len(clog_Si500[j][:])
-        if iterator < number_of_photons and cluster_size_clog < 5: #
+        if iterator < number_of_photons and cluster_size_clog < 5 and elist_data_CdTe[j,4] < 200: #
                 iterator += 1
                 for k in range(cluster_size_clog):
                     x, y = int(clog_Si500[j][k][0]), int(clog_Si500[j][k][1])
@@ -1958,3 +1962,944 @@ plt.tick_params(axis='y', labelsize=tickfnt)
 plt.title('Deposited energy, 150 MeV protons, 5 cm PMMA, ' + label_det[1], fontsize=tickfnt)
 plt.legend(loc='upper right', fontsize=tickfnt)
 plt.savefig(OutputPath + 'Si500_deposited_energy_5cm_PMMA.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+"""
+
+# Chapter 5
+# Figure 5.27 - distribution of SiC 100, 226 MeV, different angle 
+"""
+lin_wd = 2
+tickfnt = 16
+alpha_val = 0.85
+mydpi = 300
+thickness = 65
+
+path_100MeV = [
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\00deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\30deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\45deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\60deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\75deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\85deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\88deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\90deg\\File\\']
+
+path_226MeV = [
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\00deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\30deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\45deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\60deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\75deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\85deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\88deg\\File\\',
+'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\90deg\\File\\']
+
+rotations = ['0$^{\circ}$', '30$^{\circ}$', '45$^{\circ}$', '60$^{\circ}$', '75$^{\circ}$', '75$^{\circ}$', '88$^{\circ}$', '90$^{\circ}$']
+label_energy = ['100 MeV', '226 MeV']
+out_names = ['ptc_100mev', 'ptc_226mev']
+
+elist_100mev = [f"{x}EventListExt.advelist" for x in path_100MeV]
+elist_226mev = [f"{x}EventListExt.advelist" for x in path_226MeV]
+
+elist_data_100mev_00deg = np.loadtxt(elist_100mev[0], skiprows=2, delimiter='\t')
+elist_data_100mev_30deg = np.loadtxt(elist_100mev[1], skiprows=2, delimiter='\t')
+elist_data_100mev_45deg = np.loadtxt(elist_100mev[2], skiprows=2, delimiter='\t')
+elist_data_100mev_60deg = np.loadtxt(elist_100mev[3], skiprows=2, delimiter='\t')
+elist_data_100mev_75deg = np.loadtxt(elist_100mev[4], skiprows=2, delimiter='\t')
+elist_data_100mev_85deg = np.loadtxt(elist_100mev[5], skiprows=2, delimiter='\t')
+elist_data_100mev_88deg = np.loadtxt(elist_100mev[6], skiprows=2, delimiter='\t')
+elist_data_100mev_90deg = np.loadtxt(elist_100mev[7], skiprows=2, delimiter='\t')
+
+elist_data_226mev_00deg = np.loadtxt(elist_226mev[0], skiprows=2, delimiter='\t')
+elist_data_226mev_30deg = np.loadtxt(elist_226mev[1], skiprows=2, delimiter='\t')
+elist_data_226mev_45deg = np.loadtxt(elist_226mev[2], skiprows=2, delimiter='\t')
+elist_data_226mev_60deg = np.loadtxt(elist_226mev[3], skiprows=2, delimiter='\t')
+elist_data_226mev_75deg = np.loadtxt(elist_226mev[4], skiprows=2, delimiter='\t')
+elist_data_226mev_85deg = np.loadtxt(elist_226mev[5], skiprows=2, delimiter='\t')
+elist_data_226mev_88deg = np.loadtxt(elist_226mev[6], skiprows=2, delimiter='\t')
+elist_data_226mev_90deg = np.loadtxt(elist_226mev[7], skiprows=2, delimiter='\t')
+
+#Non-filtered distributions
+energy_minimum = 0
+energy_maximum = 4000
+size_minimum = 4
+size_maximum = 20000
+
+y_top_limit = 1E5
+y_bottom_limit = 5
+
+#bins = np.array([1500, 600000, 2000000])
+bins = np.array([100000, 1024, 1024])
+bins_size = np.array([98])
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\'
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_100mev_00deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_30deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_45deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_60deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_75deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_85deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_88deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_90deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E5)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Energy [keV]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Deposited energy distribution, 100 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_energy_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_100mev_00deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_30deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_45deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_60deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_75deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_85deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_88deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_90deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Size [px]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Size distribution, 100 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_size_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_100mev_00deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_30deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_45deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_60deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_75deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_85deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_88deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_90deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Height [keV]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Height distribution, 100 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_height_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_100mev_00deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_30deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_45deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_60deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_75deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_85deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_88deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_90deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Projected length [px]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Projected length distribution, 100 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_projected_length_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_100mev_00deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_30deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_45deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_60deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_75deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_85deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_88deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_90deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('LengthCorrStd [px]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('LengthCorrStd distribution, 100 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_LengthCorrStd_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_100mev_00deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_30deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_45deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_60deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_75deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_85deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_88deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_90deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Length3DCorrStd [px]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Length3DCorrStd distribution, 100 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_Length3DCorrStd_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_100mev_00deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_30deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_45deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_60deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_75deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_85deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_88deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_100mev_90deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('LET [kev/$\mu$m]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('LET distribution, 100 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_LET_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_226mev_00deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_30deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_45deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_60deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_75deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_85deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_88deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_90deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E5)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Energy [keV]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Deposited energy distribution, 226 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_energy_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_226mev_00deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_30deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_45deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_60deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_75deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_85deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_88deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_90deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Size [px]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Size distribution, 226 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_size_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_226mev_00deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_30deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_45deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_60deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_75deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_85deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_88deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_90deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Height [keV]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Height distribution, 226 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_height_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_226mev_00deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_30deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_45deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_60deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_75deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_85deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_88deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_90deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Projected length [px]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Projected length distribution, 226 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_projected_length_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_226mev_00deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_30deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_45deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_60deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_75deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_85deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_88deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_90deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('LengthCorrStd [px]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('LengthCorrStd distribution, 226 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_LengthCorrStd_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_226mev_00deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_30deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_45deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_60deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_75deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_85deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_88deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_90deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Length3DCorrStd [px]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Length3DCorrStd distribution, 226 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_Length3DCorrStd_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.hist(elist_data_226mev_00deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_30deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_45deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_60deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[3], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_75deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[4], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_85deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[5], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_88deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[6], linewidth=lin_wd, alpha=alpha_val)
+plt.hist(elist_data_226mev_90deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[7], linewidth=lin_wd, alpha=alpha_val)
+#plt.xlim(left=1, right=1E4)
+#plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('LET [kev/$\mu$m]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('LET distribution, 226 MeV')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_LET_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+number_of_particles = 100
+iterator = 0
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\ptc_single_cluster\\'
+
+name_rotations = ['0deg', '30deg', '45deg', '60deg', '75deg', '75deg', '88deg', '90deg']
+label_rotations = ['0$^{\circ}$', '30$^{\circ}$', '45$^{\circ}$', '60$^{\circ}$', '75$^{\circ}$', '75$^{\circ}$', '88$^{\circ}$', '90$^{\circ}$']
+energy = ['100 MeV', '226 MeV']
+
+vmax = 1000
+
+for i in range(len(path_100MeV)):
+    elist_data = np.loadtxt(path_100MeV[i] + 'EventListExt.advelist', skiprows=2, delimiter='\t')
+    clog_data = read_clog_multiple(path_100MeV[i])
+    for j in range(len(elist_data[:,0])):
+        if elist_data[j,4] > 90 and elist_data[j,7] > 4 and iterator < number_of_particles:
+            title = str(energy[0]) + ' ' + label_rotations[i] + ' #' + str(j)
+            print_figure_single_cluster_energy(clog_data[j], j, vmax, title, OutputPath + ' ' + energy[0] + '\\' + name_rotations[i] + '\\', 'cluster')
+            iterator += 1
+    iterator = 0
+
+for i in range(len(path_226MeV)):
+    elist_data = np.loadtxt(path_226MeV[i] + 'EventListExt.advelist', skiprows=2, delimiter='\t')
+    clog_data = read_clog_multiple(path_226MeV[i])
+    for j in range(len(elist_data[:,0])):
+        if elist_data[j,4] > 40 and elist_data[j,7] > 4 and iterator < number_of_particles:
+            title = str(energy[1]) + ' ' + label_rotations[i] + ' #' + str(j)
+            print_figure_single_cluster_energy(clog_data[j], j, vmax, title, OutputPath + ' ' + energy[1] + '\\' + name_rotations[i] + '\\', 'cluster')
+            iterator += 1
+    iterator = 0
+"""
+
+# Chapter 5
+# Figure 5.28 - normalised distribution of SiC 13, 22, 31, 100, 226 MeV, angle 0
+"""
+lin_wd = 2
+tickfnt = 16
+alpha_val = 0.85
+mydpi = 300
+thickness = 65
+
+paths_new = ['Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\27_10ms\\',
+             'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\28_100ms\\',
+             'Q:\\DPE_carlos_data_output\\2023_03_protons\\data_AA\\L06\\29_100ms\\',
+             'Q:\\DPE_carlos_data_output\\2022_10_ptc\\100MeV\\00deg\\',
+             'Q:\\DPE_carlos_data_output\\2022_10_ptc\\226MeV\\00deg\\']
+labels_new = ['13 MeV 0$^{\circ}$', '22 MeV 0$^{\circ}$', '31 MeV 0$^{\circ}$', '100 MeV 0$^{\circ}$', '226 MeV 0$^{\circ}$']
+out_names_new = ['rez_00_13mev', 'rez_00_22mev', 'rez_00_31mev', 'ptc_00_100mev', 'ptc_00_226mev']
+
+rez_elist_path_00deg_31mev = paths_new[0] + 'File\\EventListExt.advelist'
+rez_elist_path_00deg_22mev = paths_new[1] + 'File\\EventListExt.advelist'
+rez_elist_path_00deg_13mev = paths_new[2] + 'File\\EventListExt.advelist'
+ptc_elist_data_00deg_100mev = paths_new[3] + 'File\\EventListExt.advelist'
+ptc_elist_data_00deg_226mev = paths_new[4] + 'File\\EventListExt.advelist'
+
+rez_elist_data_00deg_31mev_data = np.loadtxt(rez_elist_path_00deg_31mev, skiprows=2, delimiter='\t')
+rez_elist_data_00deg_22mev_data = np.loadtxt(rez_elist_path_00deg_22mev, skiprows=2, delimiter='\t')
+rez_elist_data_00deg_13mev_data = np.loadtxt(rez_elist_path_00deg_13mev, skiprows=2, delimiter='\t')
+ptc_elist_data_00deg_100mev_data = np.loadtxt(ptc_elist_data_00deg_100mev, skiprows=2, delimiter='\t')
+ptc_elist_data_00deg_226mev_data = np.loadtxt(ptc_elist_data_00deg_226mev, skiprows=2, delimiter='\t')
+
+#Non-filtered distributions
+energy_minimum = 0
+energy_maximum = 4000
+size_minimum = 4
+size_maximum = 20000
+
+y_top_limit = 1E5
+y_bottom_limit = 5
+
+#bins = np.array([1500, 600000, 2000000])
+bins = np.array([256, 1024, 1024])
+bins_length = np.array([70, 128])
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\'
+
+filter_parameters_rez_00_31mev = Cluster_filter_multiple_parameter([180, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_rez_elist_data_00deg_31mev = read_elist_filter_numpy(rez_elist_data_00deg_31mev_data, filter_parameters_rez_00_31mev)
+
+filter_parameters_rez_00_22mev = Cluster_filter_multiple_parameter([300, 900, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_rez_elist_data_00deg_22mev = read_elist_filter_numpy(rez_elist_data_00deg_22mev_data, filter_parameters_rez_00_22mev)
+
+filter_parameters_rez_00_13mev = Cluster_filter_multiple_parameter([500, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
+filtered_rez_elist_data_00deg_13mev = read_elist_filter_numpy(rez_elist_data_00deg_13mev_data, filter_parameters_rez_00_13mev)
+
+filter_parameters_ptc_00_100mev = Cluster_filter_multiple_parameter([90, energy_maximum, 2, size_maximum], [4,7]) # Energy, Size
+filtered_ptc_elist_data_00deg_100mev = read_elist_filter_numpy(ptc_elist_data_00deg_100mev_data, filter_parameters_ptc_00_100mev)
+
+filter_parameters_ptc_00_226mev = Cluster_filter_multiple_parameter([40, energy_maximum, 2, size_maximum], [4,7]) # Energy, Size
+filtered_ptc_elist_data_00deg_226mev = read_elist_filter_numpy(ptc_elist_data_00deg_226mev_data, filter_parameters_ptc_00_226mev)
+
+plt.close()
+plt.clf()
+plt.cla()
+a = plt.hist(filtered_rez_elist_data_00deg_13mev[filtered_rez_elist_data_00deg_13mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
+b = plt.hist(filtered_rez_elist_data_00deg_22mev[filtered_rez_elist_data_00deg_22mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
+c = plt.hist(filtered_rez_elist_data_00deg_31mev[filtered_rez_elist_data_00deg_31mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
+d = plt.hist(filtered_ptc_elist_data_00deg_100mev[filtered_ptc_elist_data_00deg_100mev[:,-1] == 1][:,4], bins=bins[1], histtype = 'step', label=labels_new[3], linewidth=lin_wd, alpha=alpha_val)
+e = plt.hist(filtered_ptc_elist_data_00deg_226mev[filtered_ptc_elist_data_00deg_226mev[:,-1] == 1][:,4], bins=bins[2], histtype = 'step', label=labels_new[4], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=1, right=1E4)
+plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('Energy [keV]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Deposited energy distribution')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_filtered_energy_histogram_00deg_LE_HE.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+a_ys = a[0] / np.max(a[0])
+a_xs = a[1]
+b_ys = b[0] / np.max(b[0])
+b_xs = b[1]
+c_ys = c[0] / np.max(c[0])
+c_xs = c[1]
+d_ys = d[0] / np.max(d[0])
+d_xs = d[1]
+e_ys = e[0] / np.max(e[0])
+e_xs = e[1]
+np.savetxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[0]) + '.txt', np.c_[a_xs[1:], a_ys])
+np.savetxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[1]) + '.txt', np.c_[b_xs[1:], b_ys])
+np.savetxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[2]) + '.txt', np.c_[c_xs[1:], c_ys])
+np.savetxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[3]) + '.txt', np.c_[d_xs[1:], d_ys])
+np.savetxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[4]) + '.txt', np.c_[e_xs[1:], e_ys])
+
+a = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[0]) + '.txt')
+b = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[1]) + '.txt')
+c = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[2]) + '.txt')
+d = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[3]) + '.txt')
+e = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[4]) + '.txt')
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.plot(a[:,0], a[:,1], label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
+plt.plot(b[:,0], b[:,1], label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
+plt.plot(c[:,0], c[:,1], label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
+plt.plot(d[:,0], d[:,1], label=labels_new[3], linewidth=lin_wd, alpha=alpha_val)
+plt.plot(e[:,0], e[:,1], label=labels_new[4], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=30, right=1E4)
+plt.ylim(bottom=0, top=1.1)
+plt.xscale('log')
+plt.xlabel('Energy [keV]', fontsize=tickfnt)
+plt.ylabel('Normalised particle count [-]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('Deposited energy distribution')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_filtered_energy_histogram_00deg_LE_HE_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+plt.close()
+plt.clf()
+plt.cla()
+a = plt.hist(filtered_rez_elist_data_00deg_13mev[filtered_rez_elist_data_00deg_13mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
+b = plt.hist(filtered_rez_elist_data_00deg_22mev[filtered_rez_elist_data_00deg_22mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
+c = plt.hist(filtered_rez_elist_data_00deg_31mev[filtered_rez_elist_data_00deg_31mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
+d = plt.hist(filtered_ptc_elist_data_00deg_100mev[filtered_ptc_elist_data_00deg_100mev[:,-1] == 1][:,26], bins=bins[1], histtype = 'step', label=labels_new[3], linewidth=lin_wd, alpha=alpha_val)
+e = plt.hist(filtered_ptc_elist_data_00deg_226mev[filtered_ptc_elist_data_00deg_226mev[:,-1] == 1][:,26], bins=bins[2], histtype = 'step', label=labels_new[4], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=0.1, right=100)
+plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
+plt.ylabel('Particles [count]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('LET distribution')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_filtered_LET_histogram_00deg_LE_HE.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+a_ys = a[0] / np.max(a[0])
+a_xs = a[1]
+b_ys = b[0] / np.max(b[0])
+b_xs = b[1]
+c_ys = c[0] / np.max(c[0])
+c_xs = c[1]
+d_ys = d[0] / np.max(d[0])
+d_xs = d[1]
+e_ys = e[0] / np.max(e[0])
+e_xs = e[1]
+np.savetxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[0]) + '.txt', np.c_[a_xs[1:], a_ys])
+np.savetxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[1]) + '.txt', np.c_[b_xs[1:], b_ys])
+np.savetxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[2]) + '.txt', np.c_[c_xs[1:], c_ys])
+np.savetxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[3]) + '.txt', np.c_[d_xs[1:], d_ys])
+np.savetxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[4]) + '.txt', np.c_[e_xs[1:], e_ys])
+
+a = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[0]) + '.txt')
+b = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[1]) + '.txt')
+c = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[2]) + '.txt')
+d = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[3]) + '.txt')
+e = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[4]) + '.txt')
+
+plt.close()
+plt.clf()
+plt.cla()
+plt.plot(a[:,0], a[:,1], label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
+plt.plot(b[:,0], b[:,1], label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
+plt.plot(c[:,0], c[:,1], label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
+plt.plot(d[:,0], d[:,1], label=labels_new[3], linewidth=lin_wd, alpha=alpha_val)
+plt.plot(e[:,0], e[:,1], label=labels_new[4], linewidth=lin_wd, alpha=alpha_val)
+plt.xlim(left=0.1, right=100)
+plt.ylim(bottom=0, top=1.1)
+plt.xscale('log')
+plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
+plt.ylabel('Normalised particle count [-]', fontsize=tickfnt)
+plt.tick_params(axis='x', labelsize=tickfnt)
+plt.tick_params(axis='y', labelsize=tickfnt)
+plt.title('LET distribution')
+plt.legend(loc='upper right', fontsize=12)
+plt.savefig(OutputPath + '00_SiC_filtered_LET_histogram_00deg_LE_HE_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+"""
+
+####################################
+######### LET IT RUUUUUN ###########
+####################################
+# Chapter 5
+# Figure 5.6_2 - Rez ToA distribution 31 MeV, angle 0 
+
+input_dir = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\'
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\histogram\\'
+det_name = ['CdTe_2000um', 'GaAs_500um', 'Si_100um', 'Si_300um', 'Si_500um']
+e_name = ['13_MeV', '22_MeV', '31_MeV']
+#e_name = ['08_MeV', '13_MeV', '22_MeV', '31_MeV']
+#rot_name = ['00_angle', '10_angle', '20_angle', '30_angle', '40_angle', '50_angle', '60_angle', '70_angle', '80_angle', '85_angle', '88_angle', '89_angle', '90_angle', '92_angle']
+rot_name = ['00_angle', '10_angle', '20_angle', '30_angle', '40_angle', '50_angle', '60_angle', '70_angle', '80_angle', '85_angle', '88_angle', '89_angle', '90_angle']
+voltage = ['-450 V', '-300 V', '50 V', '200 V', '200 V']
+thickness = np.array([2000, 500, 100, 300, 500])
+
+label_det = ['CdTe 2000 $\mu$m','GaAs:Cr 500 $\mu$m', 'Si 100 $\mu$m', 'Si 300 $\mu$m', 'Si 500 $\mu$m']
+#label_energy = ['08 MeV', '13 MeV', '22 MeV', '31 MeV']
+label_energy = ['13 MeV', '22 MeV', '31 MeV']
+label_angle = ['0$^{\circ}$ angle', '10$^{\circ}$ angle', '20$^{\circ}$ angle', '30$^{\circ}$ angle', '40$^{\circ}$ angle', '50$^{\circ}$ angle', '60$^{\circ}$ angle', '70$^{\circ}$ angle', '80$^{\circ}$ angle', '85$^{\circ}$ angle', '88$^{\circ}$ angle', '89$^{\circ}$ angle', '90$^{\circ}$ angle']
+lin_wd = 2
+tickfnt = 16
+alpha_val = 0.85
+mydpi = 300
+thickness = 65
+
+#Non-filtered distributions
+energy_minimum = 0
+energy_maximum = 4000
+size_minimum = 4
+size_maximum = 20000
+
+y_top_limit = 1E5
+y_bottom_limit = 1
+
+bins = np.array([1024, 1024, 1024])
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\ToA_ditribution\\'
+
+for i in range(len(e_name)):
+    for j in range(len(rot_name)):
+        ToA_filtered_CdTe = np.array([0])
+        ToA_filtered_GaAs = np.array([0])
+        ToA_filtered_Si100 = np.array([0])
+        ToA_filtered_Si300 = np.array([0])
+        ToA_filtered_Si500 = np.array([0])
+        print('all detectors', e_name[i], rot_name[j])
+
+        clog_CdTe = read_clog_multiple(input_dir + det_name[0] + '\\' + e_name[i] + '\\' + rot_name[j] + '\\File\\')
+        clog_GaAs = read_clog_multiple(input_dir + det_name[1] + '\\' + e_name[i] + '\\' + rot_name[j] + '\\File\\')
+        clog_Si100 = read_clog_multiple(input_dir + det_name[2] + '\\' + e_name[i] + '\\' + rot_name[j] + '\\File\\')
+        clog_Si300 = read_clog_multiple(input_dir + det_name[3] + '\\' + e_name[i] + '\\' + rot_name[j] + '\\File\\')
+        clog_Si500 = read_clog_multiple(input_dir + det_name[4] + '\\' + e_name[i] + '\\' + rot_name[j] + '\\File\\')
+        
+        print('CdTe', e_name[i], rot_name[j])
+        filename = OutputPath + det_name[0] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt'
+        with open(filename, 'a+') as f:
+            for k in range(len(clog_CdTe)):
+                toa = [item[3] for item in clog_CdTe[k][:]]
+                f.write('{:.3f}\n'.format(max(toa) - min(toa)))
+            #ToA_filtered_CdTe = np.append(ToA_filtered_CdTe, max(toa) - min(toa))
+        #np.savetxt(OutputPath + det_name[0] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt', ToA_filtered_CdTe, fmt="%.5f")
+
+        print('GaAs', e_name[i], rot_name[j])
+        filename = OutputPath + det_name[1] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt'
+        with open(filename, 'a+') as f:
+            for k in range(len(clog_GaAs)):
+                toa = [item[3] for item in clog_GaAs[k][:]]
+                f.write('{:.3f}\n'.format(max(toa) - min(toa)))
+            #ToA_filtered_GaAs = np.append(ToA_filtered_GaAs, max(toa) - min(toa))
+        #np.savetxt(OutputPath + det_name[1] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt', ToA_filtered_GaAs, fmt="%.5f")
+
+        print('Si 100', e_name[i], rot_name[j])
+        filename = OutputPath + det_name[2] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt'
+        with open(filename, 'a+') as f:
+            for k in range(len(clog_Si100)):
+                toa = [item[3] for item in clog_Si100[k][:]]
+                f.write('{:.3f}\n'.format(max(toa) - min(toa)))
+            #ToA_filtered_Si100 = np.append(ToA_filtered_Si100, max(toa) - min(toa))
+        #np.savetxt(OutputPath + det_name[2] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt', ToA_filtered_Si100, fmt="%.5f")
+
+        print('Si 300', e_name[i], rot_name[j])
+        filename = OutputPath + det_name[3] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt'
+        with open(filename, 'a+') as f:
+            for k in range(len(clog_Si300)):
+                toa = [item[3] for item in clog_Si300[k][:]]
+                f.write('{:.3f}\n'.format(max(toa) - min(toa)))
+            #ToA_filtered_Si300 = np.append(ToA_filtered_Si300, max(toa) - min(toa))
+        #np.savetxt(OutputPath + det_name[3] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt', ToA_filtered_Si300, fmt="%.5f")
+        
+        print('Si 500', e_name[i], rot_name[j])
+        filename = OutputPath + det_name[4] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt'
+        with open(filename, 'a+') as f:
+            for k in range(len(clog_Si500)):
+                toa = [item[3] for item in clog_Si500[k][:]]
+                f.write('{:.3f}\n'.format(max(toa) - min(toa)))
+            #ToA_filtered_Si500 = np.append(ToA_filtered_Si500, max(toa) - min(toa))
+        #np.savetxt(OutputPath + det_name[4] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt', ToA_filtered_Si500, fmt="%.5f")
+
+        CdTe = np.loadtxt(OutputPath + det_name[0] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
+        GaAs = np.loadtxt(OutputPath + det_name[1] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
+        Si100 = np.loadtxt(OutputPath + det_name[2] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
+        Si300 = np.loadtxt(OutputPath + det_name[3] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
+        Si500 = np.loadtxt(OutputPath + det_name[4] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
+
+        plt.close()
+        plt.clf()
+        plt.cla()
+        plt.hist(CdTe, bins=bins[0], histtype = 'step', label=label_det[0], linewidth=lin_wd, alpha=alpha_val)
+        plt.hist(GaAs, bins=bins[0], histtype = 'step', label=label_det[1], linewidth=lin_wd, alpha=alpha_val)
+        plt.hist(Si100, bins=bins[0], histtype = 'step', label=label_det[2], linewidth=lin_wd, alpha=alpha_val)
+        plt.hist(Si300, bins=bins[0], histtype = 'step', label=label_det[3], linewidth=lin_wd, alpha=alpha_val)
+        plt.hist(Si500, bins=bins[0], histtype = 'step', label=label_det[4], linewidth=lin_wd, alpha=alpha_val)
+        #plt.xlim(left=0, right=1000)
+        plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+        plt.yscale('log') 
+        plt.xlabel('Relative ToA [ns]', fontsize=tickfnt)
+        plt.ylabel('Particles [count]', fontsize=tickfnt)
+        plt.tick_params(axis='x', labelsize=tickfnt)
+        plt.tick_params(axis='y', labelsize=tickfnt)
+        plt.title('ToA distribution, all detectors')
+        plt.legend(loc='upper right', fontsize=12)
+        plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+        plt.close()
+        plt.clf()
+        plt.cla()
+        plt.hist(CdTe, bins=bins[0], histtype = 'step', label=label_det[0], linewidth=lin_wd, alpha=alpha_val)
+        #plt.xlim(left=0, right=1000)
+        plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+        plt.yscale('log') 
+        plt.xlabel('Relative ToA [ns]', fontsize=tickfnt)
+        plt.ylabel('Particles [count]', fontsize=tickfnt)
+        plt.tick_params(axis='x', labelsize=tickfnt)
+        plt.tick_params(axis='y', labelsize=tickfnt)
+        plt.title('ToA distribution, 2000 $\mu$m CdTe')
+        plt.legend(loc='upper right', fontsize=12)
+        plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_CdTe_2000um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+        plt.close()
+        plt.clf()
+        plt.cla()
+        plt.hist(GaAs, bins=bins[0], histtype = 'step', label=label_det[1], linewidth=lin_wd, alpha=alpha_val)
+        #plt.xlim(left=0, right=1000)
+        plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+        plt.yscale('log') 
+        plt.xlabel('Relative ToA [ns]', fontsize=tickfnt)
+        plt.ylabel('Particles [count]', fontsize=tickfnt)
+        plt.tick_params(axis='x', labelsize=tickfnt)
+        plt.tick_params(axis='y', labelsize=tickfnt)
+        plt.title('ToA distribution, 500 $\mu$m GaAs')
+        plt.legend(loc='upper right', fontsize=12)
+        plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_GaAs_500um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+        plt.close()
+        plt.clf()
+        plt.cla()
+        plt.hist(Si100, bins=bins[0], histtype = 'step', label=label_det[2], linewidth=lin_wd, alpha=alpha_val)
+        #plt.xlim(left=0, right=1000)
+        plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+        plt.yscale('log') 
+        plt.xlabel('Relative ToA [ns]', fontsize=tickfnt)
+        plt.ylabel('Particles [count]', fontsize=tickfnt)
+        plt.tick_params(axis='x', labelsize=tickfnt)
+        plt.tick_params(axis='y', labelsize=tickfnt)
+        plt.title('ToA distribution, 100 $\mu$m Si')
+        plt.legend(loc='upper right', fontsize=12)
+        plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_100um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+        
+        plt.close()
+        plt.clf()
+        plt.cla()
+        plt.hist(Si300, bins=bins[0], histtype = 'step', label=label_det[3], linewidth=lin_wd, alpha=alpha_val)
+        #plt.xlim(left=0, right=1000)
+        plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+        plt.yscale('log') 
+        plt.xlabel('Relative ToA [ns]', fontsize=tickfnt)
+        plt.ylabel('Particles [count]', fontsize=tickfnt)
+        plt.tick_params(axis='x', labelsize=tickfnt)
+        plt.tick_params(axis='y', labelsize=tickfnt)
+        plt.title('ToA distribution, 300 $\mu$m Si')
+        plt.legend(loc='upper right', fontsize=12)
+        plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_300um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+        plt.close()
+        plt.clf()
+        plt.cla()
+        plt.hist(Si500, bins=bins[0], histtype = 'step', label=label_det[4], linewidth=lin_wd, alpha=alpha_val)
+        #plt.xlim(left=0, right=1000)
+        plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
+        plt.yscale('log') 
+        plt.xlabel('Relative ToA [ns]', fontsize=tickfnt)
+        plt.ylabel('Particles [count]', fontsize=tickfnt)
+        plt.tick_params(axis='x', labelsize=tickfnt)
+        plt.tick_params(axis='y', labelsize=tickfnt)
+        plt.title('ToA distribution, 500 $\mu$m Si')
+        plt.legend(loc='upper right', fontsize=12)
+        plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_500um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+
+############################
+######### ELECTRONS ########
+############################
+
+# Chapter 7
+# Figure 7.2 - electron deposited energy different bias, 00 angle
+# Figure 7.3 - electron deposited energy different bias, different energy, different angle
+
+lin_wd = 2
+tickfnt = 16
+alpha_val = 0.85
+mydpi = 300
+
+clog_paths = ['Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_30V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_40V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_50V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_60V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_70V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_80V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_90V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_100V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\00_angle_110V\\File\\']
+
+elist_paths = [f"{x}EventListExt.advelist" for x in clog_paths]
+
+OutNames = ['30V', '40V', '50V', '60V', '70V', '80V', '90V', '100V', '110V']
+
+TitleLabel = ['30 V', '40 V', '50 V', '60 V', '70 V', '80 V', '90 V', '100 V', '110 V']
+
+number_of_particles = 25000
+vmax = 1000
+iterator = 0
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_7\\SI_GaAs\\5MeV\\'
+
+for i in range(len(clog_paths)):
+    elist_data = np.loadtxt(elist_paths[i], skiprows=2, delimiter='\t')
+    clog_data = read_clog_multiple(clog_paths[i])
+
+    print(f'Processing 5 MeV {TitleLabel[i]}, clog contains {len(clog_data[:])}')
+
+    matrix_energy = np.zeros([256,256])
+    for j in range(len(clog_data[:])):
+        cluster_size_clog = len(clog_data[j][:])
+        if iterator < number_of_particles and cluster_size_clog > 3:  # 
+            iterator += 1
+            for k in range(cluster_size_clog):
+                x, y = int(clog_data[j][k][0]), int(clog_data[j][k][1])
+                matrix_energy[x, y] += clog_data[j][k][2]
+    print(f'No. of particles in this figure is {iterator}, mean energy is {matrix_energy.flatten()[matrix_energy.flatten()!=0].mean()} keV')
+    iterator = 0
+    np.savetxt(OutputPath + 'SI_GaAs_' + OutNames[i] + '_00deg.txt', matrix_energy, fmt="%.3f")
+    print_figure_energy(matrix_energy, vmax, 'SI-GaAs ' + TitleLabel[i], OutputPath, '5MeV_' + OutNames[i] + '_00deg')
+    
+clog_paths = ['Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\45_angle_30V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\45_angle_60V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\45_angle_100V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\75_angle_30V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\75_angle_60V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\75_angle_100V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\87_angle_30V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\87_angle_60V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\05_MeV\\87_angle_100V\\File\\']
+
+elist_paths = [f"{x}EventListExt.advelist" for x in clog_paths]
+
+OutNames = ['45deg_30V', '45deg_60V', '45deg_100V', '75deg_30V', '75deg_60V', '75deg_100V', '87deg_30V', '87deg_60V', '87deg_100V']
+
+TitleLabel = ['45$^{\circ}$ angle, bias 30 V', '45$^{\circ}$ angle, bias 60 V', '45$^{\circ}$ angle, bias 100 V', 
+              '75$^{\circ}$ angle, bias 30 V', '75$^{\circ}$ angle, bias 60 V', '75$^{\circ}$ angle, bias 100 V', 
+              '87$^{\circ}$ angle, bias 30 V', '87$^{\circ}$ angle, bias 60 V', '87$^{\circ}$ angle, bias 100 V']
+
+number_of_particles = 48000
+vmax = 1000
+iterator = 0
+
+for i in range(len(clog_paths)):
+    elist_data = np.loadtxt(elist_paths[i], skiprows=2, delimiter='\t')
+    clog_data = read_clog_multiple(clog_paths[i])
+
+    print(f'Processing 5 MeV {TitleLabel[i]}, clog contains {len(clog_data[:])}')
+
+    matrix_energy = np.zeros([256,256])
+    for j in range(len(clog_data[:])):
+        cluster_size_clog = len(clog_data[j][:])
+        if iterator < number_of_particles and cluster_size_clog > 3: #
+            iterator += 1
+            for k in range(cluster_size_clog):
+                x, y = int(clog_data[j][k][0]), int(clog_data[j][k][1])
+                matrix_energy[x, y] += clog_data[j][k][2]
+    print(f'No. of particles in this figure is {iterator}, mean energy is {matrix_energy.flatten()[matrix_energy.flatten()!=0].mean()} keV')
+    iterator = 0
+    np.savetxt(OutputPath + 'SI_GaAs_' + OutNames[i] + '.txt', matrix_energy, fmt="%.3f")
+    print_figure_energy(matrix_energy, vmax, 'SI-GaAs ' + TitleLabel[i], OutputPath, '5MeV_' + OutNames[i])
+
+
+clog_paths = ['Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\45_angle_30V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\45_angle_60V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\45_angle_100V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\75_angle_30V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\75_angle_60V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\75_angle_100V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\87_angle_30V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\87_angle_60V\\File\\',
+               'Q:\\DPE_andrej_data_output\\2022_02_electrons\\GaAs_M06\\08_MeV\\87_angle_100V\\File\\']
+
+elist_paths = [f"{x}EventListExt.advelist" for x in clog_paths]
+
+OutNames = ['45deg_30V', '45deg_60V', '45deg_100V', '75deg_30V', '75deg_60V', '75deg_100V', '87deg_30V', '87deg_60V', '87deg_100V']
+
+TitleLabel = ['45$^{\circ}$ angle, bias 30 V', '45$^{\circ}$ angle, bias 60 V', '45$^{\circ}$ angle, bias 100 V', 
+              '75$^{\circ}$ angle, bias 30 V', '75$^{\circ}$ angle, bias 60 V', '75$^{\circ}$ angle, bias 100 V', 
+              '87$^{\circ}$ angle, bias 30 V', '87$^{\circ}$ angle, bias 60 V', '87$^{\circ}$ angle, bias 100 V']
+
+number_of_particles = 1900
+vmax = 1000
+iterator = 0
+
+for i in range(len(clog_paths)):
+    elist_data = np.loadtxt(elist_paths[i], skiprows=2, delimiter='\t')
+    clog_data = read_clog_multiple(clog_paths[i])
+
+    print(f'Processing 8 MeV {TitleLabel[i]}, clog contains {len(clog_data[:])}')
+
+    matrix_energy = np.zeros([256,256])
+    for j in range(len(clog_data[:])):
+        cluster_size_clog = len(clog_data[j][:])
+        if cluster_size_clog > 3: #iterator < number_of_particles and
+            iterator += 1
+            for k in range(cluster_size_clog):
+                x, y = int(clog_data[j][k][0]), int(clog_data[j][k][1])
+                matrix_energy[x, y] += clog_data[j][k][2]
+    print(f'No. of particles in this figure is {iterator}, mean energy is {matrix_energy.flatten()[matrix_energy.flatten()!=0].mean()} keV')
+    iterator = 0
+    np.savetxt(OutputPath + 'SI_GaAs_' + OutNames[i] + '.txt', matrix_energy, fmt="%.3f")
+    print_figure_energy(matrix_energy, vmax, 'SI-GaAs ' + TitleLabel[i], OutputPath, '8MeV_' + OutNames[i])
