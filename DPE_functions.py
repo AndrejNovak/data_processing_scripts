@@ -1498,28 +1498,21 @@ def print_figure_toa(cluster_data, vmax, title, OutputPath, OutputName):
     plt.cla()
     plt.clf()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
-    # plt.matshow(matrix[:,:], origin='lower', cmap='viridis')
-    # If the orientation of matrix doesnt fit, use this instead
-    plt.matshow(np.flip(np.rot90(matrix[::-1, :])),
-                origin='lower', cmap='viridis')    # cmap='viridis' 'viridis'
+    plt.matshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='viridis')    # cmap='viridis' 'viridis'
     plt.gca().xaxis.tick_bottom()
-    cbar = plt.colorbar(label='ToA [ns]', aspect=20*0.8)
-    cbar.set_label(label='ToA [ns]', size=tickfnt,
-                   weight='regular')   # format="%.1E"
+    cbar = plt.colorbar(label='ToA [ns]', aspect=20*0.8, shrink=0.8)
+    cbar.set_label(label='ToA [ns]', size=tickfnt, weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
     plt.clim(0, vmax)
     plt.xlabel('X position [pixel]', fontsize=tickfnt)
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
     plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
     plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
-    #plt.xticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
-    #plt.yticks([0, 63, 127, 191, 255], ['1', '64', '128', '192', '256'])
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
     plt.title(label=title, fontsize=tickfnt+4)
-    plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
-                transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+    plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def parameter_filter(data_column, min_value, max_value):
@@ -1652,6 +1645,7 @@ def print_figure_single_cluster_energy(clog_data, cluster_number, vmax, title, O
     plt.close()
     plt.cla()
     plt.clf()
+    plt.close('all')
     plt.subplot()
     plt.rcParams["figure.figsize"] = (11.7, 8.3)
     # plt.matshow(matrix[:,:], origin='lower', cmap='viridis', norm=colors.LogNorm())
@@ -1733,7 +1727,7 @@ def print_figure_single_cluster_energy_event_parameters(clog_data, elist_data, c
     plt.ylabel('Y position [pixel]', fontsize=tickfnt)
     props = dict(boxstyle='round', facecolor='grey', alpha=0.05)  # bbox features
     my_text = f'Detector ID = {elist_data[cluster_number,0]:.0f} [-]\n Event ID = {elist_data[cluster_number,1]:.0f} [-]\n X = {elist_data[cluster_number,2]:.3f} [px]\n Y = {elist_data[cluster_number,3]:.3f} [px]\n E = {elist_data[cluster_number,4]:.2f} [keV]\n T = {elist_data[cluster_number,5]:.3f} [ns]\n Flags = {elist_data[cluster_number,6]:.0f} [-]\n Size = {elist_data[cluster_number,7]:.0f} [px]\n Height = {elist_data[cluster_number,8]:.2f} [keV]\n BorderPixCount = {elist_data[cluster_number,9]:.0f} [-]\n Roundness = {elist_data[cluster_number,10]:.2f} [-]\n AngleAzim = {elist_data[cluster_number,11]:.2f} [deg]\n Linearity = {elist_data[cluster_number,12]:.2f} [-]\n LengthProj = {elist_data[cluster_number,13]:.2f} [px]\n WidthProj = {elist_data[cluster_number,14]:.2f} [px]\n IsSensEdge = {elist_data[cluster_number,15]:.0f} [-]\n StdAlong = {elist_data[cluster_number,16]:.2f} [px]\n StdPerp = {elist_data[cluster_number,17]:.2f} [px]\n Thin = {elist_data[cluster_number,18]:.2f} [-]\n Thick = {elist_data[cluster_number,19]:.2f} [-]\n CurlyThin = {elist_data[cluster_number,20]:.2f} [-]\n EpixMean = {elist_data[cluster_number,21]:.2f} [keV]\n EpixStd = {elist_data[cluster_number,22]:.2f} [keV]\n LengthCorrStd = {elist_data[cluster_number,23]:.2f} [px]\n Length3DCorrStd = {elist_data[cluster_number,24]:.2f} [$\mu$m]\n AngleElev = {elist_data[cluster_number,25]:.2f} [deg]\n LET = {elist_data[cluster_number,26]:.2f} [keV/$\mu$m]\n Diameter = {elist_data[cluster_number,27]:.2f} [px]\n PIDClass = {elist_data[cluster_number,28]:.0f} [-]'
-    plt.text(1.1, 0.95, my_text, transform=ax.transAxes, fontsize=9, verticalalignment='top', bbox=props)
+    plt.text(1.8, 1.25, my_text, transform=ax.transAxes, fontsize=9, verticalalignment='top', bbox=props)
     plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
                 dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
 
