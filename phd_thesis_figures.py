@@ -396,7 +396,7 @@ for i in range(len(paths_elist_22)):
     elist_data = np.loadtxt(paths_elist_22[i], skiprows=2, delimiter='\t')
     
     plt.close('all')
-    fig, ax = plt.subplots(1, 1, figsize=(15, 15))
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hexbin(elist_data[:,4], elist_data[:,7], gridsize = 80, bins='log', cmap='viridis')
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
@@ -417,7 +417,7 @@ for i in range(len(paths_elist_31)):
     elist_data = np.loadtxt(paths_elist_31[i], skiprows=2, delimiter='\t')
     
     plt.close('all')
-    fig, ax = plt.subplots(1, 1, figsize=(15, 15))
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hexbin(elist_data[:,4], elist_data[:,7], gridsize = 80, bins='log', cmap='viridis')
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
@@ -2797,7 +2797,7 @@ for i in range(len(e_name)):
 
 # Chapter 5
 # Figure 5.6_2 - Rez ToA distribution 31 MeV, angle 0 -- JUST GRAPH GENERATION
-
+"""
 input_dir = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\'
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\histogram\\'
 det_name = ['CdTe_2000um', 'GaAs_500um', 'Si_100um', 'Si_300um', 'Si_500um']
@@ -2940,11 +2940,11 @@ for i in range(len(e_name)):
         plt.title('ToA distribution, ' + str(label_energy[i]) + ', ' + str(label_angle[j]), fontsize=fntsize)
         plt.legend(loc='upper right', fontsize=fntsize)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_500um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
-
+"""
 
 # Chapter 5
 # Figure 5.6_3 - 31 MeV proton clusters
-
+"""
 input_dir = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\'
 det_name = ['CdTe_2000um', 'GaAs_500um', 'Si_100um', 'Si_300um', 'Si_500um']
 e_name = ['31_MeV']
@@ -3047,7 +3047,7 @@ for i in range(len(e_name)):
                 print_figure_toa(clog_Si500[k], vmax_toa, title, OutputPath + 'single_cluster\\' + det_name[4]  + '\\' + str(rot_name[j]), '\\cluster_toa_' + str(k))
                 iterator += 1
         iterator = 0
-
+"""
 
 ############################
 ######### ELECTRONS ########
@@ -3365,7 +3365,6 @@ for i in range(len(clog_paths_5mev_diff_deg)):
 """
 
 # Chapter 7
-# Figure 7.5 - electron 1D histograms, energy, LET, size - filtered
 # Figure 7.6 - electron 1D histograms, energy, LET, size - filtered
 # Figure 7.7 - electron 1D histograms, energy, LET, size - filtered
 """
@@ -3697,7 +3696,12 @@ plt.savefig(OutputPath + '\\normalised\\all_let_100V_filtered_normalised_three.p
 ############################
 
 # Chapter 8
-# Figure 8.1 - 2D deposited energy
+# Figure 8.2 - 2D deposited energy
+# Figure 8.4 - 2D deposited energy
+# Figure 8.5 - 2D deposited energy
+# Figure 8.7 - 2D deposited energy
+# Figure 8.8 - 2D deposited energy
+# Figure 8.9 - 2D deposited energy
 """
 lin_wd = 2
 tickfnt = 16
@@ -3807,7 +3811,7 @@ for i in range(len(clog_paths_L06)):
 """
 
 # Chapter 8
-# Figure 8.2 - single cluster Si D05
+# Figure - single cluster Si D05
 """
 lin_wd = 2
 tickfnt = 16
@@ -3856,7 +3860,7 @@ for i in range(len(clog_paths_D05)):
 """
 
 # Chapter 8
-# Figure 8.2 - single cluster - corrected SiC L06 L07
+# Figure - single cluster - corrected SiC L06 L07
 """
 lin_wd = 2
 tickfnt = 16
@@ -4102,7 +4106,9 @@ for i in range(len(clog_paths_L06)):
 """
 
 # Chapter 8
-# Figure 8.3 - deposited energy spectra
+# Figure 8.3 - spectra
+# Figure 8.6 - spectra
+# Figure 8.10 - spectra
 """
 lin_wd = 2
 tickfnt = 16
@@ -4152,7 +4158,6 @@ elist_paths_D05 = [f"{x}EventListExt.advelist" for x in clog_paths_D05]
 OutNames = ['0_3MeV', '0_5MeV', '0_77MeV', '1_MeV', '3_3MeV', '4_MeV', '5_MeV', '15_5_MeV_1', '15_5_MeV_2', '15_5_MeV_3', '17_5_MeV']
 TitleLabel = ['0.3 MeV', '0.5 MeV', '0.77 MeV', '1 MeV', '3.3 MeV', '4 MeV', '5 MeV', '15.5 MeV', '15.5 MeV', '15.5 MeV', '17.5 MeV']
 
-min_size = 3
 iterator = 0
 
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\histogram\\'
@@ -4162,16 +4167,158 @@ for i in range(len(clog_paths_L06)):
     elist_data_L07 = np.loadtxt(elist_paths_L07[i], skiprows=2, delimiter='\t')
     elist_data_D05 = np.loadtxt(elist_paths_D05[i], skiprows=2, delimiter='\t')
 
+    print(f'Processing {TitleLabel[i]} spectra')
+    
+    #plt.close()
+    #plt.clf()
+    #plt.cla()
+    #plt.hist(elist_data_L06[:,4], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
+    #plt.hist(elist_data_L07[:,4], bins=1000000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
+    #plt.hist(elist_data_D05[:,4], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
+    #plt.xlim(left=1, right=1E6)
+    #plt.ylim(bottom=1, top=1E7)
+    #plt.yscale('log')
+    #plt.xscale('log')
+    #plt.xlabel('Energy [keV]', fontsize=tickfnt)
+    #plt.ylabel('Particles [count]', fontsize=tickfnt)
+    #plt.tick_params(axis='x', labelsize=tickfnt)
+    #plt.tick_params(axis='y', labelsize=tickfnt)
+    #plt.title('Deposited energy distribution, ' + TitleLabel[i])
+    #plt.legend(loc='upper right', fontsize=12)
+    #plt.savefig(OutputPath + 'energy_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+    plt.close()
+    plt.clf()
+    plt.cla()
+    plt.hist(elist_data_L06[:,7], bins=60, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(elist_data_L07[:,7], bins=60, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(elist_data_D05[:,7], bins=200, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
+    #plt.xlim(left=1, right=1E6)
+    #plt.ylim(bottom=1, top=1E7)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('Size [px]', fontsize=tickfnt)
+    plt.ylabel('Particles [count]', fontsize=tickfnt)
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title('Clsuter size distribution, ' + TitleLabel[i])
+    plt.legend(loc='upper right', fontsize=12)
+    plt.savefig(OutputPath + 'size_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+    #plt.close()
+    #plt.clf()
+    #plt.cla()
+    #plt.hist(elist_data_L06[:,26], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
+    #plt.hist(elist_data_L07[:,26], bins=1000000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
+    #plt.hist(elist_data_D05[:,26], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
+    ##plt.xlim(left=1, right=1E6)
+    #plt.ylim(bottom=1, top=1E7)
+    #plt.yscale('log')
+    #plt.xscale('log')
+    #plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
+    #plt.ylabel('Particles [count]', fontsize=tickfnt)
+    #plt.tick_params(axis='x', labelsize=tickfnt)
+    #plt.tick_params(axis='y', labelsize=tickfnt)
+    #plt.title('LET distribution, ' + TitleLabel[i])
+    #plt.legend(loc='upper right', fontsize=12)
+    #plt.savefig(OutputPath + 'let_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+"""
+
+# Chapter 8
+# Figure 8. - spectra
+
+lin_wd = 2
+tickfnt = 16
+alpha_val = 0.80
+mydpi = 300
+
+clog_paths_L06 = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\02\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\10\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\12\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\11\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\06\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\07\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\09\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L06\\08\\File\\']
+
+clog_paths_L07 = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\02\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\10\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\12\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\11\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\06\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\07\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\09\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\L07\\08\\File\\']
+
+clog_paths_D05 = ['Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\02\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\10\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\12\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\11\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\06\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\07\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\09_1\\File\\',
+                  'Q:\\DPE_carlos_data_output\\2022_12_VdG\\D05\\08\\File\\']
+
+elist_paths_L06 = [f"{x}EventListExt.advelist" for x in clog_paths_L06]
+elist_paths_L07 = [f"{x}EventListExt.advelist" for x in clog_paths_L07]
+elist_paths_D05 = [f"{x}EventListExt.advelist" for x in clog_paths_D05]
+
+OutNames    = ['1_MeV',  '3_3MeV', '4_MeV', '5_MeV', '15_5_MeV_1', '15_5_MeV_2', '15_5_MeV_3', '17_5_MeV']
+TitleLabel  = ['1 MeV', '3.3 MeV', '4 MeV', '5 MeV', '15.5 MeV',   '15.5 MeV',   '15.5 MeV',   '17.5 MeV']
+
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\histogram_filtered\\'
+#                         1   2   3   4   5   6   7   8
+D05_size_min = np.array([11, 15, 20, 15,  30,  30,  30, 30])
+D05_size_max = np.array([20, 45, 60, 70, 100, 100, 100, 110])
+
+L06_size_min = np.array([15, 15,  9,  9,  9,  9,  9,  9])
+L06_size_max = np.array([24, 24, 16, 16, 16, 16, 15, 16])
+
+L07_size_min = np.array([15, 15,  9,  9,  9,  9,  9,  9])
+L07_size_max = np.array([24, 24, 16, 16, 16, 16, 15, 16])
+#                            1     2     3     4     5     6     7     8
+D05_energy_min = np.array([ 700, 1100, 1000, 1000, 1400, 1400, 1400, 1250])
+D05_energy_max = np.array([1000, 2100, 3000, 4500, 5000, 5000, 5000, 5000])
+
+L06_energy_min = np.array([1300, 1300, 1300, 1200, 1200, 1100, 1200, 1400])
+L06_energy_max = np.array([4500, 5000, 5000, 5000, 4000, 3000, 3500, 5000])
+
+L07_energy_min = np.array([1300, 1300, 1300, 1200, 1200, 1100, 1200, 1400])
+L07_energy_max = np.array([4500, 5000, 5000, 5000, 4000, 3000, 3500, 5000])
+
+number_of_particles = 2000
+vmax = 3000
+iterator = 0
+
+for i in range(len(clog_paths_L06)):
     print(f'Processing {TitleLabel[i]}')
+    elist_data_L06 = np.loadtxt(elist_paths_L06[i], skiprows=2, delimiter='\t')
+    elist_data_L07 = np.loadtxt(elist_paths_L07[i], skiprows=2, delimiter='\t')
+    elist_data_D05 = np.loadtxt(elist_paths_D05[i], skiprows=2, delimiter='\t')
+
+    clog_data_L06 = read_clog_multiple(clog_paths_L06[i])
+    clog_data_L07 = read_clog_multiple(clog_paths_L07[i])
+    clog_data_D05 = read_clog_multiple(clog_paths_D05[i])
+
+    filter_parameters_L06 = Cluster_filter_multiple_parameter([L06_energy_min[i], L06_energy_max[i], L06_size_min[i], L06_size_max[i]], [4,7]) # Energy, Size
+    filtered_elist_L06 = read_elist_filter_numpy(elist_data_L06, filter_parameters_L06)
+    filter_parameters_L07 = Cluster_filter_multiple_parameter([L07_energy_min[i], L07_energy_max[i], L07_size_min[i], L07_size_max[i]], [4,7]) # Energy, Size
+    filtered_elist_L07 = read_elist_filter_numpy(elist_data_L07, filter_parameters_L07)
+    filter_parameters_D05 = Cluster_filter_multiple_parameter([D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i]], [4,7]) # Energy, Size
+    filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
+
+    print(f'L06 before: {len(elist_data_L06[:,0])}, after: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/len(elist_data_L06[:,0]) * 100}')
+    print(f'L07 before: {len(elist_data_L07[:,0])}, after: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/len(elist_data_L07[:,0]) * 100}')
+    print(f'D05 before: {len(elist_data_D05[:,0])}, after: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/len(elist_data_D05[:,0]) * 100}')
     
     plt.close()
     plt.clf()
     plt.cla()
-    plt.hist(elist_data_L06[:,4], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
-    plt.hist(elist_data_L07[:,4], bins=400000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
-    plt.hist(elist_data_D05[:,4], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
-    plt.xlim(left=1, right=1E6)
-    plt.ylim(bottom=1, top=1E7)
+    plt.hist(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,4], bins=400, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,4], bins=400, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,4], bins=400, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
+    #plt.xlim(left=1, right=1E6)
+    #plt.ylim(bottom=1, top=1E7)
     plt.yscale('log')
     plt.xscale('log')
     plt.xlabel('Energy [keV]', fontsize=tickfnt)
@@ -4180,16 +4327,16 @@ for i in range(len(clog_paths_L06)):
     plt.tick_params(axis='y', labelsize=tickfnt)
     plt.title('Deposited energy distribution, ' + TitleLabel[i])
     plt.legend(loc='upper right', fontsize=12)
-    plt.savefig(OutputPath + 'energy_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    plt.savefig(OutputPath + 'filtered_energy_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
     plt.close()
     plt.clf()
     plt.cla()
-    plt.hist(elist_data_L06[:,26], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
-    plt.hist(elist_data_L07[:,26], bins=400000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
-    plt.hist(elist_data_D05[:,26], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,26], bins=400, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,26], bins=400, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,26], bins=400, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
     #plt.xlim(left=1, right=1E6)
-    plt.ylim(bottom=1, top=1E7)
+    #plt.ylim(bottom=1, top=1E7)
     plt.yscale('log')
     plt.xscale('log')
     plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
@@ -4198,6 +4345,43 @@ for i in range(len(clog_paths_L06)):
     plt.tick_params(axis='y', labelsize=tickfnt)
     plt.title('LET distribution, ' + TitleLabel[i])
     plt.legend(loc='upper right', fontsize=12)
-    plt.savefig(OutputPath + 'let_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
-"""
+    plt.savefig(OutputPath + 'filtered_let_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
+    #square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_L06[:,-1], clog_data_L06, number_of_particles)
+    #print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, L06 4H-SiC 65 $\mu$m', OutputPath, OutNames[i] + '_L06_particles')
+    #square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_L07[:,-1], clog_data_L07, number_of_particles)
+    #print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, L07 4H-SiC 65 $\mu$m', OutputPath, OutNames[i] + '_L07_particles')
+    square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_D05[:,-1], clog_data_D05, number_of_particles)
+    print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, D05 Si 500 $\mu$m', OutputPath, OutNames[i] + '_D05_particles')
+    
+    matrix_full = np.zeros([256,256])
+    for j in range(len(clog_data_L06)):
+        matrix_energy = np.zeros([256,256])
+        cluster_size_clog = len(clog_data_L06[j][:])
+        for k in range(cluster_size_clog):
+            if cluster_size_clog >= L06_size_min[i] and cluster_size_clog <= L06_size_max[i]:
+                x, y = int(clog_data_L06[j][k][0]), int(clog_data_L06[j][k][1])
+                matrix_energy[x, y] += clog_data_L06[j][k][2]
+
+        if cluster_size_clog >= L06_size_min[i] and cluster_size_clog <= L06_size_max[i] and sum(matrix_energy.flatten()) >= L06_energy_min[i] and sum(matrix_energy.flatten()) <= L06_energy_max[i] and iterator < number_of_particles:
+            iterator += 1
+            matrix_full += matrix_energy
+
+    iterator = 0    
+    print_figure_energy(matrix_full, vmax, TitleLabel[i] + ', filtered, L06 4H-SiC 65 $\mu$m', OutputPath, OutNames[i] + '_L06_particles')
+
+    matrix_full = np.zeros([256,256])
+    for j in range(len(clog_data_L07)):
+        matrix_energy = np.zeros([256,256])
+        cluster_size_clog = len(clog_data_L07[j][:])
+        for k in range(cluster_size_clog):
+            if cluster_size_clog >= L07_size_min[i] and cluster_size_clog <= L07_size_max[i]:
+                x, y = int(clog_data_L07[j][k][0]), int(clog_data_L07[j][k][1])
+                matrix_energy[x, y] += clog_data_L07[j][k][2]
+
+        if cluster_size_clog >= L07_size_min[i] and cluster_size_clog <= L07_size_max[i] and sum(matrix_energy.flatten()) >= L07_energy_min[i] and sum(matrix_energy.flatten()) <= L07_energy_max[i] and iterator < number_of_particles:
+            iterator += 1
+            matrix_full += matrix_energy
+
+    iterator = 0    
+    print_figure_energy(matrix_full, vmax, TitleLabel[i] + ', filtered, L07 4H-SiC 65 $\mu$m', OutputPath, OutNames[i] + '_L07_particles')
