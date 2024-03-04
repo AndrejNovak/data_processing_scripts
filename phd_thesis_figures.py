@@ -493,8 +493,7 @@ for j in range(len(e_name)):
         Si500 = np.loadtxt(pathSi500, skiprows=2, delimiter='\t')
 
         plt.close('all')
-        plt.clf()
-        plt.cla()
+        plt.rcParams["figure.figsize"] = (11.7, 8.3)
         #plt.hist(CdTe[:,4], bins=bin_energy[j, 0], histtype = 'step', label=label_det[0], linewidth=lin_wd)
         #plt.hist(GaAs[:,4], bins=bin_energy[j, 1], histtype = 'step', label=label_det[1], linewidth=lin_wd)
         #plt.hist(Si100[:,4], bins=bin_energy[j, 2], histtype = 'step', label=label_det[2], linewidth=lin_wd)
@@ -517,9 +516,8 @@ for j in range(len(e_name)):
         plt.legend(loc='upper right')
         plt.savefig(OutputPath + str(e_name[j]) + '_' + str(rot_name[k]) + '_Energy.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
         
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        plt.rcParams["figure.figsize"] = (11.7, 8.3)
         #plt.hist(CdTe[:,7], bins=bin_size[j, 0], histtype = 'step', label=label_det[0], linewidth=lin_wd)
         #plt.hist(GaAs[:,7], bins=bin_size[j, 1], histtype = 'step', label=label_det[1], linewidth=lin_wd)
         #plt.hist(Si100[:,7], bins=bin_size[j, 2], histtype = 'step', label=label_det[2], linewidth=lin_wd)
@@ -545,9 +543,8 @@ for j in range(len(e_name)):
         plt.savefig(OutputPath + str(e_name[j]) + '_' + str(rot_name[k]) + '_Size.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
         
         
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        plt.rcParams["figure.figsize"] = (11.7, 8.3)
         #plt.hist(CdTe[:,8], bins=bin_height[j, 0], histtype = 'step', label=label_det[0], linewidth=lin_wd)
         #plt.hist(GaAs[:,8], bins=bin_height[j, 1], histtype = 'step', label=label_det[1], linewidth=lin_wd)
         #plt.hist(Si100[:,8], bins=bin_height[j, 2], histtype = 'step', label=label_det[2], linewidth=lin_wd)
@@ -572,9 +569,8 @@ for j in range(len(e_name)):
         plt.legend(loc='upper right')
         plt.savefig(OutputPath + str(e_name[j]) + '_' + str(rot_name[k]) +'_Height.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
         
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        plt.rcParams["figure.figsize"] = (11.7, 8.3)
         #plt.hist(CdTe_LET, bins=bin_let[j, 0], histtype = 'step', label=label_det[0], linewidth=lin_wd)
         #plt.hist(GaAs_LET, bins=bin_let[j, 1], histtype = 'step', label=label_det[1], linewidth=lin_wd)
         #plt.hist(Si100_LET, bins=bin_let[j, 2], histtype = 'step', label=label_det[2], linewidth=lin_wd)
@@ -655,10 +651,8 @@ mydpi = 300
 
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\histogram\\'
 
-plt.close()
-plt.clf()
-plt.cla()
-f, ax = plt.subplots()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(CdTe_energy[:,0], CdTe_energy[:,1] / np.max(CdTe_energy[:,1])) 
 plt.plot(GaAs_energy[:,0], GaAs_energy[:,1] / np.max(GaAs_energy[:,1])) 
 plt.plot(Si100_energy[:,0], Si100_energy[:,1] / np.max(Si100_energy[:,1])) 
@@ -677,10 +671,8 @@ plt.tick_params(labelsize=tickfnt)
 plt.tick_params(labelsize=tickfnt)
 plt.savefig(OutputPath + 'filtered_energy_31MeV.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
-f, ax = plt.subplots()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(CdTe_LET[:,0], CdTe_LET[:,1] / np.max(CdTe_LET[:,1]))
 plt.plot(GaAs_LET[:,0], GaAs_LET[:,1] / np.max(GaAs_LET[:,1])) 
 plt.plot(Si100_LET[:,0], Si100_LET[:,1] / np.max(Si100_LET[:,1]))
@@ -1072,8 +1064,6 @@ for i in range(len(elist_paths_L06)):
     filtered_elist_data_L07 = read_elist_filter_numpy(elist_data_L07, filter_parameters_L07)
 
     plt.close('all')
-    plt.clf()
-    plt.cla()
     a = plt.hist(filtered_elist_data_L06[filtered_elist_data_L06[:,-1] == 1][:,4], bins=2048, histtype = 'step', label=TitleLabel[0], linewidth=lin_wd)
     b = plt.hist(filtered_elist_data_L07[filtered_elist_data_L07[:,-1] == 1][:,4], bins=100000, histtype = 'step', label=TitleLabel[1], linewidth=lin_wd)
     plt.xlim(left=1E2, right=1E6) #left=1E3
@@ -1096,9 +1086,7 @@ for i in range(len(elist_paths_L06)):
 
     a = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_L06_' + str(angle[i]) + '_31MeV.txt')
     b = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_L07_' + str(angle[i]) + '_31MeV.txt')
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
     plt.plot(a[:,0], a[:,1], label=TitleLabel[0], linewidth=lin_wd, alpha=1)
     plt.plot(b[:,0], b[:,1], label=TitleLabel[1], linewidth=lin_wd, alpha=1)
     plt.xlim(left=1E2, right=1E4)
@@ -1150,8 +1138,6 @@ for i in range(len(elist_paths_L06_13MeV)):
     filtered_elist_data_L07 = read_elist_filter_numpy(elist_data_L07, filter_parameters_L07)
 
     plt.close('all')
-    plt.clf()
-    plt.cla()
     a = plt.hist(filtered_elist_data_L06[filtered_elist_data_L06[:,-1] == 1][:,4], bins=2048, histtype = 'step', label=TitleLabel[0], linewidth=lin_wd)
     b = plt.hist(filtered_elist_data_L07[filtered_elist_data_L07[:,-1] == 1][:,4], bins=40000, histtype = 'step', label=TitleLabel[1], linewidth=lin_wd)
     plt.xlim(left=1E2, right=1E6) #left=1E3
@@ -1174,9 +1160,7 @@ for i in range(len(elist_paths_L06_13MeV)):
 
     a = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_L06_' + str(angle[i]) + '_13MeV.txt')
     b = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_L07_' + str(angle[i]) + '_13MeV.txt')
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
     plt.plot(a[:,0], a[:,1], label=TitleLabel[0], linewidth=lin_wd, alpha=1)
     plt.plot(b[:,0], b[:,1], label=TitleLabel[1], linewidth=lin_wd, alpha=1)
     plt.xlim(left=1E2, right=1E4)
@@ -1241,9 +1225,8 @@ filtered_rez_elist_data_00deg_22mev = read_elist_filter_numpy(rez_elist_data_00d
 filter_parameters_rez_00_13mev = Cluster_filter_multiple_parameter([500, energy_maximum, size_minimum, size_maximum], [4,7]) # Energy, Size
 filtered_rez_elist_data_00deg_13mev = read_elist_filter_numpy(rez_elist_data_00deg_13mev, filter_parameters_rez_00_13mev)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 a = plt.hist(filtered_rez_elist_data_00deg_13mev[filtered_rez_elist_data_00deg_13mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
 b = plt.hist(filtered_rez_elist_data_00deg_22mev[filtered_rez_elist_data_00deg_22mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
 c = plt.hist(filtered_rez_elist_data_00deg_31mev[filtered_rez_elist_data_00deg_31mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
@@ -1272,9 +1255,8 @@ a = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' +
 b = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[1]) + '.txt')
 c = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[2]) + '.txt')
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(a[:,0], a[:,1], label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(b[:,0], b[:,1], label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(c[:,0], c[:,1], label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
@@ -1289,9 +1271,8 @@ plt.title('Deposited energy distribution')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_filtered_energy_histogram_00deg_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 a = plt.hist(filtered_rez_elist_data_00deg_13mev[filtered_rez_elist_data_00deg_13mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
 b = plt.hist(filtered_rez_elist_data_00deg_22mev[filtered_rez_elist_data_00deg_22mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
 c = plt.hist(filtered_rez_elist_data_00deg_31mev[filtered_rez_elist_data_00deg_31mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
@@ -1320,9 +1301,8 @@ a = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + st
 b = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[1]) + '.txt')
 c = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[2]) + '.txt')
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(a[:,0], a[:,1], label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(b[:,0], b[:,1], label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(c[:,0], c[:,1], label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
@@ -1406,8 +1386,7 @@ for i in range(len(elist_paths_GaAs)):
     filtered_elist_data_Si500 = read_elist_filter_numpy(elist_data_Si500, filter_parameters_Si500)
 
     plt.close('all')
-    plt.clf()
-    plt.cla()
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     a = plt.hist(filtered_elist_data_GaAs[filtered_elist_data_GaAs[:,-1] == 1][:,4], bins=2048, histtype = 'step', label=TitleLabel[0] + ' ' + str(angle[i])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
     b = plt.hist(filtered_elist_data_Si500[filtered_elist_data_Si500[:,-1] == 1][:,4], bins=2048, histtype = 'step', label=TitleLabel[1] + ' ' + str(angle[i])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
     plt.xlim(left=500, right=1E5) #left=1E3
@@ -1429,8 +1408,7 @@ for i in range(len(elist_paths_GaAs)):
     np.savetxt(OutputPath + 'normalised_energy_histogram_values_Si500_' + str(angle[i]) + '_31MeV.txt', np.c_[b_xs[1:], b_ys])
 
     plt.close('all')
-    plt.clf()
-    plt.cla()
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     a = plt.hist(filtered_elist_data_GaAs[filtered_elist_data_GaAs[:,-1] == 1][:,26], bins=2048, histtype = 'step', label=TitleLabel[0] + ' ' + str(angle[i])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
     b = plt.hist(filtered_elist_data_Si500[filtered_elist_data_Si500[:,-1] == 1][:,26], bins=2048, histtype = 'step', label=TitleLabel[1] + ' ' + str(angle[i])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
     plt.xlim(left=1, right=1E5) #left=1E3
@@ -1453,9 +1431,8 @@ for i in range(len(elist_paths_GaAs)):
 
     a = np.loadtxt(OutputPath + 'normalised_let_histogram_values_GaAs_' + str(angle[i]) + '_31MeV.txt')
     b = np.loadtxt(OutputPath + 'normalised_let_histogram_values_Si500_' + str(angle[i]) + '_31MeV.txt')
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.plot(a[:,0], a[:,1], label=TitleLabel[0] + ' ' + str(angle[i])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
     plt.plot(b[:,0], b[:,1], label=TitleLabel[1] + ' ' + str(angle[i])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
     plt.xlim(left=1E-2, right=1E2)
@@ -1478,9 +1455,8 @@ d = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_Si500_' + str(an
 e = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_GaAs_' + str(angle[2]) + '_31MeV.txt')
 f = np.loadtxt(OutputPath + 'normalised_energy_histogram_values_Si500_' + str(angle[2]) + '_31MeV.txt')
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(a[:,0], a[:,1], label=TitleLabel[0] + ' ' + str(angle[0])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
 plt.plot(b[:,0], b[:,1], label=TitleLabel[1] + ' ' + str(angle[0])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
 plt.plot(c[:,0], c[:,1], label=TitleLabel[0] + ' ' + str(angle[1])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
@@ -1505,9 +1481,8 @@ d = np.loadtxt(OutputPath + 'normalised_let_histogram_values_Si500_' + str(angle
 e = np.loadtxt(OutputPath + 'normalised_let_histogram_values_GaAs_' + str(angle[2]) + '_31MeV.txt')
 f = np.loadtxt(OutputPath + 'normalised_let_histogram_values_Si500_' + str(angle[2]) + '_31MeV.txt')
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(a[:,0], a[:,1], label=TitleLabel[0] + ' ' + str(angle[0])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
 plt.plot(b[:,0], b[:,1], label=TitleLabel[1] + ' ' + str(angle[0])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
 plt.plot(c[:,0], c[:,1], label=TitleLabel[0] + ' ' + str(angle[1])+'$^{\circ}$', linewidth=lin_wd, alpha=alpha_val)
@@ -1584,6 +1559,7 @@ for i in range(len(elist_paths_L06)):
     elist_data_Si500 = np.loadtxt(elist_paths_Si500[i], skiprows=2, delimiter='\t')
 
     plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_L06[:,4], bins=4096, histtype = 'step', label=TitleLabel[0], linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_L07[:,4], bins=200000, histtype = 'step', label=TitleLabel[1], linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_CdTe[:,4], bins=4096, histtype = 'step', label=TitleLabel[2], linewidth=lin_wd, alpha=alpha_val)
@@ -1603,6 +1579,7 @@ for i in range(len(elist_paths_L06)):
     plt.savefig(OutputPath + 'deposited_energy_all_detectors_' + str(angle[i]) + '_deg.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
     plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_L06[:,26], bins=4096, histtype = 'step', label=TitleLabel[0], linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_L07[:,26], bins=200000, histtype = 'step', label=TitleLabel[1], linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_CdTe[:,26], bins=4096, histtype = 'step', label=TitleLabel[2], linewidth=lin_wd, alpha=alpha_val)
@@ -1622,6 +1599,7 @@ for i in range(len(elist_paths_L06)):
     plt.savefig(OutputPath + 'deposited_LET_all_detectors_' + str(angle[i]) + '_deg.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
     plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_L06[:,7], bins=4096, histtype = 'step', label=TitleLabel[0], linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_L07[:,7], bins=200000, histtype = 'step', label=TitleLabel[1], linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_CdTe[:,7], bins=4096, histtype = 'step', label=TitleLabel[2], linewidth=lin_wd, alpha=alpha_val)
@@ -1641,6 +1619,7 @@ for i in range(len(elist_paths_L06)):
     plt.savefig(OutputPath + 'cluster_size_all_detectors_' + str(angle[i]) + '_deg.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
     plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_L06[:,24], bins=4096, histtype = 'step', label=TitleLabel[0], linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_L07[:,24], bins=200000, histtype = 'step', label=TitleLabel[1], linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_CdTe[:,24], bins=4096, histtype = 'step', label=TitleLabel[2], linewidth=lin_wd, alpha=alpha_val)
@@ -1775,9 +1754,7 @@ matrix_GaAs[0:128,128:256] = GaAs_75deg_225[64:192,64:192]
 matrix_GaAs[128:256,128:256] = GaAs_75deg_150[64:192,64:192]
 matrix_GaAs[0:128,0:128] = GaAs_75deg_70[64:192,64:192]
 
-plt.close()
-plt.cla()
-plt.clf()
+plt.close('all')
 plt.rcParams["figure.figsize"] = (11.7, 8.3)
 plt.matshow(np.flip(np.rot90(matrix_CdTe[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
 plt.gca().xaxis.tick_bottom()
@@ -1797,9 +1774,7 @@ plt.title('Deposited energy, ' + str(label_det[0]))
 plt.savefig(OutputPath + '3_segment_' + name_det[0] + '_75deg_total.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 np.savetxt(OutputPath + '3_segment_' + name_det[0] + '_75deg_total.txt', matrix_CdTe, fmt="%.3f")
 
-plt.close()
-plt.cla()
-plt.clf()
+plt.close('all')
 plt.rcParams["figure.figsize"] = (11.7, 8.3)
 plt.matshow(np.flip(np.rot90(matrix_Si500[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
 plt.gca().xaxis.tick_bottom()
@@ -1819,9 +1794,7 @@ plt.title('Deposited energy, ' + str(label_det[1]))
 plt.savefig(OutputPath + '3_segment_' + name_det[1] + '_75deg_total.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 np.savetxt(OutputPath + '3_segment_' + name_det[1] + '_75deg_total.txt', matrix_Si500, fmt="%.3f")
 
-plt.close()
-plt.cla()
-plt.clf()
+plt.close('all')
 plt.rcParams["figure.figsize"] = (11.7, 8.3)
 plt.matshow(np.flip(np.rot90(matrix_GaAs[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
 plt.gca().xaxis.tick_bottom()
@@ -1931,6 +1904,7 @@ filter_parameters_CdTe = Cluster_filter_multiple_parameter([energy_minimum, ener
 filtered_elist_data_CdTe = read_elist_filter_numpy(elist_data_CdTe, filter_parameters_CdTe)
 
 plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_CdTe[:,4], bins=4096, histtype = 'step', label=label_det[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(filtered_elist_data_CdTe[filtered_elist_data_CdTe[:,-1] == 1][:,4], bins=4096, histtype = 'step', label='Filtered ' + label_det[0], linewidth=lin_wd, alpha=alpha_val)    
 plt.xlim(left=1, right=1E5) #left=1E3
@@ -1949,6 +1923,7 @@ filter_parameters_Si500 = Cluster_filter_multiple_parameter([energy_minimum, ene
 filtered_elist_data_Si500 = read_elist_filter_numpy(elist_data_Si500, filter_parameters_Si500)
 
 plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_Si500[:,4], bins=4096, histtype = 'step', label=label_det[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(filtered_elist_data_Si500[filtered_elist_data_Si500[:,-1] == 1][:,4], bins=4096, histtype = 'step', label='Filtered ' + label_det[1], linewidth=lin_wd, alpha=alpha_val)    
 plt.xlim(left=1, right=1E5) #left=1E3
@@ -2033,9 +2008,8 @@ bins_size = np.array([98])
 
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\'
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_100mev_00deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_30deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_45deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2056,9 +2030,8 @@ plt.title('Deposited energy distribution, 100 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_energy_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_100mev_00deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_30deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_45deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2079,9 +2052,8 @@ plt.title('Size distribution, 100 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_size_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_100mev_00deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_30deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_45deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2102,9 +2074,8 @@ plt.title('Height distribution, 100 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_height_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_100mev_00deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_30deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_45deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2125,9 +2096,8 @@ plt.title('Projected length distribution, 100 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_projected_length_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_100mev_00deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_30deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_45deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2148,9 +2118,8 @@ plt.title('LengthCorrStd distribution, 100 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_LengthCorrStd_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_100mev_00deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_30deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_45deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2171,9 +2140,8 @@ plt.title('Length3DCorrStd distribution, 100 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_Length3DCorrStd_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_100mev_00deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_30deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_100mev_45deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[0] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2195,9 +2163,8 @@ plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_LET_histogram_' + label_energy[0] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_226mev_00deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_30deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_45deg[:,4], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2218,9 +2185,8 @@ plt.title('Deposited energy distribution, 226 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_energy_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_226mev_00deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_30deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_45deg[:,7], bins=bins_size[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2241,9 +2207,8 @@ plt.title('Size distribution, 226 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_size_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_226mev_00deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_30deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_45deg[:,8], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2264,9 +2229,8 @@ plt.title('Height distribution, 226 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_height_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_226mev_00deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_30deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_45deg[:,13], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2287,9 +2251,8 @@ plt.title('Projected length distribution, 226 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_projected_length_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_226mev_00deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_30deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_45deg[:,23], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2310,9 +2273,8 @@ plt.title('LengthCorrStd distribution, 226 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_LengthCorrStd_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_226mev_00deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_30deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_45deg[:,24], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2333,9 +2295,8 @@ plt.title('Length3DCorrStd distribution, 226 MeV')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_Length3DCorrStd_histogram_' + label_energy[1] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.hist(elist_data_226mev_00deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[0], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_30deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[1], linewidth=lin_wd, alpha=alpha_val)
 plt.hist(elist_data_226mev_45deg[:,26], bins=bins[0], histtype = 'step', label=label_energy[1] + rotations[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2446,9 +2407,8 @@ filtered_ptc_elist_data_00deg_100mev = read_elist_filter_numpy(ptc_elist_data_00
 filter_parameters_ptc_00_226mev = Cluster_filter_multiple_parameter([40, energy_maximum, 2, size_maximum], [4,7]) # Energy, Size
 filtered_ptc_elist_data_00deg_226mev = read_elist_filter_numpy(ptc_elist_data_00deg_226mev_data, filter_parameters_ptc_00_226mev)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 a = plt.hist(filtered_rez_elist_data_00deg_13mev[filtered_rez_elist_data_00deg_13mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
 b = plt.hist(filtered_rez_elist_data_00deg_22mev[filtered_rez_elist_data_00deg_22mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
 c = plt.hist(filtered_rez_elist_data_00deg_31mev[filtered_rez_elist_data_00deg_31mev[:,-1] == 1][:,4], bins=bins[0], histtype = 'step', label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2487,9 +2447,8 @@ c = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' +
 d = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[3]) + '.txt')
 e = np.loadtxt(OutputPath + 'normalised_SiC_filtered_energy_histogram_values_' + str(out_names_new[4]) + '.txt')
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(a[:,0], a[:,1], label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(b[:,0], b[:,1], label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(c[:,0], c[:,1], label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2506,9 +2465,8 @@ plt.title('Deposited energy distribution')
 plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_filtered_energy_histogram_00deg_LE_HE_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 a = plt.hist(filtered_rez_elist_data_00deg_13mev[filtered_rez_elist_data_00deg_13mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
 b = plt.hist(filtered_rez_elist_data_00deg_22mev[filtered_rez_elist_data_00deg_22mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
 c = plt.hist(filtered_rez_elist_data_00deg_31mev[filtered_rez_elist_data_00deg_31mev[:,-1] == 1][:,26], bins=bins[0], histtype = 'step', label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2547,9 +2505,8 @@ c = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + st
 d = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[3]) + '.txt')
 e = np.loadtxt(OutputPath + 'normalised_SiC_filtered_let_histogram_values_' + str(out_names_new[4]) + '.txt')
 
-plt.close()
-plt.clf()
-plt.cla()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(a[:,0], a[:,1], label=labels_new[0], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(b[:,0], b[:,1], label=labels_new[1], linewidth=lin_wd, alpha=alpha_val)
 plt.plot(c[:,0], c[:,1], label=labels_new[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2569,7 +2526,7 @@ plt.savefig(OutputPath + '00_SiC_filtered_LET_histogram_00deg_LE_HE_normalised.p
 
 # Chapter 5
 # Figure 5.6_2 - Rez ToA distribution 31 MeV, angle 0 
-"""
+
 input_dir = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\'
 det_name = ['CdTe_2000um', 'GaAs_500um', 'Si_100um', 'Si_300um', 'Si_500um']
 e_name = ['13_MeV', '22_MeV', '31_MeV']
@@ -2700,9 +2657,8 @@ for i in range(len(e_name)):
         Si300 = np.loadtxt(OutputPath + det_name[3] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
         Si500 = np.loadtxt(OutputPath + det_name[4] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.hist(CdTe, bins=bins[0], histtype = 'step', label=label_det[0], linewidth=lin_wd, alpha=alpha_val)
         plt.hist(GaAs, bins=bins[0], histtype = 'step', label=label_det[1], linewidth=lin_wd, alpha=alpha_val)
         plt.hist(Si100, bins=bins[0], histtype = 'step', label=label_det[2], linewidth=lin_wd, alpha=alpha_val)
@@ -2719,9 +2675,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=12)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.hist(CdTe, bins=bins[0], histtype = 'step', label=label_det[0], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
         plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
@@ -2734,9 +2689,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=12)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_CdTe_2000um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.hist(GaAs, bins=bins[0], histtype = 'step', label=label_det[1], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
         plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
@@ -2749,9 +2703,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=12)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_GaAs_500um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.hist(Si100, bins=bins[0], histtype = 'step', label=label_det[2], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
         plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
@@ -2764,9 +2717,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=12)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_100um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
         
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.hist(Si300, bins=bins[0], histtype = 'step', label=label_det[3], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
         plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
@@ -2779,9 +2731,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=12)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_300um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.hist(Si500, bins=bins[0], histtype = 'step', label=label_det[4], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
         plt.ylim(bottom=y_bottom_limit, top=y_top_limit)
@@ -2793,7 +2744,7 @@ for i in range(len(e_name)):
         plt.title('ToA distribution, 500 $\mu$m Si')
         plt.legend(loc='upper right', fontsize=12)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_500um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
-"""
+
 
 # Chapter 5
 # Figure 5.6_2 - Rez ToA distribution 31 MeV, angle 0 -- JUST GRAPH GENERATION
@@ -2841,9 +2792,8 @@ for i in range(len(e_name)):
         Si300 = np.loadtxt(OutputPath + det_name[3] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
         Si500 = np.loadtxt(OutputPath + det_name[4] + '_ToA_diff_' + e_name[i] + '_' + rot_name[j] + '.txt')
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.rcParams["figure.figsize"] = (11.7, 8.3)
         plt.hist(CdTe, bins=bins[0], histtype = 'step', label=label_det[0], linewidth=lin_wd, alpha=alpha_val)
         plt.hist(GaAs, bins=800, histtype = 'step', label=label_det[1], linewidth=lin_wd, alpha=alpha_val)
@@ -2861,9 +2811,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=fntsize)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.rcParams["figure.figsize"] = (11.7, 8.3)
         plt.hist(CdTe, bins=bins[0], histtype = 'step', label=label_det[0], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
@@ -2877,9 +2826,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=fntsize)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_CdTe_2000um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.rcParams["figure.figsize"] = (11.7, 8.3)
         plt.hist(GaAs, bins=bins[0], histtype = 'step', label=label_det[1], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
@@ -2893,9 +2841,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=fntsize)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_GaAs_500um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.rcParams["figure.figsize"] = (11.7, 8.3)
         plt.hist(Si100, bins=bins[0], histtype = 'step', label=label_det[2], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
@@ -2909,9 +2856,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=fntsize)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_100um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
         
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.rcParams["figure.figsize"] = (11.7, 8.3)
         plt.hist(Si300, bins=bins[0], histtype = 'step', label=label_det[3], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
@@ -2925,9 +2871,8 @@ for i in range(len(e_name)):
         plt.legend(loc='upper right', fontsize=fntsize)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_300um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-        plt.close()
-        plt.clf()
-        plt.cla()
+        plt.close('all')
+        fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
         plt.rcParams["figure.figsize"] = (11.7, 8.3)
         plt.hist(Si500, bins=bins[0], histtype = 'step', label=label_det[4], linewidth=lin_wd, alpha=alpha_val)
         #plt.xlim(left=0, right=1000)
@@ -3224,9 +3169,8 @@ OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_7\
 for i in range(len(clog_paths_5mev_00deg)):
     elist_data = np.loadtxt(elist_paths[i], skiprows=2, delimiter='\t')
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data[:,4], bins=bin, histtype = 'step', label=TitleLabel[i], linewidth=lin_wd)
     #plt.xlim(left=1, right=1E5) #left=1E3
     #plt.ylim(bottom=1, top=1E5)
@@ -3240,9 +3184,8 @@ for i in range(len(clog_paths_5mev_00deg)):
     plt.legend(loc='upper right')
     plt.savefig(OutputPath + '5MeV_deposited_energy_' + str(OutNames[i]) + '_00deg.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
     
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data[:,26], bins=bin, histtype = 'step', label=TitleLabel[i], linewidth=lin_wd)
     #plt.xlim(left=1, right=1E5) #left=1E3
     #plt.ylim(bottom=1, top=1E5)
@@ -3256,9 +3199,8 @@ for i in range(len(clog_paths_5mev_00deg)):
     plt.legend(loc='upper right')
     plt.savefig(OutputPath + '5MeV_let_' + str(OutNames[i]) + '_00deg.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data[:,7], bins=20, histtype = 'step', label=TitleLabel[i], linewidth=lin_wd)
     plt.xlim(left=0, right=40) #left=1E3
     #plt.ylim(bottom=1, top=1E5)
@@ -3311,9 +3253,8 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     elist_data_5mev = np.loadtxt(elist_paths_5mev_diff_deg[i], skiprows=2, delimiter='\t')
     elist_data_8mev = np.loadtxt(elist_paths_8mev_diff_deg[i], skiprows=2, delimiter='\t')
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_5mev[:,4], bins=24000, histtype = 'step', label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     plt.hist(elist_data_8mev[:,4], bins=4096, histtype = 'step', label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
     #plt.xlim(left=1, right=1E5) #left=1E3
@@ -3328,9 +3269,8 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     plt.legend(loc='upper right')
     plt.savefig(OutputPath + 'all_deposited_energy_' + str(OutNames[i]) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_5mev[:,26], bins=9192, histtype = 'step', label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     plt.hist(elist_data_8mev[:,26], bins=4096, histtype = 'step', label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
     #plt.xlim(left=1, right=1E5) #left=1E3
@@ -3345,9 +3285,8 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     plt.legend(loc='upper right')
     plt.savefig(OutputPath + 'all_let_' + str(OutNames[i]) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close(all)
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_5mev[:,7], bins=20, histtype = 'step', label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     plt.hist(elist_data_8mev[:,7], bins=20, histtype = 'step', label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
     #plt.xlim(left=1, right=1E5) #left=1E3
@@ -3361,7 +3300,6 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     plt.title('Size distribution, ' + str(TitleLabel[i]) + ' bias')
     plt.legend(loc='upper right')
     plt.savefig(OutputPath + 'all_size_' + str(OutNames[i]) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
-
 """
 
 # Chapter 7
@@ -3408,9 +3346,8 @@ for i in range(len(clog_paths_5mev_00deg)):
     if OutNames[i] == '80V' or OutNames[i] == '110V':
         bin = 50000
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     a = plt.hist(elist_data[elist_data[:,7] > min_size][:,4], bins=bin, histtype = 'step', label=TitleLabel[i], linewidth=lin_wd)
     plt.xlim(left=0, right=800) #left=1E3
     #plt.ylim(bottom=1, top=1E5)
@@ -3429,9 +3366,8 @@ for i in range(len(clog_paths_5mev_00deg)):
 
     a = np.loadtxt(OutputPath + '\\normalised\\normalised_bias_filtered_energy_histogram_values_' + str(OutNames[i]) + '.txt')
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.plot(a[:,0], a[:,1], label=TitleLabel[i], linewidth=lin_wd)
     plt.xlim(left=0, right=800) #left=1E3
     plt.ylim(bottom=0, top=1.1)
@@ -3445,9 +3381,8 @@ for i in range(len(clog_paths_5mev_00deg)):
     plt.legend(loc='upper right')
     plt.savefig(OutputPath + '\\normalised\\5MeV_deposited_energy_' + str(OutNames[i]) + '_00deg_filtered_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
     
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     a = plt.hist(elist_data[elist_data[:,7] > min_size][:,26], bins=bin, histtype = 'step', label=TitleLabel[i], linewidth=lin_wd)
     plt.xlim(left=0, right=6) #left=1E3
     #plt.ylim(bottom=1, top=1E5)
@@ -3466,9 +3401,8 @@ for i in range(len(clog_paths_5mev_00deg)):
 
     a = np.loadtxt(OutputPath + '\\normalised\\normalised_bias_filtered_let_histogram_values_' + str(OutNames[i]) + '.txt')
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.plot(a[:,0], a[:,1],  label=TitleLabel[i], linewidth=lin_wd)
     plt.xlim(left=0, right=6) #left=1E3
     plt.ylim(bottom=0, top=1.1)
@@ -3482,9 +3416,8 @@ for i in range(len(clog_paths_5mev_00deg)):
     plt.legend(loc='upper right')
     plt.savefig(OutputPath + '\\normalised\\5MeV_let_' + str(OutNames[i]) + '_00deg_filtered_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data[elist_data[:,7] > min_size][:,7], bins=20, histtype = 'step', label=TitleLabel[i], linewidth=lin_wd)
     plt.xlim(left=0, right=40) #left=1E3
     #plt.ylim(bottom=1, top=1E5)
@@ -3539,9 +3472,8 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     elist_data_5mev = np.loadtxt(elist_paths_5mev_diff_deg[i], skiprows=2, delimiter='\t')
     elist_data_8mev = np.loadtxt(elist_paths_8mev_diff_deg[i], skiprows=2, delimiter='\t')
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     a = plt.hist(elist_data_5mev[elist_data_5mev[:,7] > min_size][:,4], bins=bin, histtype = 'step', label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     b = plt.hist(elist_data_8mev[elist_data_8mev[:,7] > min_size][:,4], bins=bin, histtype = 'step', label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
     plt.xlim(left=0, right=800) #left=1E3
@@ -3565,9 +3497,8 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     a = np.loadtxt(OutputPath + '\\normalised\\normalised_all_filtered_energy_histogram_values_' + str(OutNames[i]) + '_5MeV.txt')
     b = np.loadtxt(OutputPath + '\\normalised\\normalised_all_filtered_energy_histogram_values_' + str(OutNames[i]) + '_8MeV.txt')
 
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.plot(a[:,0], a[:,1], label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     plt.plot(b[:,0], b[:,1], label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
     plt.xlim(left=0, right=800) #left=1E3
@@ -3583,9 +3514,8 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     plt.savefig(OutputPath + '\\normalised\\all_deposited_energy_' + str(OutNames[i]) + '_filtered_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
     # LET
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     a = plt.hist(elist_data_5mev[elist_data_5mev[:,7] > min_size][:,26], bins=1024, histtype = 'step', label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     b = plt.hist(elist_data_8mev[elist_data_8mev[:,7] > min_size][:,26], bins=1024, histtype = 'step', label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
     plt.xlim(left=0, right=6) #left=1E3
@@ -3610,9 +3540,8 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     b = np.loadtxt(OutputPath + '\\normalised\\normalised_all_filtered_let_histogram_values_' + str(OutNames[i]) + '_8MeV.txt')
 
     # LET normalised
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.plot(a[:,0], a[:,1], label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     plt.plot(b[:,0], b[:,1], label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
     plt.xlim(left=0, right=6) #left=1E3
@@ -3628,9 +3557,8 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     plt.savefig(OutputPath + '\\normalised\\all_let_' + str(OutNames[i]) + '_filtered_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
     
     # Size
-    plt.close()
-    plt.cla()
-    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_5mev[elist_data_5mev[:,7] > min_size][:,7], bins=20, histtype = 'step', label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     plt.hist(elist_data_8mev[elist_data_8mev[:,7] > min_size][:,7], bins=20, histtype = 'step', label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
     plt.xlim(left=0, right=40) #left=1E3
@@ -3650,9 +3578,8 @@ a = np.loadtxt(OutputPath + '\\normalised\\normalised_bias_filtered_energy_histo
 b = np.loadtxt(OutputPath + '\\normalised\\normalised_all_filtered_energy_histogram_values_100V_87deg_5MeV.txt')
 c = np.loadtxt(OutputPath + '\\normalised\\normalised_all_filtered_energy_histogram_values_100V_87deg_8MeV.txt')
 
-plt.close()
-plt.cla()
-plt.clf()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(a[:,0], a[:,1], label='0$^{\circ}$, 5 MeV', linewidth=lin_wd, alpha=alpha_val)
 plt.plot(b[:,0], b[:,1], label='87$^{\circ}$, 5 MeV', linewidth=lin_wd, alpha=alpha_val)
 plt.plot(c[:,0], c[:,1], label='87$^{\circ}$, 8 MeV', linewidth=lin_wd, alpha=alpha_val)
@@ -3672,9 +3599,8 @@ a = np.loadtxt(OutputPath + '\\normalised\\normalised_bias_filtered_let_histogra
 b = np.loadtxt(OutputPath + '\\normalised\\normalised_all_filtered_let_histogram_values_100V_87deg_5MeV.txt')
 c = np.loadtxt(OutputPath + '\\normalised\\normalised_all_filtered_let_histogram_values_100V_87deg_8MeV.txt')
 
-plt.close()
-plt.cla()
-plt.clf()
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
 plt.plot(a[:,0], a[:,1], label='0$^{\circ}$, 5 MeV', linewidth=lin_wd, alpha=alpha_val)
 plt.plot(b[:,0], b[:,1], label='87$^{\circ}$, 5 MeV', linewidth=lin_wd, alpha=alpha_val)
 plt.plot(c[:,0], c[:,1], label='87$^{\circ}$, 8 MeV', linewidth=lin_wd, alpha=alpha_val)
@@ -3932,9 +3858,6 @@ for i in range(len(clog_paths_L06)):
             else:
                 difference_position_y = 0
                     
-            plt.close()
-            plt.cla()
-            plt.clf()
             plt.close('all')
             plt.subplot()
             plt.rcParams["figure.figsize"] = (11.7, 8.3)
@@ -3977,10 +3900,7 @@ for i in range(len(clog_paths_L06)):
                 difference_position_y = np.abs((np.max(y) - np.min(y)) - (np.max(x) - np.min(x)))
             else:
                 difference_position_y = 0
-                    
-            plt.close()
-            plt.cla()
-            plt.clf()
+
             plt.close('all')
             plt.subplot()
             plt.rcParams["figure.figsize"] = (11.7, 8.3)
@@ -4033,10 +3953,7 @@ for i in range(len(clog_paths_L06)):
                 difference_position_y = np.abs((np.max(y) - np.min(y)) - (np.max(x) - np.min(x)))
             else:
                 difference_position_y = 0
-                    
-            plt.close()
-            plt.cla()
-            plt.clf()
+            
             plt.close('all')
             plt.subplot()
             plt.rcParams["figure.figsize"] = (11.7, 8.3)
@@ -4079,10 +3996,7 @@ for i in range(len(clog_paths_L06)):
                 difference_position_y = np.abs((np.max(y) - np.min(y)) - (np.max(x) - np.min(x)))
             else:
                 difference_position_y = 0
-                    
-            plt.close()
-            plt.cla()
-            plt.clf()
+
             plt.close('all')
             plt.subplot()
             plt.rcParams["figure.figsize"] = (11.7, 8.3)
@@ -4169,9 +4083,8 @@ for i in range(len(clog_paths_L06)):
 
     print(f'Processing {TitleLabel[i]} spectra')
     
-    #plt.close()
-    #plt.clf()
-    #plt.cla()
+    #plt.close('all')
+    #fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     #plt.hist(elist_data_L06[:,4], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
     #plt.hist(elist_data_L07[:,4], bins=1000000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
     #plt.hist(elist_data_D05[:,4], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
@@ -4187,9 +4100,8 @@ for i in range(len(clog_paths_L06)):
     #plt.legend(loc='upper right', fontsize=12)
     #plt.savefig(OutputPath + 'energy_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_L06[:,7], bins=60, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_L07[:,7], bins=60, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
     plt.hist(elist_data_D05[:,7], bins=200, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
@@ -4205,9 +4117,8 @@ for i in range(len(clog_paths_L06)):
     plt.legend(loc='upper right', fontsize=12)
     plt.savefig(OutputPath + 'size_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    #plt.close()
-    #plt.clf()
-    #plt.cla()
+    #plt.close('all')
+    #fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     #plt.hist(elist_data_L06[:,26], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
     #plt.hist(elist_data_L07[:,26], bins=1000000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
     #plt.hist(elist_data_D05[:,26], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
@@ -4226,9 +4137,9 @@ for i in range(len(clog_paths_L06)):
 
 # Chapter 8
 # Figure 8... - spectra + deposited energy
-
+"""
 lin_wd = 2
-tickfnt = 16
+tickfnt = 18
 alpha_val = 0.80
 mydpi = 300
 
@@ -4307,13 +4218,12 @@ for i in range(len(clog_paths_L06)):
     filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
     
     print(f'Processing {TitleLabel[i]}')
-    print(f'L06 before: {len(elist_data_L06[:,0])}, after: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/len(elist_data_L06[:,0]) * 100}')
-    print(f'L07 before: {len(elist_data_L07[:,0])}, after: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/len(elist_data_L07[:,0]) * 100}')
-    print(f'D05 before: {len(elist_data_D05[:,0])}, after: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/len(elist_data_D05[:,0]) * 100}')
+    print(f'L06 before: {len(elist_data_L06[:,0])}, after: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/len(elist_data_L06[:,0]) * 100}, duration: {(elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9} s')
+    print(f'L07 before: {len(elist_data_L07[:,0])}, after: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/len(elist_data_L07[:,0]) * 100}, duration: {(elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9} s')
+    print(f'D05 before: {len(elist_data_D05[:,0])}, after: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/len(elist_data_D05[:,0]) * 100}, duration: {(elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9} s')
     
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
     a = plt.hist(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,4], bins=128, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
     b = plt.hist(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,4], bins=128, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
     c = plt.hist(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,4], bins=128, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
@@ -4325,8 +4235,8 @@ for i in range(len(clog_paths_L06)):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Deposited energy distribution, ' + TitleLabel[i])
-    plt.legend(loc='upper right', fontsize=12)
+    plt.title('Deposited energy distribution, ' + TitleLabel[i], fontsize=14)
+    plt.legend(loc='upper right', fontsize=14)
     plt.savefig(OutputPath + 'filtered_energy_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
     a_ys = a[0] / np.max(a[0])
     a_xs = a[1]
@@ -4342,9 +4252,8 @@ for i in range(len(clog_paths_L06)):
     b = np.loadtxt(OutputPath + 'filtered_energy_histogram_values_L07.txt')
     c = np.loadtxt(OutputPath + 'filtered_energy_histogram_values_D05.txt')
 
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
     plt.plot(a[:,0], a[:,1], label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
     plt.plot(b[:,0], b[:,1], label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
     plt.plot(c[:,0], c[:,1], label='Si D05', linewidth=lin_wd, alpha=alpha_val)
@@ -4355,13 +4264,12 @@ for i in range(len(clog_paths_L06)):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Deposited energy distribution, ' + TitleLabel[i])
-    plt.legend(loc='upper right', fontsize=12)
+    plt.title('Deposited energy distribution, ' + TitleLabel[i], fontsize=14)
+    plt.legend(loc='upper right', fontsize=14)
     plt.savefig(OutputPath + 'filtered_energy_histogram_' + OutNames[i] + '_all_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
     a = plt.hist(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,26], bins=128, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
     b = plt.hist(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,26], bins=128, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
     c = plt.hist(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,26], bins=128, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
@@ -4373,8 +4281,8 @@ for i in range(len(clog_paths_L06)):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('LET distribution, ' + TitleLabel[i])
-    plt.legend(loc='upper right', fontsize=12)
+    plt.title('LET distribution, ' + TitleLabel[i], fontsize=14)
+    plt.legend(loc='upper right', fontsize=14)
     plt.savefig(OutputPath + 'filtered_let_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
     a_ys = a[0] / np.max(a[0])
     a_xs = a[1]
@@ -4390,9 +4298,8 @@ for i in range(len(clog_paths_L06)):
     b = np.loadtxt(OutputPath + 'filtered_let_histogram_values_L07.txt')
     c = np.loadtxt(OutputPath + 'filtered_let_histogram_values_D05.txt')
 
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
     plt.plot(a[:,0], a[:,1], label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
     plt.plot(b[:,0], b[:,1], label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
     plt.plot(c[:,0], c[:,1], label='Si D05', linewidth=lin_wd, alpha=alpha_val)
@@ -4403,16 +4310,15 @@ for i in range(len(clog_paths_L06)):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('LET distribution, ' + TitleLabel[i])
-    plt.legend(loc='upper right', fontsize=12)
+    plt.title('LET distribution, ' + TitleLabel[i], fontsize=14)
+    plt.legend(loc='upper right', fontsize=14)
     plt.savefig(OutputPath + 'filtered_let_histogram_' + OutNames[i] + '_all_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    plt.close()
-    plt.clf()
-    plt.cla()
-    a = plt.hist(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,7], bins=32, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
-    b = plt.hist(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,7], bins=32, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
-    c = plt.hist(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,7], bins=32, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
+    plt.close('all')
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
+    a = plt.hist(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,7], bins=18, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
+    b = plt.hist(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,7], bins=18, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
+    c = plt.hist(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,7], bins=18, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
     #plt.xlim(left=1, right=1E6)
     #plt.ylim(bottom=1, top=1E7)
     plt.yscale('log')
@@ -4421,8 +4327,8 @@ for i in range(len(clog_paths_L06)):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Size distribution, ' + TitleLabel[i])
-    plt.legend(loc='upper right', fontsize=12)
+    plt.title('Size distribution, ' + TitleLabel[i], fontsize=14)
+    plt.legend(loc='upper right', fontsize=14)
     plt.savefig(OutputPath + 'filtered_size_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
     a_ys = a[0] / np.max(a[0])
     a_xs = a[1]
@@ -4438,9 +4344,8 @@ for i in range(len(clog_paths_L06)):
     b = np.loadtxt(OutputPath + 'filtered_size_histogram_values_L07.txt')
     c = np.loadtxt(OutputPath + 'filtered_size_histogram_values_D05.txt')
 
-    plt.close()
-    plt.clf()
-    plt.cla()
+    plt.close('all')
+    plt.rcParams["figure.figsize"] = (11.7, 8.3)
     plt.plot(a[:,0], a[:,1], label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
     plt.plot(b[:,0], b[:,1], label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
     plt.plot(c[:,0], c[:,1], label='Si D05', linewidth=lin_wd, alpha=alpha_val)
@@ -4451,8 +4356,8 @@ for i in range(len(clog_paths_L06)):
     plt.ylabel('Particles [count]', fontsize=tickfnt)
     plt.tick_params(axis='x', labelsize=tickfnt)
     plt.tick_params(axis='y', labelsize=tickfnt)
-    plt.title('Size distribution, ' + TitleLabel[i])
-    plt.legend(loc='upper right', fontsize=12)
+    plt.title('Size distribution, ' + TitleLabel[i], fontsize=14)
+    plt.legend(loc='upper right', fontsize=14)
     plt.savefig(OutputPath + 'filtered_size_histogram_' + OutNames[i] + '_all_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
     #square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_L06[:,-1], clog_data_L06, number_of_particles)
@@ -4499,3 +4404,4 @@ for i in range(len(clog_paths_L06)):
         print_figure_energy(matrix_full, vmax, TitleLabel[i] + ', filtered, L07 4H-SiC 65 $\mu$m', OutputPath, OutNames[i] + '_L07_particles')
     except:
         Exception
+"""
