@@ -594,11 +594,11 @@ for j in range(len(e_name)):
         plt.title('Linear energy transfer distribution, '+str(label_energy[j])+' protons, ' + str(label_angle[5]))
         plt.legend(loc='upper right')
         plt.savefig(OutputPath + str(e_name[j]) + '_' + str(rot_name[k]) + '_LET.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
-"""
+
 
 # Chapter 5
 # Figure 5.8 - filtration example
-"""
+
 clog_path = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\GaAs_500um\\31_MeV\\50_angle\\File\\'
 elist_path = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\GaAs_500um\\31_MeV\\50_angle\\File\\EventListExt.advelist'
 
@@ -2524,21 +2524,22 @@ plt.legend(loc='upper right', fontsize=12)
 plt.savefig(OutputPath + '00_SiC_filtered_LET_histogram_00deg_LE_HE_normalised.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 """
 
-# Chapter 5
+# Chapter 5 - pokracovat
 # Figure 5.6_2 - Rez ToA distribution 31 MeV, angle 0 
-
+"""
 input_dir = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\'
 det_name = ['CdTe_2000um', 'GaAs_500um', 'Si_100um', 'Si_300um', 'Si_500um']
 e_name = ['13_MeV', '22_MeV', '31_MeV']
 #e_name = ['08_MeV', '13_MeV', '22_MeV', '31_MeV']
 #rot_name = ['00_angle', '10_angle', '20_angle', '30_angle', '40_angle', '50_angle', '60_angle', '70_angle', '80_angle', '85_angle', '88_angle', '89_angle', '90_angle', '92_angle']
-rot_name = ['00_angle', '10_angle', '20_angle', '30_angle', '40_angle', '50_angle', '60_angle', '70_angle', '80_angle', '85_angle', '88_angle', '89_angle', '90_angle']
+rot_name = ['00_angle', '10_angle', '20_angle', '30_angle', '40_angle', '50_angle', '60_angle', '70_angle', '80_angle', '85_angle', '88_angle', '89_angle', '90_angle', '92_angle']
 voltage = ['-450 V', '-300 V', '50 V', '200 V', '200 V']
 thickness = np.array([2000, 500, 100, 300, 500])
 
 label_det = ['CdTe 2000 $\mu$m','GaAs:Cr 500 $\mu$m', 'Si 100 $\mu$m', 'Si 300 $\mu$m', 'Si 500 $\mu$m']
 #label_energy = ['08 MeV', '13 MeV', '22 MeV', '31 MeV']
 label_energy = ['13 MeV', '22 MeV', '31 MeV']
+#label_angle = ['60$^{\circ}$ angle', '70$^{\circ}$ angle', '80$^{\circ}$ angle', '85$^{\circ}$ angle', '88$^{\circ}$ angle', '89$^{\circ}$ angle', '90$^{\circ}$ angle']
 label_angle = ['0$^{\circ}$ angle', '10$^{\circ}$ angle', '20$^{\circ}$ angle', '30$^{\circ}$ angle', '40$^{\circ}$ angle', '50$^{\circ}$ angle', '60$^{\circ}$ angle', '70$^{\circ}$ angle', '80$^{\circ}$ angle', '85$^{\circ}$ angle', '88$^{\circ}$ angle', '89$^{\circ}$ angle', '90$^{\circ}$ angle']
 lin_wd = 2
 tickfnt = 16
@@ -2744,15 +2745,15 @@ for i in range(len(e_name)):
         plt.title('ToA distribution, 500 $\mu$m Si')
         plt.legend(loc='upper right', fontsize=12)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_500um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+"""
 
-
-# Chapter 5
+# Chapter 5 - pokracovat
 # Figure 5.6_2 - Rez ToA distribution 31 MeV, angle 0 -- JUST GRAPH GENERATION
 """
 input_dir = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\'
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_5\\U120M\\histogram\\'
 det_name = ['CdTe_2000um', 'GaAs_500um', 'Si_100um', 'Si_300um', 'Si_500um']
-e_name = ['13_MeV', '22_MeV', '31_MeV']
+e_name = ['08_MeV', '13_MeV', '22_MeV', '31_MeV']
 #e_name = ['08_MeV', '13_MeV', '22_MeV', '31_MeV']
 #rot_name = ['00_angle', '10_angle', '20_angle', '30_angle', '40_angle', '50_angle', '60_angle', '70_angle', '80_angle', '85_angle', '88_angle', '89_angle', '90_angle', '92_angle']
 rot_name = ['00_angle', '10_angle', '20_angle', '30_angle', '40_angle', '50_angle', '60_angle', '70_angle', '80_angle', '85_angle', '88_angle', '89_angle', '90_angle']
@@ -2761,7 +2762,7 @@ thickness = np.array([2000, 500, 100, 300, 500])
 
 label_det = ['CdTe 2000 $\mu$m','GaAs:Cr 500 $\mu$m', 'Si 100 $\mu$m', 'Si 300 $\mu$m', 'Si 500 $\mu$m']
 #label_energy = ['08 MeV', '13 MeV', '22 MeV', '31 MeV']
-label_energy = ['13 MeV', '22 MeV', '31 MeV']
+label_energy = ['08 MeV', '13 MeV', '22 MeV', '31 MeV']
 label_angle = ['0$^{\circ}$ angle', '10$^{\circ}$ angle', '20$^{\circ}$ angle', '30$^{\circ}$ angle', '40$^{\circ}$ angle', '50$^{\circ}$ angle', '60$^{\circ}$ angle', '70$^{\circ}$ angle', '80$^{\circ}$ angle', '85$^{\circ}$ angle', '88$^{\circ}$ angle', '89$^{\circ}$ angle', '90$^{\circ}$ angle']
 lin_wd = 2
 tickfnt = 20
@@ -2885,11 +2886,11 @@ for i in range(len(e_name)):
         plt.title('ToA distribution, ' + str(label_energy[i]) + ', ' + str(label_angle[j]), fontsize=fntsize)
         plt.legend(loc='upper right', fontsize=fntsize)
         plt.savefig(OutputPath + 'ToA_diff_distribution_rez_' + e_name[i] + '_' + rot_name[j] + '_Si_500um.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
-"""
 
-# Chapter 5
+
+# Chapter 5 - pokracovat
 # Figure 5.6_3 - 31 MeV proton clusters
-"""
+
 input_dir = 'Q:\\DPE_carlos_data_output\\2018_08_01_protons\\'
 det_name = ['CdTe_2000um', 'GaAs_500um', 'Si_100um', 'Si_300um', 'Si_500um']
 e_name = ['31_MeV']
@@ -3285,7 +3286,7 @@ for i in range(len(clog_paths_5mev_diff_deg)):
     plt.legend(loc='upper right')
     plt.savefig(OutputPath + 'all_let_' + str(OutNames[i]) + '.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    plt.close(all)
+    plt.close('all')
     fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
     plt.hist(elist_data_5mev[:,7], bins=20, histtype = 'step', label=TitleLabel_5mev_diff_deg[i], linewidth=lin_wd)
     plt.hist(elist_data_8mev[:,7], bins=20, histtype = 'step', label=TitleLabel_8mev_diff_deg[i], linewidth=lin_wd)
@@ -4083,22 +4084,22 @@ for i in range(len(clog_paths_L06)):
 
     print(f'Processing {TitleLabel[i]} spectra')
     
-    #plt.close('all')
-    #fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
-    #plt.hist(elist_data_L06[:,4], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
-    #plt.hist(elist_data_L07[:,4], bins=1000000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
-    #plt.hist(elist_data_D05[:,4], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
-    #plt.xlim(left=1, right=1E6)
-    #plt.ylim(bottom=1, top=1E7)
-    #plt.yscale('log')
-    #plt.xscale('log')
-    #plt.xlabel('Energy [keV]', fontsize=tickfnt)
-    #plt.ylabel('Particles [count]', fontsize=tickfnt)
-    #plt.tick_params(axis='x', labelsize=tickfnt)
-    #plt.tick_params(axis='y', labelsize=tickfnt)
-    #plt.title('Deposited energy distribution, ' + TitleLabel[i])
-    #plt.legend(loc='upper right', fontsize=12)
-    #plt.savefig(OutputPath + 'energy_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
+    plt.hist(elist_data_L06[:,4], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(elist_data_L07[:,4], bins=1000000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(elist_data_D05[:,4], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
+    plt.xlim(left=1, right=1E6)
+    plt.ylim(bottom=1, top=1E7)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('Energy [keV]', fontsize=tickfnt)
+    plt.ylabel('Particles [count]', fontsize=tickfnt)
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title('Deposited energy distribution, ' + TitleLabel[i])
+    plt.legend(loc='upper right', fontsize=12)
+    plt.savefig(OutputPath + 'energy_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
     plt.close('all')
     fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
@@ -4117,22 +4118,22 @@ for i in range(len(clog_paths_L06)):
     plt.legend(loc='upper right', fontsize=12)
     plt.savefig(OutputPath + 'size_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 
-    #plt.close('all')
-    #fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
-    #plt.hist(elist_data_L06[:,26], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
-    #plt.hist(elist_data_L07[:,26], bins=1000000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
-    #plt.hist(elist_data_D05[:,26], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
-    ##plt.xlim(left=1, right=1E6)
-    #plt.ylim(bottom=1, top=1E7)
-    #plt.yscale('log')
-    #plt.xscale('log')
-    #plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
-    #plt.ylabel('Particles [count]', fontsize=tickfnt)
-    #plt.tick_params(axis='x', labelsize=tickfnt)
-    #plt.tick_params(axis='y', labelsize=tickfnt)
-    #plt.title('LET distribution, ' + TitleLabel[i])
-    #plt.legend(loc='upper right', fontsize=12)
-    #plt.savefig(OutputPath + 'let_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
+    plt.hist(elist_data_L06[:,26], bins=20000, histtype = 'step', label='SiC L06', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(elist_data_L07[:,26], bins=1000000, histtype = 'step', label='SiC L07', linewidth=lin_wd, alpha=alpha_val)
+    plt.hist(elist_data_D05[:,26], bins=18000, histtype = 'step', label='Si D05', linewidth=lin_wd, alpha=alpha_val)
+    #plt.xlim(left=1, right=1E6)
+    plt.ylim(bottom=1, top=1E7)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('LET [keV/$\mu$m]', fontsize=tickfnt)
+    plt.ylabel('Particles [count]', fontsize=tickfnt)
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.title('LET distribution, ' + TitleLabel[i])
+    plt.legend(loc='upper right', fontsize=12)
+    plt.savefig(OutputPath + 'let_histogram_' + OutNames[i] + '_all.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
 """
 
 # Chapter 8
