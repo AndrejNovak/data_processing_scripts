@@ -152,6 +152,40 @@ OutputName = 'straightening_test_new'
 straighten_single_cluster_rows(clog[cluster_number], cluster_number, elist_data[cluster_number, 2], elist_data[cluster_number, 3], elist_data[cluster_number,8], elist_data[cluster_number,8]+100, OutputPath, OutputName)
 """
 
+# Chapter 4
+# Figure 4.1 - photon attenuation coefficients of Si, SiC, GaAs and CdTe
+
+tickfnt = 20
+mydpi = 300
+lin_wd = 1.75
+
+FileInPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_4\\'
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_4\\'
+
+attenuation_coefficient_Si = np.loadtxt(FileInPath + 'photon_attenuation_Si.txt', skiprows=1, delimiter=' ')
+attenuation_coefficient_SiC = np.loadtxt(FileInPath + 'photon_attenuation_SiC.txt', skiprows=1, delimiter=' ')
+attenuation_coefficient_GaAs = np.loadtxt(FileInPath + 'photon_attenuation_GaAs.txt', skiprows=1, delimiter=' ')
+attenuation_coefficient_CdTe = np.loadtxt(FileInPath + 'photon_attenuation_CdTe.txt', skiprows=1, delimiter=' ')
+
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
+plt.plot(attenuation_coefficient_Si[:,0] * 1000, attenuation_coefficient_Si[:,6], linewidth=lin_wd)
+plt.plot(attenuation_coefficient_SiC[:,0] * 1000, attenuation_coefficient_SiC[:,6], linewidth=lin_wd) 
+plt.plot(attenuation_coefficient_GaAs[:,0] * 1000, attenuation_coefficient_GaAs[:,6], linewidth=lin_wd) 
+plt.plot(attenuation_coefficient_CdTe[:,0] * 1000, attenuation_coefficient_CdTe[:,6], linewidth=lin_wd) 
+plt.xlim(left=1, right=5E2)
+plt.ylim(bottom=1E-1, top=1E4)
+plt.xlabel('Energy [keV]', fontsize=tickfnt)
+plt.ylabel('$\mu_m$ [cm${}^2$/g]', fontsize=tickfnt)
+plt.title('Photon attenuation coefficient $\mu_m$', fontsize=tickfnt+2)
+plt.legend(['Si', 'SiC', 'GaAs', 'CdTe'], loc='upper right', fontsize=tickfnt)
+plt.xscale('log')
+plt.yscale('log')
+plt.tick_params(labelsize=tickfnt)
+plt.tick_params(labelsize=tickfnt)
+plt.savefig(OutputPath + 'photon_attenuation_coefficient.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
+
+
 # Chapter 5
 # Figure 5.2 - 4 segment matrix made of 4 detectors
 """
