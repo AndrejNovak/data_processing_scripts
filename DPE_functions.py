@@ -1004,6 +1004,30 @@ def read_elist_filter_numpy(elist_data, new_filter=None):
     else:
         print('No filter was used, there is nothing to be processed')
 
+def read_elist_filter_numpy_old(elist_data, new_filter=None):
+    """ 
+    Optimise the read_elist_filter() function
+
+    if elist length is == some number at the beggining, add column
+    otherwise just change the values of the last column used for Filter
+    In ExtElist, before any addition of columns, the number of columns is 15 
+    """
+
+    filter_values = np.zeros([len(elist_data[:,0])])
+
+    if new_filter is not None:
+        if len(elist_data[0,:]) == 16:
+            for i in range(len(elist_data[:,0])):
+                cluster_variable = elist_data[i,:]
+
+                if new_filter.pass_filter(cluster_variable):
+                    filter_values[i] = 1
+
+        return np.column_stack((elist_data,filter_values))
+
+    else:
+        print('No filter was used, there is nothing to be processed')
+
 
 def write_elist(filename, header, units, data):
     """
@@ -1130,7 +1154,7 @@ def create_matrix_filter_tpx3_t3pa(filtered_elist, clog, number_column_filter, n
                 for j in range(cluster_size_clog):
                     x, y = int(clog[var][j][0]), int(clog[var][j][1])
 
-                    matrix_energy_bad[x, y] += clog[i][j][2]
+                    matrix_energy_bad[x, y] += clog[var][j][2]
                     matrix_toa_bad[x, y] = clog[var][j][3]
 
     return matrix_energy_all, matrix_toa_all, matrix_energy_ok, matrix_toa_ok, matrix_energy_bad, matrix_toa_bad
