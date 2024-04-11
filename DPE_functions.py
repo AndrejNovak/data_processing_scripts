@@ -1733,13 +1733,11 @@ def print_figure_single_cluster_energy_event_parameters(clog_data, elist_data, c
     plt.clf()
     plt.close('all')
     fig, ax = plt.subplots(1, 1, figsize=(15, 15))
-    plt.matshow(np.flip(np.rot90(
-        matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
+    plt.matshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
     plt.gca().xaxis.tick_bottom()
     plt.clim(1, vmax)
     cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
-    cbar.set_label(label='Energy [keV]', size=tickfnt,
-                    weight='regular')   # format="%.1E"
+    cbar.set_label(label='Energy [keV]', size=tickfnt, weight='regular')   # format="%.1E"
     cbar.ax.tick_params(labelsize=tickfnt)
     plt.title(label=title, fontsize=tickfnt)
     plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
@@ -1751,9 +1749,66 @@ def print_figure_single_cluster_energy_event_parameters(clog_data, elist_data, c
     props = dict(boxstyle='round', facecolor='grey', alpha=0.05)  # bbox features
     my_text = f'Detector ID = {elist_data[cluster_number,0]:.0f} [-]\n Event ID = {elist_data[cluster_number,1]:.0f} [-]\n X = {elist_data[cluster_number,2]:.3f} [px]\n Y = {elist_data[cluster_number,3]:.3f} [px]\n E = {elist_data[cluster_number,4]:.2f} [keV]\n T = {elist_data[cluster_number,5]:.3f} [ns]\n Flags = {elist_data[cluster_number,6]:.0f} [-]\n Size = {elist_data[cluster_number,7]:.0f} [px]\n Height = {elist_data[cluster_number,8]:.2f} [keV]\n BorderPixCount = {elist_data[cluster_number,9]:.0f} [-]\n Roundness = {elist_data[cluster_number,10]:.2f} [-]\n AngleAzim = {elist_data[cluster_number,11]:.2f} [deg]\n Linearity = {elist_data[cluster_number,12]:.2f} [-]\n LengthProj = {elist_data[cluster_number,13]:.2f} [px]\n WidthProj = {elist_data[cluster_number,14]:.2f} [px]\n IsSensEdge = {elist_data[cluster_number,15]:.0f} [-]\n StdAlong = {elist_data[cluster_number,16]:.2f} [px]\n StdPerp = {elist_data[cluster_number,17]:.2f} [px]\n Thin = {elist_data[cluster_number,18]:.2f} [-]\n Thick = {elist_data[cluster_number,19]:.2f} [-]\n CurlyThin = {elist_data[cluster_number,20]:.2f} [-]\n EpixMean = {elist_data[cluster_number,21]:.2f} [keV]\n EpixStd = {elist_data[cluster_number,22]:.2f} [keV]\n LengthCorrStd = {elist_data[cluster_number,23]:.2f} [px]\n Length3DCorrStd = {elist_data[cluster_number,24]:.2f} [$\mu$m]\n AngleElev = {elist_data[cluster_number,25]:.2f} [deg]\n LET = {elist_data[cluster_number,26]:.2f} [keV/$\mu$m]\n Diameter = {elist_data[cluster_number,27]:.2f} [px]\n PIDClass = {elist_data[cluster_number,28]:.0f} [-]'
     plt.text(1.8, 1.25, my_text, transform=ax.transAxes, fontsize=9, verticalalignment='top', bbox=props)
-    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png',
-                dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
 
+
+def print_figure_single_cluster_energy_event_parameters_old(clog_data, elist_data, cluster_number, vmax, title, OutputPath, OutputName):
+    """
+    Single cluster with all its parameters assigned from DPE processing  
+
+    This function will work only with the newest DPE version and Extended Advalist output
+    """
+
+    if not os.path.exists(OutputPath):
+        os.makedirs(OutputPath)
+    
+    tickfnt = 14
+    margin = 5
+
+    matrix = np.zeros([256, 256])
+
+    x = []
+    y = []
+
+    for i in range(len(clog_data[:])):
+        x.append(clog_data[i][0])
+        y.append(clog_data[i][1])
+
+    for i in range(len(clog_data[:])):
+        matrix[int(x[i]), int(y[i])] += clog_data[i][2]
+
+    if (max(x) - min(x)) < (max(y) - min(y)):
+        difference_position_x = np.abs((max(x) - min(x)) - (max(y) - min(y)))
+    else:
+        difference_position_x = 0
+    if (max(y) - min(y)) < (max(x) - min(x)):
+        difference_position_y = np.abs((max(y) - min(y)) - (max(x) - min(x)))
+    else:
+        difference_position_y = 0
+
+    plt.close()
+    plt.cla()
+    plt.clf()
+    plt.close('all')
+    fig, ax = plt.subplots(1, 1, figsize=(15, 15))
+    plt.matshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
+    plt.gca().xaxis.tick_bottom()
+    plt.clim(1, vmax)
+    cbar = plt.colorbar(label='Energy [keV]', aspect=20*0.8, shrink=0.8) # shrink=0.8
+    cbar.set_label(label='Energy [keV]', size=tickfnt, weight='regular')   # format="%.1E"
+    cbar.ax.tick_params(labelsize=tickfnt)
+    plt.title(label=title, fontsize=tickfnt)
+    plt.xlim([min(x) - difference_position_x / 2 - margin, max(x) + difference_position_x / 2 + margin])
+    plt.ylim([min(y) - difference_position_y / 2 - margin, max(y) + difference_position_y / 2 + margin])
+    plt.tick_params(axis='x', labelsize=tickfnt)
+    plt.tick_params(axis='y', labelsize=tickfnt)
+    plt.xlabel('X position [pixel]', fontsize=tickfnt)
+    plt.ylabel('Y position [pixel]', fontsize=tickfnt)
+    props = dict(boxstyle='round', facecolor='grey', alpha=0.05)  # bbox features
+    my_text = f'Detector ID = {elist_data[cluster_number,0]:.0f} [-]\n Event ID = {elist_data[cluster_number,1]:.0f} [-]\n X = {elist_data[cluster_number,2]:.3f} [px]\n Y = {elist_data[cluster_number,3]:.3f} [px]\n E = {elist_data[cluster_number,4]:.2f} [keV]\n T = {elist_data[cluster_number,5]:.3f} [ns]\n Flags = {elist_data[cluster_number,6]:.0f} [-]\n Size = {elist_data[cluster_number,7]:.0f} [px]\n Height = {elist_data[cluster_number,8]:.2f} [keV]\n BorderPixCount = {elist_data[cluster_number,9]:.0f} [-]\n Roundness = {elist_data[cluster_number,10]:.2f} [-]\n Angle = {elist_data[cluster_number,11]:.2f} [rad]\n Linearity = {elist_data[cluster_number,12]:.2f} [-]\n Length = {elist_data[cluster_number,13]:.2f} [px]\n Width = {elist_data[cluster_number,14]:.2f} [px]\n PIDClass = {elist_data[cluster_number,15]:.0f} [-]'
+    plt.text(1.8, 1.25, my_text, transform=ax.transAxes, fontsize=9, verticalalignment='top', bbox=props)
+    plt.savefig(OutputPath + OutputName + '_' + str(cluster_number) + '.png', dpi=300, transparent=True, bbox_inches="tight", pad_inches=0.1)
+    
 
 def print_figure_single_cluster_energy_neural_network(clog_data, cluster_number, vmax, OutputPath, OutputName):
     """
