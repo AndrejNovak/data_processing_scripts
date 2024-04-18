@@ -3725,7 +3725,7 @@ plt.savefig(OutputPath + '\\normalised\\all_let_100V_filtered_normalised_three.p
 
 # Chapter 8
 # Figure - neutron cross sections 28-Si, 12-C, 1-H
-
+"""
 lin_wd = 2
 tickfnt = 18
 alpha_val = 0.80
@@ -3807,7 +3807,7 @@ plt.tick_params(axis='y', labelsize=tickfnt)
 plt.title('${}^{28}$Si - selected neutron cross sections', fontsize=tickfnt)
 plt.legend(loc='upper right', fontsize=tickfnt-6)
 plt.savefig(OutputPath + '28Si_python_plot_selected_cross_sections.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.1)
-
+"""
 
 # Chapter 8
 # Figure 8.2 - 2D deposited energy
@@ -4375,9 +4375,13 @@ OutNames = ['0_3MeV', '0_5MeV', '0_77MeV', '1_MeV', '3_3MeV', '4_MeV', '5_MeV', 
 TitleLabel = ['0.3 MeV', '0.5 MeV', '0.77 MeV', '1 MeV', '3.3 MeV', '4 MeV', '5 MeV', '15.5 MeV', '15.5 MeV', '15.5 MeV', '17.5 MeV']
 
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\histogram_filtered\\'
+
+height_min = 300
+height_max = 100000000
+
 #                         1   2   3   4   5   6   7   8     9   10  11
 D05_size_min = np.array([25, 25, 25, 11, 15, 18, 15,  30,  30,  30, 30])
-D05_size_max = np.array([90, 90, 90, 20, 45, 55, 60, 100, 100, 100, 110])
+D05_size_max = np.array([90, 90, 90, 40, 45, 55, 60, 100, 100, 100, 110])
 
 L06_size_min = np.array([12, 12, 12, 12, 13,  9,  9,  9,  9,  9,  9])
 L06_size_max = np.array([25, 25, 25, 25, 24, 15, 15, 16, 16, 15, 16])
@@ -4385,8 +4389,8 @@ L06_size_max = np.array([25, 25, 25, 25, 24, 15, 15, 16, 16, 15, 16])
 L07_size_min = np.array([12, 12, 12, 12, 13,  9,  9,  9,  9,  9,  9])
 L07_size_max = np.array([25, 25, 25, 25, 24, 15, 15, 16, 16, 15, 16])
 #                            1     2     3     4     5     6     7     8    9     10    11
-D05_energy_min = np.array([1500, 1500, 1500,  700, 1100, 1200, 1000, 1400, 1400, 1400, 1250])
-D05_energy_max = np.array([5000, 5000, 5000, 1000, 2100, 4000, 4500, 5000, 5000, 5000, 5000])
+D05_energy_min = np.array([1500, 1500, 1500,  600, 1100, 1200, 1000, 1400, 1400, 1400, 1250])
+D05_energy_max = np.array([5000, 5000, 5000, 5000, 2100, 4000, 4500, 5000, 5000, 5000, 7000])
 
 L06_energy_min = np.array([1000, 1000, 1000, 1000, 1000, 1100, 1100, 1100, 1100, 1100, 1100])
 L06_energy_max = np.array([5000, 5000, 5000, 5000, 5000, 5000, 5000, 6000, 6000, 6000, 6000])
@@ -4407,13 +4411,22 @@ for i in range(len(clog_paths_L06)):
     clog_data_L07 = read_clog_multiple(clog_paths_L07[i])
     clog_data_D05 = read_clog_multiple(clog_paths_D05[i])
 
-    filter_parameters_L06 = Cluster_filter_multiple_parameter([L06_energy_min[i], L06_energy_max[i], L06_size_min[i], L06_size_max[i]], [4,7]) # Energy, Size
+    filter_parameters_L06 = Cluster_filter_multiple_parameter([L06_energy_min[i], L06_energy_max[i], L06_size_min[i], L06_size_max[i], height_min, height_max], [4,7,8]) # Energy, Size
     filtered_elist_L06 = read_elist_filter_numpy(elist_data_L06, filter_parameters_L06)
-    filter_parameters_L07 = Cluster_filter_multiple_parameter([L07_energy_min[i], L07_energy_max[i], L07_size_min[i], L07_size_max[i]], [4,7]) # Energy, Size
+    filter_parameters_L07 = Cluster_filter_multiple_parameter([L07_energy_min[i], L07_energy_max[i], L07_size_min[i], L07_size_max[i], height_min, height_max], [4,7,8]) # Energy, Size
     filtered_elist_L07 = read_elist_filter_numpy(elist_data_L07, filter_parameters_L07)
-    filter_parameters_D05 = Cluster_filter_multiple_parameter([D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i]], [4,7]) # Energy, Size
-    filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
-    
+
+    if OutNames[i] == '1_MeV':
+        filter_parameters_D05 = Cluster_filter_multiple_parameter([D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i]], [4,7]) # Energy, Size
+        filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
+        square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_D05[:,-1], clog_data_D05, number_of_particles+4000)
+        print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, D05 Si 500 $\mu$m', OutputPath, OutNames[i] + '_D05_particles')
+    else:
+        filter_parameters_D05 = Cluster_filter_multiple_parameter([D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i], height_min, height_max], [4,7,8]) # Energy, Size
+        filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
+        square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_D05[:,-1], clog_data_D05, number_of_particles)
+        print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, D05 Si 500 $\mu$m', OutputPath, OutNames[i] + '_D05_particles')
+
     print(f'Processing {TitleLabel[i]}')
     print(f'L06 before: {len(elist_data_L06[:,0])}, after: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/len(elist_data_L06[:,0]) * 100}, duration: {(elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9} s')
     print(f'L07 before: {len(elist_data_L07[:,0])}, after: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/len(elist_data_L07[:,0]) * 100}, duration: {(elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9} s')
@@ -4561,8 +4574,6 @@ for i in range(len(clog_paths_L06)):
     #print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, L06 4H-SiC 65 $\mu$m', OutputPath, OutNames[i] + '_L06_particles')
     #square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_L07[:,-1], clog_data_L07, number_of_particles)
     #print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, L07 4H-SiC 65 $\mu$m', OutputPath, OutNames[i] + '_L07_particles')
-    square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_D05[:,-1], clog_data_D05, number_of_particles)
-    print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, D05 Si 500 $\mu$m', OutputPath, OutNames[i] + '_D05_particles')
     
     matrix_full = np.zeros([256,256])
     iterator = 0
@@ -4574,7 +4585,7 @@ for i in range(len(clog_paths_L06)):
                 x, y = int(clog_data_L06[j][k][0]), int(clog_data_L06[j][k][1])
                 matrix_energy[x, y] += clog_data_L06[j][k][2]
 
-            if sum(matrix_energy.flatten()) >= L06_energy_min[i] and sum(matrix_energy.flatten()) <= L06_energy_max[i] and iterator < number_of_particles:
+            if sum(matrix_energy.flatten()) >= L06_energy_min[i] and sum(matrix_energy.flatten()) <= L06_energy_max[i] and np.max(matrix_energy) > height_min and iterator < number_of_particles:
                 iterator += 1
                 matrix_full += matrix_energy
     print(f'L06 figure contains: {iterator} clusters') 
@@ -4593,7 +4604,7 @@ for i in range(len(clog_paths_L06)):
                 x, y = int(clog_data_L07[j][k][0]), int(clog_data_L07[j][k][1])
                 matrix_energy[x, y] += clog_data_L07[j][k][2]
 
-            if sum(matrix_energy.flatten()) >= L07_energy_min[i] and sum(matrix_energy.flatten()) <= L07_energy_max[i] and iterator < number_of_particles:
+            if sum(matrix_energy.flatten()) >= L07_energy_min[i] and sum(matrix_energy.flatten()) <= L07_energy_max[i] and np.max(matrix_energy) > height_min and iterator < number_of_particles:
                 iterator += 1
                 matrix_full += matrix_energy
     print(f'L07 figure contains: {iterator} clusters') 
@@ -4601,7 +4612,8 @@ for i in range(len(clog_paths_L06)):
         print_figure_energy(matrix_full, vmax, TitleLabel[i] + ', filtered, L07 4H-SiC 65 $\mu$m', OutputPath, OutNames[i] + '_L07_particles')
     except:
         Exception
-"""
+print('Finished: Figure 8... - spectra + deposited energy')
+
 
 # Chapter 8
 # Figure 8... - vybrane oblasti
@@ -4656,11 +4668,11 @@ plt.tick_params(axis='x', labelsize=tickfnt)
 plt.tick_params(axis='y', labelsize=tickfnt)
 plt.title(label='Selected regions of conversion layers', fontsize=tickfnt)
 plt.savefig(OutputPath + 'mask_selected_regions_D05.png', dpi=mydpi,transparent=True, bbox_inches="tight", pad_inches=0.01)
-
+"""
 
 # Chapter 8
 # Figure 8... - zistovanie efektivity konverznej vrstvy Si
-
+"""
 lin_wd = 2
 tickfnt = 18
 alpha_val = 0.80
@@ -4706,13 +4718,14 @@ elist_paths_L06 = [f"{x}EventListExt.advelist" for x in clog_paths_L06]
 elist_paths_L07 = [f"{x}EventListExt.advelist" for x in clog_paths_L07]
 elist_paths_D05 = [f"{x}EventListExt.advelist" for x in clog_paths_D05]
 
-OutNames = ['0_3MeV', '0_5MeV', '0_77MeV', '1_MeV', '3_3MeV', '4_MeV', '5_MeV', '15_5_MeV_1', '15_5_MeV_2', '15_5_MeV_3', '17_5_MeV']
-TitleLabel = ['0.3 MeV', '0.5 MeV', '0.77 MeV', '1 MeV', '3.3 MeV', '4 MeV', '5 MeV', '15.5 MeV', '15.5 MeV', '15.5 MeV', '17.5 MeV']
-
 OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\histogram_filtered\\'
+
+height_min = 300
+height_max = 100000000
+
 #                         1   2   3   4   5   6   7   8     9   10  11
 D05_size_min = np.array([25, 25, 25, 11, 15, 18, 15,  30,  30,  30, 30])
-D05_size_max = np.array([90, 90, 90, 20, 45, 55, 60, 100, 100, 100, 110])
+D05_size_max = np.array([90, 90, 90, 25, 45, 55, 60, 100, 100, 100, 110])
 
 L06_size_min = np.array([12, 12, 12, 12, 13,  9,  9,  9,  9,  9,  9])
 L06_size_max = np.array([25, 25, 25, 25, 24, 15, 15, 16, 16, 15, 16])
@@ -4721,7 +4734,7 @@ L07_size_min = np.array([12, 12, 12, 12, 13,  9,  9,  9,  9,  9,  9])
 L07_size_max = np.array([25, 25, 25, 25, 24, 15, 15, 16, 16, 15, 16])
 #                            1     2     3     4     5     6     7     8    9     10    11
 D05_energy_min = np.array([1500, 1500, 1500,  700, 1100, 1200, 1000, 1400, 1400, 1400, 1250])
-D05_energy_max = np.array([5000, 5000, 5000, 1000, 2100, 4000, 4500, 5000, 5000, 5000, 5000])
+D05_energy_max = np.array([5000, 5000, 5000, 1100, 2100, 4000, 4500, 5000, 5000, 5000, 5000])
 
 L06_energy_min = np.array([1000, 1000, 1000, 1000, 1000, 1100, 1100, 1100, 1100, 1100, 1100])
 L06_energy_max = np.array([5000, 5000, 5000, 5000, 5000, 5000, 5000, 6000, 6000, 6000, 6000])
@@ -4735,6 +4748,13 @@ TitleLabel = ['0.3 MeV', '0.5 MeV', '0.77 MeV', '1 MeV', '3.3 MeV', '4 MeV', '5 
 number_of_particles = 2000
 vmax = 3000
 iterator = 0
+
+effectivity_lif = np.empty(0)
+effectivity_kapton = np.empty(0)
+effectivity_pe = np.empty(0)
+effectivity_nolayer = np.empty(0)
+effectivity_L06 = np.empty(0)
+effectivity_L07 = np.empty(0)
 
 lif_xmin = 91
 lif_xmax = 251
@@ -4765,10 +4785,11 @@ for i in range(len(clog_paths_D05)):
     clog_data_L07 = read_clog_multiple(clog_paths_L07[i])
     clog_data_D05 = read_clog_multiple(clog_paths_D05[i])
 
-    filter_parameters_D05 = Cluster_filter_multiple_parameter([lif_xmin, lif_xmax, lif_ymin, lif_ymax, D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i]], [2,3,4,7]) # X, Y, Energy, Size
+    filter_parameters_D05 = Cluster_filter_multiple_parameter([lif_xmin, lif_xmax, lif_ymin, lif_ymax, D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i], height_min, height_max], [2,3,4,7,8]) # X, Y, Energy, Size
     filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
     
     area_lif = (lif_xmax - lif_xmin) * (lif_ymax - lif_ymin) * 3025 * 1E-8
+    effectivity_lif = np.append(effectivity_lif, (len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)) * (1/area_lif))
     print(f'Neutron energy {TitleLabel[i]}')
     print(f'6LiF before: {len(elist_data_D05[:,0])}, after: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/len(elist_data_D05[:,0]) * 100}, duration: {(elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9} s, area {area_lif}, filtered events per second {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)) * (1/area_lif)}')
 
@@ -4779,10 +4800,11 @@ for i in range(len(clog_paths_D05)):
     square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_D05[:,-1], clog_data_D05, number_of_particles)
     print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, D05 Si 500 $\mu$m', OutputPath, OutNames[i] + '_D05_particles_LiF_conversion_layer')
     
-    filter_parameters_D05 = Cluster_filter_multiple_parameter([pe_xmin, pe_xmax, pe_ymin, pe_ymax, D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i]], [2,3,4,7]) # X, Y, Energy, Size
+    filter_parameters_D05 = Cluster_filter_multiple_parameter([pe_xmin, pe_xmax, pe_ymin, pe_ymax, D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i], height_min, height_max], [2,3,4,7,8]) # X, Y, Energy, Size
     filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
 
     area_pe = (pe_xmax - pe_xmin) * (pe_ymax - pe_ymin) * 3025 * 1E-8
+    effectivity_pe = np.append(effectivity_pe, (len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)) * (1/area_pe))
     print(f'PE before: {len(elist_data_D05[:,0])}, after: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/len(elist_data_D05[:,0]) * 100}, duration: {(elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9} s, area {area_pe}, filtered events per second {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)) * (1/area_pe)}')
     
     with open('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\neutron_conversion_layer_and_without_analysis.txt', 'a') as file1:
@@ -4791,10 +4813,11 @@ for i in range(len(clog_paths_D05)):
     square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_D05[:,-1], clog_data_D05, number_of_particles)
     print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, D05 Si 500 $\mu$m', OutputPath, OutNames[i] + '_D05_particles_PE_conversion_layer')
 
-    filter_parameters_D05 = Cluster_filter_multiple_parameter([kapton_xmin, kapton_xmax, kapton_ymin, kapton_ymax, D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i]], [2,3,4,7]) # X, Y, Energy, Size
+    filter_parameters_D05 = Cluster_filter_multiple_parameter([kapton_xmin, kapton_xmax, kapton_ymin, kapton_ymax, D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i], height_min, height_max], [2,3,4,7,8]) # X, Y, Energy, Size
     filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
 
     area_kapton = (kapton_xmax - kapton_xmin) * (kapton_ymax - kapton_ymin) * 3025 * 1E-8
+    effectivity_kapton = np.append(effectivity_kapton, (len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)) * (1/area_kapton))
     print(f'Kapton before: {len(elist_data_D05[:,0])}, after: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/len(elist_data_D05[:,0]) * 100}, duration: {(elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9} s, area {area_kapton}, filtered events per second {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)) * (1/area_kapton)}')
     
     with open('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\neutron_conversion_layer_and_without_analysis.txt', 'a') as file1:
@@ -4803,10 +4826,11 @@ for i in range(len(clog_paths_D05)):
     square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_D05[:,-1], clog_data_D05, number_of_particles)
     print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, D05 Si 500 $\mu$m', OutputPath, OutNames[i] + '_D05_particles_kapton_conversion_layer')
 
-    filter_parameters_D05 = Cluster_filter_multiple_parameter([nolayer_xmin, nolayer_xmax, nolayer_ymin, nolayer_ymax, D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i]], [2,3,4,7]) # X, Y, Energy, Size
+    filter_parameters_D05 = Cluster_filter_multiple_parameter([nolayer_xmin, nolayer_xmax, nolayer_ymin, nolayer_ymax, D05_energy_min[i], D05_energy_max[i], D05_size_min[i], D05_size_max[i], height_min, height_max], [2,3,4,7,8]) # X, Y, Energy, Size
     filtered_elist_D05 = read_elist_filter_numpy(elist_data_D05, filter_parameters_D05)
 
     area_nolayer = (nolayer_xmax - nolayer_xmin) * (nolayer_ymax - nolayer_ymin) * 3025 * 1E-8
+    effectivity_nolayer = np.append(effectivity_nolayer, (len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)) * (1/area_nolayer))
     print(f'No layer before: {len(elist_data_D05[:,0])}, after: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/len(elist_data_D05[:,0]) * 100}, duration: {(elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9} s, area {area_nolayer}, filtered events per second {len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist_D05[filtered_elist_D05[:,-1] == 1][:,0])/((elist_data_D05[-1,5] - elist_data_D05[0,5]) * 1E-9)) * (1/area_nolayer)}')
     
     with open('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\neutron_conversion_layer_and_without_analysis.txt', 'a') as file1:
@@ -4815,20 +4839,72 @@ for i in range(len(clog_paths_D05)):
     square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist_D05[:,-1], clog_data_D05, number_of_particles)
     print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, D05 Si 500 $\mu$m', OutputPath, OutNames[i] + '_D05_particles_no_conversion_layer')
 
-    filter_parameters_L06 = Cluster_filter_multiple_parameter([5, 251, 5, 251, L06_energy_min[i], L06_energy_max[i], L06_size_min[i], L06_size_max[i]], [2,3,4,7]) # X, Y, Energy, Size
+    filter_parameters_L06 = Cluster_filter_multiple_parameter([5, 251, 5, 251, L06_energy_min[i], L06_energy_max[i], L06_size_min[i], L06_size_max[i], height_min, height_max], [2,3,4,7,8]) # X, Y, Energy, Size
     filtered_elist_L06 = read_elist_filter_numpy(elist_data_L06, filter_parameters_L06)
 
     area_L06 = (251 - 5) * (251 - 5) * 3025 * 1E-8
+    effectivity_L06 = np.append(effectivity_L06, (len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/((elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9)) * (1/area_L06))
     print(f'SiC L06 no layer before: {len(elist_data_L06[:,0])}, after: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/len(elist_data_L06[:,0]) * 100}, duration: {(elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9} s, area {area_L06}, filtered events per second {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/((elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/((elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9)) * (1/area_L06)}')
     
     with open('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\neutron_conversion_layer_and_without_analysis.txt', 'a') as file1:
         file1.write(f'L06 SiC NO LAYER: Before filtering {len(elist_data_L06[:,0])}, after {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/len(elist_data_L06[:,0]) * 100}, duration: {(elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9} s, area {area_L06}, filtered events per second {len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/((elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist_L06[filtered_elist_L06[:,-1] == 1][:,0])/((elist_data_L06[-1,5] - elist_data_L06[0,5]) * 1E-9)) * (1/area_L06)}\n')
 
-    filter_parameters_L07 = Cluster_filter_multiple_parameter([5, 251, 5, 251, L07_energy_min[i], L07_energy_max[i], L07_size_min[i], L07_size_max[i]], [2,3,4,7]) # X, Y, Energy, Size
+    filter_parameters_L07 = Cluster_filter_multiple_parameter([5, 251, 5, 251, L07_energy_min[i], L07_energy_max[i], L07_size_min[i], L07_size_max[i], height_min, height_max], [2,3,4,7,8]) # X, Y, Energy, Size
     filtered_elist_L07 = read_elist_filter_numpy(elist_data_L07, filter_parameters_L07)
 
     area_L07 = (251 - 5) * (251 - 5) * 3025 * 1E-8
+    effectivity_L07 = np.append(effectivity_L07, (len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/((elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9)) * (1/area_L07))
     print(f'SiC L07 no layer before: {len(elist_data_L07[:,0])}, after: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/len(elist_data_L07[:,0]) * 100}, duration: {(elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9} s, area {area_L07}, filtered events per second {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/((elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/((elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9)) * (1/area_L07)}')
     
     with open('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\neutron_conversion_layer_and_without_analysis.txt', 'a') as file1:
         file1.write(f'L07 SiC NO LAYER: Before filtering {len(elist_data_L07[:,0])}, after {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/len(elist_data_L07[:,0]) * 100}, duration: {(elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9} s, area {area_L07}, filtered events per second {len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/((elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist_L07[filtered_elist_L07[:,-1] == 1][:,0])/((elist_data_L07[-1,5] - elist_data_L07[0,5]) * 1E-9)) * (1/area_L07)}\n\n')
+
+TitleLabel_xvalues = np.array([0.3, 0.5, 0.77, 1, 3.3, 4, 5, 15.5, 15.5, 15.5, 17.5])
+
+np.savetxt('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\effectivity_values.txt', np.c_[TitleLabel_xvalues, effectivity_lif, effectivity_pe, effectivity_kapton, effectivity_nolayer, effectivity_L06, effectivity_L07], delimiter="\t", header="Energy\tLiF\tPE\tKapton\tNolayer\tL06\tL07", comments='', fmt='%.4f')
+"""
+
+effectivity_values = np.loadtxt('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\effectivity_values.txt', skiprows=1, delimiter='\t')
+
+lin_wd = 2
+tickfnt = 18
+mydpi = 300
+
+averages = np.empty(0)
+
+for i in range(7):
+    averages = np.append(averages, np.mean(effectivity_values[7:9,i]))
+
+print(averages)
+print(effectivity_values[:,0])
+print(effectivity_values[:,1])
+effectivity_values = np.delete(effectivity_values[:,:], 7, 0)
+effectivity_values = np.delete(effectivity_values[:,:], 7, 0)
+effectivity_values = np.delete(effectivity_values[:,:], 7, 0)
+print(effectivity_values[:,0])
+print(effectivity_values[:,1])
+effectivity_values = np.insert(effectivity_values[:,:], 7, [15.5, averages[1], averages[2], averages[3], averages[4], averages[5], averages[6]], axis=0)
+print(effectivity_values[:,0])
+print(effectivity_values[:,1])
+
+np.savetxt('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\effectivity_values_mean_on_15_MeV.txt', np.c_[effectivity_values], delimiter="\t", header="Energy\tLiF\tPE\tKapton\tNolayer\tL06\tL07", comments='', fmt='%.4f')
+
+plt.close('all')
+fig, ax = plt.subplots(1, 1, figsize=(11.7, 8.3))
+plt.scatter(effectivity_values[:,0], effectivity_values[:,1], linewidth=lin_wd) 
+plt.scatter(effectivity_values[:,0], effectivity_values[:,2], linewidth=lin_wd) 
+plt.scatter(effectivity_values[:,0], effectivity_values[:,3], linewidth=lin_wd) 
+plt.scatter(effectivity_values[:,0], effectivity_values[:,4], linewidth=lin_wd) 
+plt.scatter(effectivity_values[:,0], effectivity_values[:,5], linewidth=lin_wd) 
+plt.scatter(effectivity_values[:,0], effectivity_values[:,6], linewidth=lin_wd) 
+plt.xlim(left=0, right=20)
+plt.ylim(bottom=0, top=200)
+plt.xlabel('Energy [MeV]', fontsize=tickfnt)
+plt.ylabel('events/s/cm${}^2$', fontsize=tickfnt)
+#plt.title('Photon attenuation coefficient $\mu_m$', fontsize=tickfnt+2)
+plt.legend(['Si ${}^6$LiF', 'Si PE', 'Si Kapton', 'Si No cover', '4H-SiC L06', '4H-SiC L07'], loc='upper left', fontsize=tickfnt-2)
+#plt.xscale('log')
+#plt.yscale('log')
+plt.tick_params(labelsize=tickfnt)
+plt.tick_params(labelsize=tickfnt)
+plt.savefig('C:\\Users\\andrej\\Documents\\FEI\\phd_thesis\\figures\\chapter_8\\effectivity.png', dpi=mydpi, transparent=True, bbox_inches="tight", pad_inches=0.01)
