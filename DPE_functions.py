@@ -1728,9 +1728,6 @@ def print_figure_single_cluster_energy_event_parameters(clog_data, elist_data, c
     else:
         difference_position_y = 0
 
-    plt.close()
-    plt.cla()
-    plt.clf()
     plt.close('all')
     fig, ax = plt.subplots(1, 1, figsize=(15, 15))
     plt.matshow(np.flip(np.rot90(matrix[::-1, :])), origin='lower', cmap='viridis', norm=colors.LogNorm())
