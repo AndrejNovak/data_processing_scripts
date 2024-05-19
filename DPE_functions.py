@@ -1429,7 +1429,7 @@ def print_figure_energy(matrix, vmax, title, OutputPath, OutputName):
     plt.title(label=title, fontsize=tickfnt)
     plt.savefig(OutputPath + OutputName + '.png', dpi=mydpi,
                 transparent=True, bbox_inches="tight", pad_inches=0.01)
-    np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
+    #np.savetxt(OutputPath + OutputName + '.txt', matrix, fmt="%.3f")
 
 
 def print_figure_flat_field(matrix, open_beam, title, OutputPath, OutputName):

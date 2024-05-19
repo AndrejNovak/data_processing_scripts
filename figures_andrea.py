@@ -1,10 +1,4 @@
 from DPE_functions import *
-
-lin_wd = 1.75
-tickfnt = 18
-alpha_val = 0.9
-mydpi = 300
-
 #
 # VYTVORIT VYSTUPY PRE SINGLE CLUSTRE Z DANYCH ROZSAHOV
 #
