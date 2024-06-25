@@ -5,14 +5,15 @@ tickfnt = 18
 alpha_val = 0.80
 mydpi = 300
 
-clog_paths_X00 = ['\\\\147.175.96.62\\FEI_data\\DPE_andrej_data_output\\2023_05_16_TPX2_VdG\\X00\\06_80V\\File\\',
-                  '\\\\147.175.96.62\\FEI_data\\DPE_andrej_data_output\\2023_05_16_TPX2_VdG\\X00\\07_80V\\File\\',
-                  '\\\\147.175.96.62\\FEI_data\\DPE_andrej_data_output\\2023_05_16_TPX2_VdG\\X00\\01_80V\\File\\',
-                  '\\\\147.175.96.62\\FEI_data\\DPE_andrej_data_output\\2023_05_16_TPX2_VdG\\X00\\03_80V\\File\\']
+clog_paths_X00 = ['\\\\147.175.96.62\\FEI_data\\DPE_andrej_data_output\\2023_05_16_TPX2_VdG\\X00\\06_80V\\Files\\',
+                  '\\\\147.175.96.62\\FEI_data\\DPE_andrej_data_output\\2023_05_16_TPX2_VdG\\X00\\07_80V\\Files\\',
+                  '\\\\147.175.96.62\\FEI_data\\DPE_andrej_data_output\\2023_05_16_TPX2_VdG\\X00\\01_80V\\Files\\',
+                  '\\\\147.175.96.62\\FEI_data\\DPE_andrej_data_output\\2023_05_16_TPX2_VdG\\X00\\03_80V\\Files\\']
 
-elist_paths_X00 = [f"{x}EventListExt.advelist" for x in clog_paths_X00]
+elist_paths_X00 = [f"{x}ExtElist.txt" for x in clog_paths_X00]
 
-OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\data_processing_scripts\\figures_nim_new\\'
+OutputPath = 'C:\\Users\\andrej\\Documents\\FEI\\data_processing_scripts\\figures_nim_new_totally\\'
+OutputPath_text = 'C:\\Users\\andrej\\Documents\\FEI\\data_processing_scripts\\figures_nim_new_totally\\text_output\\'
 OutputFolder = ['06_80V_3_5MeV', '07_80V_3_5MeV', '01_80V_14_8MeV', '03_80V_16_2MeV']
 
 size_min = np.array([15,  15,  20, 20])
@@ -29,81 +30,90 @@ TitleLabel = ['3.5 MeV', '3.5 MeV', '14.8 MeV', '16.2 MeV']
 TitleValues = np.array([3.5, 3.5, 14.8, 16.2])
 
 number_of_particles = 1000
-number_of_particles_clusters = 200
+number_of_particles_clusters = 100
 vmax = 3000
 
 effectivity_kapton = np.empty(0)
 effectivity_pe = np.empty(0)
 effectivity_nolayer = np.empty(0)
 
-pe_xmin = 15
-pe_xmax = 251
-pe_ymin = 110
-pe_ymax = 195
+pe_xmin = (15 *55) / 1000
+pe_xmax = (251 * 55) / 1000
+pe_ymin = (110 *55) / 1000
+pe_ymax = (195 *55) / 1000
 
-kapton_xmin = 5
-kapton_xmax = 251
-kapton_ymin = 200
-kapton_ymax = 251
+kapton_xmin = (5 *55) / 1000
+kapton_xmax = (251 *55) / 1000
+kapton_ymin = (200 *55) / 1000
+kapton_ymax = (251 *55) / 1000
 
-nolayer_xmin = 5
-nolayer_xmax = 251
-nolayer_ymin = 5
-nolayer_ymax = 80
+nolayer_xmin = (5 *55) / 1000
+nolayer_xmax = (251 *55) / 1000
+nolayer_ymin = (5 *55) / 1000
+nolayer_ymax = (80 *55) / 1000
+
+time_period = np.array([379.16060617100004, 256.38042005200003, 916.016675271, 280.25046206900004])
 
 for i in range(len(clog_paths_X00)):
-    elist_data = np.loadtxt(elist_paths_X00[i], skiprows=2, delimiter='\t')
+    elist_data = np.loadtxt(elist_paths_X00[i], skiprows=2, delimiter=';')
     clog_data = read_clog_multiple(clog_paths_X00[i])
-    number_of_particles = len(elist_data[:,0])
 
     filter_parameters = Cluster_filter_multiple_parameter([pe_xmin, pe_xmax, pe_ymin, pe_ymax, energy_min[i], energy_max[i], size_min[i], size_max[i], height_min[i], height_max[i]], [2,3,4,7,8]) # X, Y, Energy, Size
-    filtered_elist = read_elist_filter_numpy(elist_data, filter_parameters)
+    filtered_elist = read_elist_filter_numpy_old(elist_data, filter_parameters)
     
-    area_pe = (pe_xmax - pe_xmin) * (pe_ymax - pe_ymin) * 3025 * 1E-8
-    effectivity_pe = np.append(effectivity_pe, (len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_pe))
+    area_pe = (pe_xmax - pe_xmin) * (pe_ymax - pe_ymin) * 1E-2
+    effectivity_pe = np.append(effectivity_pe, (len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]))) * (1/area_pe))
     print(f'Neutron energy {TitleLabel[i]}')
-    print(f'PE before: {len(elist_data[:,0])}, after: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {(elist_data[-1,5] - elist_data[0,5]) * 1E-9} s, area {area_pe} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_pe)}')
+    print(f'PE before: {len(elist_data[:,0])}, after: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {time_period[i]} s, area {area_pe} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])) * (1/area_pe)}')
 
     with open(OutputPath + 'neutron_conversion_layer_analysis.txt', 'a') as file1:
         file1.write(f'Neutron energy {TitleLabel[i]}:\n')
         file1.write(f'Filter parameters: E min: {energy_min[i]} keV, E max: {energy_max[i]} keV, S min: {size_min[i]} px, S max: {size_max[i]} px, Height min: {height_min[i]} keV, Height max: {height_max[i]} keV\n')
-        file1.write(f'PE LAYER: Before filtering {len(elist_data[:,0])}, after {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {(elist_data[-1,5] - elist_data[0,5]) * 1E-9} s, area {area_pe} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_pe)}\n')
+        file1.write(f'PE LAYER: Before filtering {len(elist_data[:,0])}, after {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {time_period[i]} s, area {area_pe} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])) * (1/area_pe)}\n')
 
     square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist[:,-1], clog_data, number_of_particles)
     print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, X00 Si 500 $\mu$m', OutputPath, OutNames[i] + '_X00_PE_conversion_layer')
-    
-    filter_parameters = Cluster_filter_multiple_parameter([kapton_xmin, kapton_xmax, kapton_ymin, kapton_ymax, energy_min[i], energy_max[i], size_min[i], size_max[i], height_min[i], height_max[i]], [2,3,4,7,8]) # X, Y, Energy, Size
-    filtered_elist = read_elist_filter_numpy(elist_data, filter_parameters)
+    #np.savetxt(OutputPath_text + OutNames[i] +'_PE_'+str(energy_min[i])+'_'+str(energy_max[i])+'_'+str(size_min[i])+'_'+str(size_max[i])+'_'+str(height_min[i])+'_'+str(height_max[i])+'.txt',filtered_elist)
 
-    area_kapton = (kapton_xmax - kapton_xmin) * (kapton_ymax - kapton_ymin) * 3025 * 1E-8
-    effectivity_kapton = np.append(effectivity_kapton, (len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_kapton))
-    print(f'Kapton before: {len(elist_data[:,0])}, after: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {(elist_data[-1,5] - elist_data[0,5]) * 1E-9} s, area {area_kapton} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_kapton)}')
+    filter_parameters = Cluster_filter_multiple_parameter([kapton_xmin, kapton_xmax, kapton_ymin, kapton_ymax, energy_min[i], energy_max[i], size_min[i], size_max[i], height_min[i], height_max[i]], [2,3,4,7,8]) # X, Y, Energy, Size
+    filtered_elist = read_elist_filter_numpy_old(elist_data, filter_parameters)
+
+    #area_kapton = (kapton_xmax - kapton_xmin) * (kapton_ymax - kapton_ymin) * 3025 * 1E-8
+    area_kapton = (kapton_xmax - kapton_xmin) * (kapton_ymax - kapton_ymin) * 1E-2
+    effectivity_kapton = np.append(effectivity_kapton, (len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]))) * (1/area_kapton))
+    print(f'Kapton before: {len(elist_data[:,0])}, after: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {time_period[i]} s, area {area_kapton} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])) * (1/area_kapton)}')
     
     with open(OutputPath + 'neutron_conversion_layer_analysis.txt', 'a') as file1:
-        file1.write(f'Kapton LAYER: Before filtering {len(elist_data[:,0])}, after {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {(elist_data[-1,5] - elist_data[0,5]) * 1E-9} s, area {area_kapton} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_kapton)}\n')
+        file1.write(f'Kapton LAYER: Before filtering {len(elist_data[:,0])}, after {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {time_period[i]} s, area {area_kapton} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])) * (1/area_kapton)}\n')
 
     square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist[:,-1], clog_data, number_of_particles)
     print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, X00 Si 500 $\mu$m', OutputPath, OutNames[i] + '_X00_kapton_conversion_layer')
+    #np.savetxt(OutputPath_text + OutNames[i] +'_Kapton_'+str(energy_min[i])+'_'+str(energy_max[i])+'_'+str(size_min[i])+'_'+str(size_max[i])+'_'+str(height_min[i])+'_'+str(height_max[i])+'.txt',filtered_elist)
 
     filter_parameters = Cluster_filter_multiple_parameter([nolayer_xmin, nolayer_xmax, nolayer_ymin, nolayer_ymax, energy_min[i], energy_max[i], size_min[i], size_max[i], height_min[i], height_max[i]], [2,3,4,7,8]) # X, Y, Energy, Size
-    filtered_elist = read_elist_filter_numpy(elist_data, filter_parameters)
+    filtered_elist = read_elist_filter_numpy_old(elist_data, filter_parameters)
 
-    area_nolayer = (nolayer_xmax - nolayer_xmin) * (nolayer_ymax - nolayer_ymin) * 3025 * 1E-8
-    effectivity_nolayer = np.append(effectivity_nolayer, (len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_nolayer))
-    print(f'No layer before: {len(elist_data[:,0])}, after: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {(elist_data[-1,5] - elist_data[0,5]) * 1E-9} s, area {area_nolayer} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_nolayer)}')
+    #area_nolayer = (nolayer_xmax - nolayer_xmin) * (nolayer_ymax - nolayer_ymin) * 3025 * 1E-8
+    area_nolayer = (nolayer_xmax - nolayer_xmin) * (nolayer_ymax - nolayer_ymin) * 1E-2
+    effectivity_nolayer = np.append(effectivity_nolayer, (len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]))) * (1/area_nolayer))
+    print(f'No layer before: {len(elist_data[:,0])}, after: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {time_period[i]} s, area {area_nolayer} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])) * (1/area_nolayer)}')
     
     with open(OutputPath + 'neutron_conversion_layer_analysis.txt', 'a') as file1:
-        file1.write(f'NO LAYER: Before filtering {len(elist_data[:,0])}, after {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {(elist_data[-1,5] - elist_data[0,5]) * 1E-9} s, area {area_nolayer} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/((elist_data[-1,5] - elist_data[0,5]) * 1E-9)) * (1/area_nolayer)}\n\n')
+        file1.write(f'NO LAYER: Before filtering {len(elist_data[:,0])}, after {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])}, percent remained: {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/len(elist_data[:,0]) * 100}, duration: {time_period[i]} s, area {area_nolayer} cm2, filtered events per second {len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])}, filtered events per second per cm2 {(len(filtered_elist[filtered_elist[:,-1] == 1][:,0])/(time_period[i])) * (1/area_nolayer)}\n\n')
 
     square_matrices = create_matrix_filter_tpx3_t3pa_for_filtering_numpy_input(filtered_elist[:,-1], clog_data, number_of_particles)
     print_figure_energy(square_matrices[2], vmax, TitleLabel[i] + ', filtered, X00 Si 500 $\mu$m', OutputPath, OutNames[i] + '_X00_no_conversion_layer')
+    #np.savetxt(OutputPath_text + OutNames[i] +'_NO_layer_'+str(energy_min[i])+'_'+str(energy_max[i])+'_'+str(size_min[i])+'_'+str(size_max[i])+'_'+str(height_min[i])+'_'+str(height_max[i])+'.txt',filtered_elist)
 
 np.savetxt(OutputPath + 'effectivity_values_andrej.txt', np.c_[TitleValues, effectivity_pe, effectivity_kapton, effectivity_nolayer], delimiter="\t", header="Energy\tPE\tKapton\tNolayer", comments='', fmt='%.7f')
 
 for i in range(len(clog_paths_X00)):
-    elist_data = np.loadtxt(elist_paths_X00[i], skiprows=2, delimiter='\t')
+    #elist_data = np.loadtxt(elist_paths_X00[i], skiprows=2, delimiter='\t')
+    elist_data = np.loadtxt(elist_paths_X00[i], skiprows=2, delimiter=';')
     clog_data = read_clog_multiple(clog_paths_X00[i])
     number_of_particles = len(elist_data[:,0])
+
+    print(f'Working on {TitleLabel[i]}...')
 
     if len(elist_data[:,0]) == len(clog_data[:]):
         print('Great! The Elist and Clog are of the same length', len(elist_data[:,0]), len(clog_data[:]))
@@ -113,7 +123,14 @@ for i in range(len(clog_paths_X00)):
     iterator = 0
     for j in range(len(clog_data[:])):
         if elist_data[j,4] > energy_min[i] and elist_data[j,7] > size_min[i] and elist_data[j,8] > height_min[i] and iterator < number_of_particles_clusters:
-            print_figure_single_cluster_energy_event_parameters(clog_data[j], elist_data, j, vmax, '', OutputPath + 'single_cluster\\' + OutNames[i], '\\cluster_'+str(j))
+            print_figure_single_cluster_energy_event_parameters_old(clog_data[j], elist_data, j, vmax, '', OutputPath + 'single_cluster\\' + OutNames[i], '\\cluster_')
+            iterator += 1
+    
+    iterator = 0
+    for j in range(len(clog_data[:])):
+        if iterator < 500:
+            print_figure_single_cluster_energy_event_parameters_old(clog_data[j], elist_data, j, vmax, '', OutputPath + 'single_cluster\\' + OutNames[i], '\\non_filtered\\cluster_')
+            #print(f'Cluster {j}, iteration {iterator}')
             iterator += 1
 
 
